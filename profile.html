@@ -341,10 +341,10 @@
       let html = '';
       showcases.forEach(sc => {
         html += `<div class="show"><div class="show-h"><span class="show-ttl">${sc.title}</span><div class="show-acts">
-          <button class="show-act" data-action="edit" data-id="${sc.id}"><i class="fas fa-pen"></i></button>
           <button class="show-act" data-action="up" data-id="${sc.id}"><i class="fas fa-arrow-up"></i></button>
           <button class="show-act" data-action="down" data-id="${sc.id}"><i class="fas fa-arrow-down"></i></button>
-          <button class="show-act" data-action="delete" data-id="${sc.id}"><i class="fas fa-trash"></i></button>
+          <button class="show-act" data-action="edit" data-id="${sc.id}"><i class="fas fa-pen"></i></button>
+          <!-- <button class="show-act" data-action="delete" data-id="${sc.id}"><i class="fas fa-trash"></i></button> -->
         </div></div><div class="show-body">`;
         if (sc.type === 'desc') {
           html += `<div class="desc-show">${sc.desc || 'Нет описания'}</div>`;
