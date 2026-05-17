@@ -156,15 +156,12 @@
     goHomeBtn.onclick = () => scrollTo({top:0, behavior:'smooth'});
     profileAvatarTop.onclick = () => location.href = 'profile.html';
 
-    function tryLoad(id, base) {
-      const f = ['.gif','.png','.jpg','.jpeg','.webp'];
-      const img = document.getElementById(id);
-      let i = 0;
-      function next() { if (i >= f.length) return; img.src = base + f[i]; i++; }
-      img.onerror = next;
-      next();
+    // Загрузка аватарки из профиля
+    const profile = JSON.parse(localStorage.getItem('anix_profile') || '{}');
+    if (profile.avatar) {
+      document.getElementById('topAvatarImg').src = profile.avatar;
+      document.getElementById('topAvatarImg').style.display = 'block';
     }
-    tryLoad('topAvatarImg', 'profile/avatar');
   </script>
 
   <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
