@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>AniX — Профиль</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(180deg, #0e0e1a 0%, #1a1a2e 100%);
+      min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0;
+    }
+
+    .app-wrapper { display: flex; flex-direction: column; flex: 1; width: 100%; min-height: 100vh; }
+
+    .top-bar {
+      padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center;
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      background: linear-gradient(to bottom, rgba(14,14,26,0.9) 0%, rgba(14,14,26,0.4) 0.%, transparent 100%);
+      backdrop-filter: blur(0px); border-bottom: none;
+    }
+
+    .logo-center {
+      background: linear-gradient(135deg, #7b4bff, #b084ff);
+      border: none; color: white; font-weight: bold; font-size: 1.2rem;
+      padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer;
+      transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(123,75,255,0.5);
+      letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.2);
+    }
+    .logo-center:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
+
+    .profile-avatar-top {
+      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);
+      width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.6);
+      cursor: pointer; overflow: hidden; background: rgba(123,75,255,0.2); transition: 0.25s;
+      box-shadow: 0 0 12px rgba(150,100,255,0.3);
+    }
+    .profile-avatar-top:hover { border-color: #b47aff; box-shadow: 0 0 18px rgba(150,100,255,0.5); }
+    .profile-avatar-top img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c9a9ff; font-size: 1rem; }
+
+    .main-content { flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 2rem; padding-top: 2px; }
+
+    .banner-section {
+      position: relative; width: 100%; height: 320px;
+      background: linear-gradient(135deg, #1a1030 0%, #3a2060 50%, #5a3090 100%);
+      overflow: visible; margin-top: 0;
+    }
+    .banner-section::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 100px; background: linear-gradient(transparent, #0e0e1a);
+      z-index: 2; pointer-events: none;
+    }
+    .banner-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 0; }
+    .banner-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1030 0%, #3a2060 50%, #5a3090 100%); z-index: 0; }
+
+    .change-banner-btn {
+      position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.4rem 0.9rem;
+      border-radius: 1.5rem; cursor: pointer; font-size: 0.75rem; transition: 0.2s; z-index: 10;
+    }
+    .change-banner-btn:hover { background: rgba(0,0,0,0.7); border-color: white; }
+    .change-banner-btn.hidden { display: none; }
+
+    .avatar-nickname-row { position: absolute; bottom: -50px; left: 60px; z-index: 20; display: flex; align-items: flex-end; gap: 1rem; }
+    .avatar-wrapper { position: relative; width: 130px; height: 130px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.7); box-shadow: 0 0 30px rgba(123,75,255,0.4), 0 8px 25px rgba(0,0,0,0.5); overflow: hidden; background: rgba(30,20,50,0.95); flex-shrink: 0; }
+    .avatar-wrapper.clickable { cursor: pointer; }
+    .avatar-wrapper.clickable:hover { border-color: #d0b0ff; box-shadow: 0 0 35px rgba(123,75,255,0.7); }
+    .avatar-image { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #5a4b7a; }
+
+    .nickname-block { margin-bottom: 18px; display: flex; align-items: center; gap: 0.6rem; }
+    .nickname { font-size: 1.4rem; font-weight: 700; color: #e4d7ff; }
+    .nickname-input { font-size: 1.4rem; font-weight: 700; color: #e4d7ff; background: rgba(10,8,20,0.7); border: 1px solid rgba(180,150,220,0.5); border-radius: 0.6rem; padding: 0.2rem 0.5rem; font-family: inherit; outline: none; width: 200px; display: none; }
+    .nickname-input:focus { border-color: #b47aff; }
+
+    .rank-badge-inline { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 0.4rem; font-weight: 700; font-size: 0.85rem; }
+    .rank-sss-plus { background: linear-gradient(135deg, #f00, #f44); color: white; animation: glow-red 1.5s infinite alternate; }
+    .rank-sss { background: linear-gradient(135deg, #ff4500, #ff6347); color: white; animation: glow-orange 1.5s infinite alternate; }
+    .rank-ss { background: linear-gradient(135deg, #ff8c00, #ffa500); color: white; }
+    .rank-s { background: linear-gradient(135deg, gold, #ffed4a); color: #1a1a2e; }
+    .rank-a { background: linear-gradient(135deg, #0c0, #0f0); color: white; }
+    .rank-b { background: linear-gradient(135deg, #06c, #08f); color: white; }
+    .rank-c { background: linear-gradient(135deg, #93f, #a5f); color: white; }
+    .rank-d { background: linear-gradient(135deg, #666, #888); color: white; }
+    .rank-f { background: linear-gradient(135deg, #444, #555); color: #999; }
+    @keyframes glow-red { 0% { box-shadow: 0 0 8px rgba(255,0,0,0.4); } 100% { box-shadow: 0 0 20px rgba(255,0,0,0.7); } }
+    @keyframes glow-orange { 0% { box-shadow: 0 0 8px rgba(255,69,0,0.4); } 100% { box-shadow: 0 0 20px rgba(255,69,0,0.7); } }
+
+    .content-below { display: flex; gap: 2rem; padding: 4rem 2rem 1rem; max-width: 1000px; margin: 0 auto; width: 100%; z-index: 5; }
+    .left-column { flex: 1; min-width: 0; }
+
+    .showcase { background: rgba(25,22,44,0.6); border-radius: 0.8rem; border: 1px solid rgba(180,130,255,0.2); overflow: hidden; margin-bottom: 0.8rem; }
+    .showcase-header { background: rgba(30,25,50,0.8); padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(180,130,255,0.15); }
+    .showcase-title { font-size: 0.8rem; font-weight: 600; color: #cbb8f0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .showcase-actions { display: flex; gap: 0.3rem; }
+    .showcase-actions.hidden { display: none; }
+    .showcase-action-btn { background: transparent; border: none; color: #6b5b8c; cursor: pointer; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 0.3rem; transition: 0.2s; }
+    .showcase-action-btn:hover { color: white; background: rgba(180,130,255,0.2); }
+    .showcase-body { padding: 0.8rem; }
+
+    .top-cards-row { display: flex; gap: 0.5rem; position: relative; }
+    .top-card { flex: 1; border-radius: 0.5rem; overflow: hidden; transition: 0.2s; cursor: pointer; min-width: 0; position: relative; aspect-ratio: 2/3; }
+    .top-card:active { cursor: grabbing; }
+    .top-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+    .top-card.gold { border: 2px solid rgba(255,215,0,0.6); order: 0; }
+    .top-card.silver { border: 2px solid rgba(192,192,192,0.5); order: 1; }
+    .top-card.bronze { border: 2px solid rgba(205,127,50,0.5); order: 2; }
+    .top-card.dragging { opacity: 0.4; }
+    .top-card.drag-over { border-color: #b47aff !important; box-shadow: 0 0 20px rgba(123,75,255,0.6); }
+    .top-card-poster { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+    .top-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 0.4rem; background: linear-gradient(transparent, rgba(0,0,0,0.85)); }
+    .top-card-name { font-weight: 600; font-size: 0.65rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-card-rating { font-size: 0.6rem; color: #f0b300; }
+    .top-card-empty { width: 100%; height: 100%; background: rgba(25,22,44,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; color: #5a4b7a; font-size: 0.7rem; position: absolute; top: 0; left: 0; }
+
+    .desc-showcase { padding: 0.5rem; color: #b5a3d4; font-size: 0.85rem; line-height: 1.6; }
+    .desc-showcase img { max-width: 100%; border-radius: 0.5rem; margin: 0.5rem 0; }
+
+    .right-column { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+
+    .chart-container { background: rgba(25,22,44,0.7); border-radius: 1rem; padding: 0.8rem; border: 1px solid rgba(180,130,255,0.25); text-align: center; }
+    .chart-title { font-size: 0.75rem; color: #8b7aaa; margin-bottom: 0.5rem; text-align: center; }
+    .pie-wrapper { display: flex; justify-content: center; position: relative; }
+    .pie-legend { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; justify-content: center; }
+    .legend-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.6rem; color: #b5a3d4; padding: 0.1rem 0.4rem; border-radius: 0.3rem; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .total-badge { font-size: 0.7rem; color: #8b7aaa; margin-top: 0.3rem; }
+
+    .library-btn { width: 100%; background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: 600; font-size: 0.9rem; padding: 0.7rem; border-radius: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(123,75,255,0.3); }
+    .library-btn:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
+
+    .stats-card { background: rgba(25,22,44,0.7); border-radius: 1rem; padding: 1rem 1.2rem; border: 1px solid rgba(180,130,255,0.25); }
+    .stat-item { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid rgba(180,150,220,0.1); }
+    .stat-item:last-child { border-bottom: none; }
+    .stat-label { font-size: 0.8rem; color: #8b7aaa; }
+    .stat-value { font-weight: 700; font-size: 1rem; color: #cbb8f0; }
+    .hours-toggle { cursor: pointer; }
+    .hours-toggle:hover { color: #e4d7ff; }
+
+    .lock-btn { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(180,130,255,0.25); color: #b5a3d4; font-size: 0.8rem; padding: 0.6rem; border-radius: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+    .lock-btn:hover { background: rgba(180,130,255,0.1); border-color: #b47aff; }
+    .lock-btn.locked { color: #ff6b6b; border-color: rgba(255,107,107,0.4); }
+    .lock-btn.unlocked { color: #51cf66; border-color: rgba(81,207,102,0.4); }
+
+    .add-showcase-btn { display: block; width: 100%; margin-top: 0.8rem; background: rgba(180,130,255,0.1); border: 1px dashed rgba(180,130,255,0.3); color: #8b7aaa; padding: 0.6rem; border-radius: 0.6rem; cursor: pointer; font-size: 0.8rem; transition: 0.2s; text-align: center; }
+    .add-showcase-btn:hover { background: rgba(180,130,255,0.2); color: #cbb8f0; border-color: rgba(180,130,255,0.5); }
+    .add-showcase-btn.hidden { display: none; }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+    .modal-box { background: rgba(25,22,44,0.98); border: 1px solid rgba(180,130,255,0.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 500px; width: 90%; box-shadow: 0 20px 40px black; max-height: 80vh; overflow-y: auto; }
+    .modal-title { font-weight: 600; color: #cbb8f0; margin-bottom: 1rem; }
+    .modal-input, .modal-textarea, .modal-select { width: 100%; background: rgba(10,8,20,0.7); border: 1px solid rgba(180,150,220,0.35); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: #e4d7ff; font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
+    .modal-textarea { min-height: 100px; resize: none; overflow: hidden; }
+    .modal-input:focus, .modal-textarea:focus { border-color: #b47aff; }
+    .modal-btns { display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; }
+    .modal-btns-right { display: flex; gap: 0.5rem; }
+    .format-btns { display: flex; gap: 0.2rem; }
+    .format-btn { background: rgba(180,130,255,0.15); border: 1px solid rgba(180,130,255,0.3); color: #b5a3d4; padding: 0.25rem 0.5rem; border-radius: 0.4rem; cursor: pointer; font-size: 0.7rem; font-family: inherit; transition: 0.2s; }
+    .format-btn:hover { background: rgba(180,130,255,0.3); color: white; }
+    .modal-btn { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; transition: 0.2s; border: none; font-family: inherit; }
+    .modal-btn.cancel { background: rgba(255,255,255,0.1); color: #b5a3d4; }
+    .modal-btn.save { background: linear-gradient(135deg, #7b4bff, #b084ff); color: white; }
+    .modal-btn.danger { background: rgba(255,80,80,0.3); color: #ff6b6b; }
+
+    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
+
+    @media (max-width: 750px) {
+      .content-below { flex-direction: column; padding: 3.5rem 1rem 1rem; }
+      .right-column { width: 100%; }
+      .avatar-nickname-row { left: 25px; bottom: -40px; }
+      .avatar-wrapper { width: 100px; height: 100px; }
+      .nickname { font-size: 1.2rem; }
+      .banner-section { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="top-bar">
+      <button class="logo-center" id="goHomeBtn">AniX</button>
+      <div class="profile-avatar-top" id="profileAvatarTop">
+        <img id="topAvatarImg" src="" alt="" style="display:none;">
+        <div class="profile-avatar-placeholder" id="topAvatarPlaceholder"><i class="fas fa-user"></i></div>
+      </div>
+    </div>
+
+    <main class="main-content">
+      <div class="banner-section" id="bannerSection">
+        <div class="banner-placeholder" id="bannerPlaceholder"></div>
+        <img class="banner-image" id="bannerImage" src="" alt="Баннер">
+        <div class="avatar-nickname-row">
+          <div class="avatar-wrapper" id="avatarWrapper">
+            <img class="avatar-image" id="avatarImage" src="" alt="Аватар">
+            <div class="avatar-placeholder" id="avatarPlaceholder"><i class="fas fa-user"></i></div>
+          </div>
+          <div class="nickname-block">
+            <span class="nickname" id="nicknameDisplay">Аниме-фан</span>
+            <input type="text" class="nickname-input" id="nicknameInput" value="Аниме-фан">
+            <span class="rank-badge-inline rank-f" id="rankBadge">F</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-below">
+        <div class="left-column" id="leftColumn"></div>
+        <div class="right-column">
+          <div class="chart-container">
+            <div class="chart-title">Распределение по спискам</div>
+            <div id="chartBars"></div>
+          </div>
+          <div class="stats-card">
+            <div class="stat-item"><span class="stat-label">Серий</span><span class="stat-value" id="totalEpisodes">0</span></div>
+            <div class="stat-item"><span class="stat-label hours-toggle" id="hoursLabel">Часов</span><span class="stat-value hours-toggle" id="totalHours">0</span></div>
+            <div class="stat-item"><span class="stat-label">Ср. оценка</span><span class="stat-value" id="avgScore">—</span></div>
+            <div class="stat-item"><span class="stat-label">10 баллов</span><span class="stat-value" id="topRated">0</span></div>
+          </div>
+          <button class="lock-btn locked" id="lockBtn"><i class="fas fa-lock"></i> <span id="lockBtnText">Редактирование заблокировано</span></button>
+        </div>
+      </div>
+    </main>
+    <footer>© AniX by Кяру</footer>
+  </div>
+
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <div class="modal-title" id="modalTitle">Добавить витрину</div>
+      <select class="modal-select" id="modalType">
+        <option value="top">Топ аниме (3 позиции)</option>
+        <option value="desc">Описание</option>
+      </select>
+      <input type="text" class="modal-input" id="modalShowcaseTitle" placeholder="Название витрины">
+      <div id="modalTopEdit" style="display:none;">
+        <label style="font-size:0.75rem;color:#8b7aaa;">Позиция 1</label>
+        <select class="modal-select" id="topPos1"><option value="">—</option></select>
+        <label style="font-size:0.75rem;color:#8b7aaa;">Позиция 2</label>
+        <select class="modal-select" id="topPos2"><option value="">—</option></select>
+        <label style="font-size:0.75rem;color:#8b7aaa;">Позиция 3</label>
+        <select class="modal-select" id="topPos3"><option value="">—</option></select>
+      </div>
+      <div id="modalDescBlock" style="display:none;">
+        <textarea class="modal-textarea" id="modalDesc" placeholder="Описание..."></textarea>
+      </div>
+      <div class="modal-btns">
+        <div class="format-btns" id="formatBtns" style="display:none;">
+          <button class="format-btn" onclick="insertFormat('<b>','</b>')"><b>B</b></button>
+          <button class="format-btn" onclick="insertFormat('<i>','</i>')"><i>I</i></button>
+          <button class="format-btn" onclick="insertFormat('<u>','</u>')"><u>U</u></button>
+          <button class="format-btn" onclick="insertFormat('<br>','')">↩</button>
+          <button class="format-btn" onclick="insertImage()">🖼</button>
+        </div>
+        <div class="modal-btns-right">
+          <button class="modal-btn danger" id="modalDeleteBtn" style="display:none;">Удалить</button>
+          <button class="modal-btn cancel" onclick="closeModal()">Отмена</button>
+          <button class="modal-btn save" onclick="saveShowcase()">Сохранить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentEditingShowcase = null;
+    let isEditingLocked = true;
+    let showHours = true;
+    let rankedGlobal = [];
+    let draggedCard = null;
+
+    function loadImage(k) { return ''; }
+    function getShowcases() { return JSON.parse(localStorage.getItem('anix_showcases') || '[]'); }
+    function saveShowcases(s) { localStorage.setItem('anix_showcases', JSON.stringify(s)); }
+    function saveProfile(p) { localStorage.setItem('anix_profile', JSON.stringify(p)); }
+    function getProfile() { return JSON.parse(localStorage.getItem('anix_profile') || '{}'); }
+    function getCollection() { return JSON.parse(localStorage.getItem('anix_collection') || '[]'); }
+
+    const listNames = { watching:'Смотрю', watched:'Просмотрено', dropped:'Брошено', planned:'В планах', rewatching:'Пересмотрю' };
+    const listColors = { watching:'#88D498', watched:'#809BCE', dropped:'#F28482', planned:'#957DAD', rewatching:'#F6BD60' };
+
+    function updateEditMode() {
+      const avatar = document.getElementById('avatarWrapper');
+      const nd = document.getElementById('nicknameDisplay');
+      const ni = document.getElementById('nicknameInput');
+      const lock = document.getElementById('lockBtn');
+      const add = document.querySelector('.add-showcase-btn');
+      if (isEditingLocked) {
+        nd.style.display = 'inline'; ni.style.display = 'none';
+        lock.classList.remove('unlocked'); lock.classList.add('locked');
+        lock.innerHTML = '<i class="fas fa-lock"></i> <span>Редактирование заблокировано</span>';
+        document.querySelectorAll('.showcase-actions').forEach(e => e.classList.add('hidden'));
+        if (add) add.classList.add('hidden');
+      } else {
+        nd.style.display = 'none'; ni.style.display = 'inline'; ni.value = nd.textContent;
+        lock.classList.remove('locked'); lock.classList.add('unlocked');
+        lock.innerHTML = '<i class="fas fa-lock-open"></i> <span>Редактирование разблокировано</span>';
+        document.querySelectorAll('.showcase-actions').forEach(e => e.classList.remove('hidden'));
+        if (add) add.classList.remove('hidden');
+      }
+    }
+
+    document.getElementById('lockBtn').addEventListener('click', () => { isEditingLocked = !isEditingLocked; updateEditMode(); });
+    document.getElementById('nicknameInput').addEventListener('input', function() {
+      const p = getProfile(); p.nickname = this.value.trim() || 'Аниме-фан'; saveProfile(p);
+      document.getElementById('nicknameDisplay').textContent = p.nickname;
+    });
+    updateEditMode();
+
+    document.getElementById('modalDesc').addEventListener('input', function() {
+      this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';
+    });
+
+    function insertFormat(open, close) {
+      const ta = document.getElementById('modalDesc');
+      const s = ta.selectionStart, e = ta.selectionEnd;
+      ta.value = ta.value.substring(0,s) + open + ta.value.substring(s,e) + close + ta.value.substring(e);
+      ta.focus(); ta.selectionStart = s + open.length; ta.selectionEnd = e + open.length;
+      ta.dispatchEvent(new Event('input'));
+    }
+
+    function insertImage() {
+      const url = prompt('Введите URL картинки или гифки:');
+      if (url) {
+        const ta = document.getElementById('modalDesc');
+        const s = ta.selectionStart;
+        ta.value = ta.value.substring(0,s) + `<img src="${url}" alt="">` + ta.value.substring(s);
+        ta.focus(); ta.dispatchEvent(new Event('input'));
+      }
+    }
+
+    document.getElementById('modalType').addEventListener('change', function() {
+      const isDesc = this.value === 'desc';
+      document.getElementById('modalDescBlock').style.display = isDesc ? 'block' : 'none';
+      document.getElementById('formatBtns').style.display = isDesc ? 'flex' : 'none';
+      if (isDesc) {
+        const ta = document.getElementById('modalDesc');
+        ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px';
+      }
+    });
+
+    function openAddShowcase() {
+      currentEditingShowcase = 'showcase_' + Date.now();
+      document.getElementById('modalTitle').textContent = 'Добавить витрину';
+      document.getElementById('modalType').value = 'top'; document.getElementById('modalType').disabled = false;
+      document.getElementById('modalShowcaseTitle').value = '';
+      document.getElementById('modalDesc').value = '';
+      document.getElementById('modalDescBlock').style.display = 'none';
+      document.getElementById('formatBtns').style.display = 'none';
+      document.getElementById('modalDeleteBtn').style.display = 'none';
+      document.getElementById('editModal').style.display = 'flex';
+      document.getElementById('modalTopEdit').style.display = 'none';
+    }
+
+    function editShowcase(id) {
+      if (isEditingLocked) return;
+      currentEditingShowcase = id;
+      const sc = getShowcases().find(s => s.id === id) || {};
+      document.getElementById('modalTitle').textContent = 'Редактировать витрину';
+      document.getElementById('modalType').value = sc.type || 'top';
+      document.getElementById('modalType').disabled = false;
+      document.getElementById('modalShowcaseTitle').value = sc.title || '';
+      document.getElementById('modalDesc').value = sc.desc || '';
+      const isDesc = (sc.type || 'top') === 'desc';
+      document.getElementById('modalDescBlock').style.display = isDesc ? 'block' : 'none';
+      document.getElementById('formatBtns').style.display = isDesc ? 'flex' : 'none';
+      document.getElementById('modalDeleteBtn').style.display = 'inline-block';
+      document.getElementById('editModal').style.display = 'flex';
+
+      if ((sc.type || 'top') === 'top') {
+        document.getElementById('modalTopEdit').style.display = 'block';
+        const collection = getCollection();
+        const opts = collection.map(a => `<option value="${a.id}">${a.title} (⭐${a.userRating||'—'})</option>`).join('');
+        ['topPos1','topPos2','topPos3'].forEach(id => {
+          document.getElementById(id).innerHTML = '<option value="">—</option>' + opts;
+        });
+        // Установить текущие
+        if (sc.animeIds) {
+          if (sc.animeIds[0]) document.getElementById('topPos1').value = sc.animeIds[0];
+          if (sc.animeIds[1]) document.getElementById('topPos2').value = sc.animeIds[1];
+          if (sc.animeIds[2]) document.getElementById('topPos3').value = sc.animeIds[2];
+        }
+      } else {
+        document.getElementById('modalTopEdit').style.display = 'none';
+      }
+
+      if (isDesc) {
+        const ta = document.getElementById('modalDesc');
+        ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+      currentEditingShowcase = null;
+    }
+
+    function saveShowcase() {
+      const type = document.getElementById('modalType').value;
+      const title = document.getElementById('modalShowcaseTitle').value.trim() || 'Без названия';
+      const desc = document.getElementById('modalDesc').value.trim();
+      let showcases = getShowcases();
+      const idx = showcases.findIndex(s => s.id === currentEditingShowcase);
+      const data = { id: currentEditingShowcase, type, title };
+      if (type === 'desc') {
+        data.desc = desc;
+      } else if (type === 'top') {
+        data.animeIds = [
+          document.getElementById('topPos1')?.value,
+          document.getElementById('topPos2')?.value,
+          document.getElementById('topPos3')?.value
+        ].filter(Boolean);
+      }
+      if (idx !== -1) {
+        showcases[idx] = { ...showcases[idx], ...data };
+      } else {
+        showcases.push(data);
+      }
+      saveShowcases(showcases);
+      renderShowcases();
+      closeModal();
+      if (type === 'top') {
+        data.animeIds = [
+          document.getElementById('topPos1').value,
+          document.getElementById('topPos2').value,
+          document.getElementById('topPos3').value
+        ].filter(Boolean);
+      }
+    }
+
+    function deleteShowcase() {
+      if (confirm('Удалить витрину?')) {
+        saveShowcases(getShowcases().filter(s => s.id !== currentEditingShowcase));
+        renderShowcases();
+        closeModal();
+      }
+    }
+    document.getElementById('modalDeleteBtn').addEventListener('click', deleteShowcase);
+
+    function moveShowcase(id, dir) {
+      if (isEditingLocked) return;
+      const showcases = getShowcases();
+      const i = showcases.findIndex(s => s.id === id);
+      if (i === -1) return;
+      if (dir === 'up' && i > 0) [showcases[i], showcases[i-1]] = [showcases[i-1], showcases[i]];
+      else if (dir === 'down' && i < showcases.length-1) [showcases[i], showcases[i+1]] = [showcases[i+1], showcases[i]];
+      saveShowcases(showcases);
+      renderShowcases();
+    }
+
+    function deleteShowcaseById(id) {
+      if (isEditingLocked) return;
+      if (confirm('Удалить витрину?')) {
+        saveShowcases(getShowcases().filter(s => s.id !== id));
+        renderShowcases();
+      }
+    }
+
+    function renderShowcases() {
+      const left = document.getElementById('leftColumn');
+      const showcases = getShowcases();
+      const collection = getCollection();
+      rankedGlobal = collection.filter(a => a.userRating).sort((a,b) => parseFloat(b.userRating)-parseFloat(a.userRating)).slice(0,3);
+
+      let html = '';
+      showcases.forEach(sc => {
+        html += `<div class="showcase" data-showcase-id="${sc.id}">
+          <div class="showcase-header">
+            <span class="showcase-title">${sc.title}</span>
+            <div class="showcase-actions${isEditingLocked?' hidden':''}">
+              <button class="showcase-action-btn" data-action="edit" data-id="${sc.id}"><i class="fas fa-pen"></i></button>
+              <button class="showcase-action-btn" data-action="up" data-id="${sc.id}"><i class="fas fa-arrow-up"></i></button>
+              <button class="showcase-action-btn" data-action="down" data-id="${sc.id}"><i class="fas fa-arrow-down"></i></button>
+              <button class="showcase-action-btn" data-action="delete" data-id="${sc.id}"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="showcase-body">`;
+
+        if (sc.type === 'desc') {
+          html += `<div class="desc-showcase">${sc.desc || 'Нет описания'}</div>`;
+        } else {
+          html += `<div class="top-cards-row" data-showcase="${sc.id}">`;
+          // Используем сохранённые animeIds или rankedGlobal
+          const topIds = sc.animeIds || [];
+          let topAnime = topIds.map(id => collection.find(a => a.id == id)).filter(Boolean);
+          // Если недостаточно — добираем из rankedGlobal
+          if (topAnime.length < 3) {
+            const usedIds = topAnime.map(a => a.id);
+            const extra = rankedGlobal.filter(a => !usedIds.includes(a.id));
+            topAnime = [...topAnime, ...extra].slice(0, 3);
+          }
+          while (topAnime.length < 3) topAnime.push(null);
+          
+          ['gold','silver','bronze'].forEach((medal, i) => {
+            const anime = topAnime[i];
+            html += `<div class="top-card ${medal}" data-index="${i}">
+              ${anime ? (anime.poster ? `<img src="${anime.poster}" class="top-card-poster" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">` : '') + `<div class="top-card-empty" style="display:${anime.poster?'none':'flex'};"><i class="fas fa-image" style="font-size:1.5rem;"></i></div>` : '<div class="top-card-empty"><i class="fas fa-image" style="font-size:1.5rem;"></i></div>'}
+              <div class="top-card-overlay" data-anime-id="${anime?.id||''}" style="cursor:pointer;">
+                <div class="top-card-name">${anime?.title||'—'}</div>
+                <div class="top-card-rating">⭐ ${anime?.userRating||'—'}</div>
+              </div>
+            </div>`;
+          });
+          html += `</div>`;
+        }
+        html += `</div></div>`;
+      });
+
+      html += `<button class="add-showcase-btn${isEditingLocked?' hidden':''}" id="addShowcaseBtn"><i class="fas fa-plus"></i> Добавить витрину</button>`;
+      left.innerHTML = html;
+
+      // Кнопка добавления
+      document.getElementById('addShowcaseBtn')?.addEventListener('click', openAddShowcase);
+
+      // Кнопки витрин
+      left.querySelectorAll('.showcase-action-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const action = this.dataset.action;
+          const id = this.dataset.id;
+          if (action === 'edit') editShowcase(id);
+          else if (action === 'up') moveShowcase(id, 'up');
+          else if (action === 'down') moveShowcase(id, 'down');
+          else if (action === 'delete') deleteShowcaseById(id);
+        });
+      });
+
+      // Клик по названию — переход на страницу аниме
+      left.querySelectorAll('.top-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          if (isEditingLocked) {
+            const overlay = this.querySelector('.top-card-overlay');
+            if (overlay && overlay.dataset.animeId) {
+              window.location.href = 'anime.html?id=' + overlay.dataset.animeId;
+            }
+          }
+        });
+      });
+    }
+
+    function renderChart() {
+      const collection = getCollection();
+      const counts = {}; let total = 0;
+      collection.forEach(a => { const list = a.list || 'watching'; counts[list] = (counts[list]||0)+1; total++; });
+      const chartBars = document.getElementById('chartBars');
+      if (total === 0) { chartBars.innerHTML = '<p style="color:#6b5b8c;font-size:0.7rem;text-align:center;">Нет данных</p><div class="total-badge">Всего: 0</div>'; return; }
+
+      const entries = Object.entries(listNames).filter(([key]) => counts[key] > 0);
+      const size = 140, cx = size/2, cy = size/2, r = 55;
+      let angle = -Math.PI / 2;
+      let paths = '';
+      entries.forEach(([key]) => {
+        const slice = (counts[key] / total) * Math.PI * 2;
+        const x1 = cx + r * Math.cos(angle), y1 = cy + r * Math.sin(angle);
+        const x2 = cx + r * Math.cos(angle + slice), y2 = cy + r * Math.sin(angle + slice);
+        paths += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${slice>Math.PI?1:0} 1 ${x2} ${y2} Z" fill="${listColors[key]}" stroke="#1a1a2e" stroke-width="1.5"/>`;
+        angle += slice;
+      });
+
+      const legendHtml = entries.map(([key, name]) =>
+        `<div class="legend-item"><div class="legend-dot" style="background:${listColors[key]};"></div>${name}: ${counts[key]}</div>`
+      ).join('');
+
+      chartBars.innerHTML = `
+        <div class="pie-wrapper"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div>
+        <div class="pie-legend">${legendHtml}</div>
+        <div class="total-badge">Всего: ${total}</div>`;
+    }
+
+    function tryLoadImage(id, basePath) {
+      const formats = ['.gif', '.png', '.jpg', '.jpeg', '.webp'];
+      const img = document.getElementById(id);
+      let tried = 0;
+      function tryNext() {
+        if (tried >= formats.length) { img.style.display = 'none'; return; }
+        img.src = basePath + formats[tried];
+        tried++;
+      }
+      img.onerror = tryNext;
+      img.onload = () => {
+        img.style.display = 'block';
+        if (id === 'avatarImage') document.getElementById('avatarPlaceholder').style.display = 'none';
+        if (id === 'topAvatarImg') document.getElementById('topAvatarPlaceholder').style.display = 'none';
+        if (id === 'bannerImage') document.getElementById('bannerPlaceholder').style.display = 'none';
+      };
+      tryNext();
+    }
+
+    function loadProfile() {
+      const profile = getProfile();
+      const collection = getCollection();
+      
+      // Загрузка из файлов
+      tryLoadImage('avatarImage', 'profile/avatar');
+      tryLoadImage('topAvatarImg', 'profile/avatar');
+      tryLoadImage('bannerImage', 'profile/banner');
+
+      document.getElementById('nicknameDisplay').textContent = profile.nickname || 'Аниме-фан';
+      document.getElementById('nicknameInput').value = profile.nickname || 'Аниме-фан';
+      const eps = collection.filter(a => a.list === 'watched').reduce((s,a) => s + (parseInt(a.episodes)||0), 0);
+      document.getElementById('totalEpisodes').textContent = eps;
+      document.getElementById('totalHours').textContent = Math.round(eps*24/60)||0;
+      const scores = collection.filter(a=>a.userRating).map(a=>parseFloat(a.userRating));
+      document.getElementById('avgScore').textContent = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
+      document.getElementById('topRated').textContent = collection.filter(a=>parseFloat(a.userRating)===10).length;
+      updateRank(collection);
+      renderShowcases();
+      renderChart();
+    }
+
+    function updateRank(c) {
+      const n = c.length; let r='F', cl='rank-f';
+      if(n>=1000){r='SSS+';cl='rank-sss-plus';}else if(n>=750){r='SSS';cl='rank-sss';}else if(n>=500){r='SS';cl='rank-ss';}else if(n>=300){r='S';cl='rank-s';}else if(n>=150){r='A';cl='rank-a';}else if(n>=50){r='B';cl='rank-b';}else if(n>=25){r='C';cl='rank-c';}else if(n>=1){r='D';cl='rank-d';}
+      document.getElementById('rankBadge').textContent = r;
+      document.getElementById('rankBadge').className = 'rank-badge-inline '+cl;
+    }
+
+    document.getElementById('totalHours').addEventListener('click', () => {
+      showHours = !showHours;
+      const eps = parseInt(document.getElementById('totalEpisodes').textContent)||0;
+      const h = Math.round(eps*24/60)||0;
+      document.getElementById('totalHours').textContent = showHours ? h : (h/24).toFixed(1);
+      document.getElementById('hoursLabel').textContent = showHours ? 'Часов' : 'Дней';
+    });
+    document.getElementById('profileAvatarTop').addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+    document.getElementById('goHomeBtn').addEventListener('click', () => window.location.href = 'index.html');
+
+    loadProfile();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>AniX — Добавление аниме</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(145deg, #0e0e1a 0%, #1a1a2e 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #f0e6ff;
+      margin: 0;
+    }
+
+    .app-wrapper {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+    }
+
+    .top-bar {
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .logo-center {
+        background: linear-gradient(135deg, #7b4bff, #b084ff);
+        border: none;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        padding: 0.5rem 1.4rem;
+        border-radius: 2.5rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 12px rgba(123, 75, 255, 0.5);
+        letter-spacing: 0.5px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .logo-center:hover {
+        background: linear-gradient(135deg, #925fff, #c09aff);
+        transform: translateY(-1px);
+    }
+
+    .profile-avatar-top {
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid rgba(180, 130, 255, 0.6);
+        cursor: pointer;
+        overflow: hidden;
+        background: rgba(123, 75, 255, 0.2);
+        transition: 0.25s;
+    }
+
+    .profile-avatar-top:hover {
+        border-color: #b47aff;
+        box-shadow: 0 0 15px rgba(150, 100, 255, 0.5);
+    }
+
+    .profile-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .profile-avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #c9a9ff;
+        font-size: 1.1rem;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1.5rem 2rem;
+      width: 100%;
+      max-width: 850px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .add-card {
+      background: rgba(25, 22, 44, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 2rem;
+      padding: 2rem;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(180, 130, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .top-block {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .cover-wrapper {
+      width: 180px;
+      height: 270px;
+      border-radius: 1rem;
+      border: 1px solid rgba(200,170,255,0.4);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(40,30,60,0.7);
+    }
+
+    .cover-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #7b6b9e;
+      font-size: 0.8rem;
+      text-align: center;
+      gap: 0.4rem;
+    }
+
+    .cover-placeholder i {
+      font-size: 2.5rem;
+      color: #5a4b7a;
+    }
+
+    .right-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      min-width: 0;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .title-input {
+      flex: 1;
+      background: rgba(10, 8, 20, 0.7);
+      border: 1px solid rgba(180, 150, 220, 0.35);
+      border-radius: 0.8rem;
+      padding: 0.65rem 0.9rem;
+      color: #f0e6ff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      outline: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .title-input:focus {
+      border-color: #b47aff;
+      box-shadow: 0 0 12px rgba(150, 90, 255, 0.4);
+    }
+
+    .title-input:read-only {
+      background: rgba(10, 8, 20, 0.4);
+      border-color: rgba(180, 150, 220, 0.15);
+      cursor: default;
+      color: #b5a3d4;
+    }
+
+    .icon-btn {
+      flex-shrink: 0;
+      cursor: pointer;
+      font-size: 1.4rem;
+      color: #6b5b8c;
+      transition: 0.2s;
+      user-select: none;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(123, 75, 255, 0.1);
+    }
+
+    .icon-btn:hover {
+      background: rgba(123, 75, 255, 0.3);
+      color: white;
+    }
+
+    .bookmark-icon.active {
+      color: #f0b300;
+      text-shadow: 0 0 12px rgba(240, 179, 0, 0.6);
+    }
+
+    .lock-icon.locked {
+      color: #ff6b6b;
+      text-shadow: 0 0 12px rgba(255, 107, 107, 0.6);
+    }
+
+    .lock-icon.unlocked {
+      color: #51cf66;
+      text-shadow: 0 0 12px rgba(81, 207, 102, 0.6);
+    }
+
+    .info-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .info-cell {
+      flex: 1 1 calc(33.333% - 0.5rem);
+      min-width: 80px;
+      background: rgba(15, 12, 28, 0.7);
+      border-radius: 0.8rem;
+      padding: 0.5rem 0.7rem;
+      border: 1px solid rgba(160, 140, 210, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .cell-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: #8b7aaa;
+      letter-spacing: 0.4px;
+      font-weight: 600;
+    }
+
+    .cell-input, .cell-select {
+      background: transparent;
+      border: none;
+      color: #e4d7ff;
+      font-weight: 500;
+      font-size: 0.85rem;
+      outline: none;
+      font-family: inherit;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .cell-input:read-only {
+      color: #b5a3d4;
+      cursor: default;
+    }
+
+    .cell-select:disabled {
+      color: #b5a3d4;
+      cursor: default;
+      opacity: 1;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%236b5b8c'/%3E%3C/svg%3E") no-repeat right 0.2rem center;
+    }
+
+    .cell-select {
+      cursor: pointer;
+      appearance: none;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23b47aff'/%3E%3C/svg%3E") no-repeat right 0.2rem center;
+    }
+
+    /* Ползунок теперь справа от обложки */
+    .rating-inline {
+      background: rgba(15, 12, 28, 0.7);
+      border-radius: 1.5rem;
+      padding: 0.6rem 0.9rem;
+      border: 1px solid rgba(160, 140, 210, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-top: 0.2rem;
+    }
+
+    .slider-label {
+      font-size: 0.75rem;
+      color: #b5a3d4;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .rating-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 5px;
+      background: linear-gradient(to right, #7b4bff, #e0b0ff);
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .rating-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #b47aff;
+      border: 2px solid #b47aff;
+    }
+
+    .rating-value {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #d9b3ff;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .description-wrapper {
+      margin-bottom: 1.5rem;
+    }
+
+    .desc-label {
+      font-size: 0.8rem;
+      color: #a494c4;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+
+    .description-textarea {
+      width: 100%;
+      background: rgba(10, 8, 20, 0.7);
+      border: 1px solid rgba(180, 150, 220, 0.35);
+      border-radius: 1rem;
+      padding: 0.9rem 1.1rem;
+      color: #e4d7ff;
+      font-size: 0.95rem;
+      resize: none;
+      overflow: hidden;
+      min-height: 90px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .description-textarea:focus {
+      border-color: #b47aff;
+      box-shadow: 0 0 12px rgba(150, 90, 255, 0.4);
+    }
+
+    .bottom-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .search-input-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: rgba(10, 8, 20, 0.7);
+      border-radius: 2.5rem;
+      border: 1px solid rgba(180, 150, 220, 0.35);
+      padding: 0.25rem;
+      transition: 0.2s;
+    }
+
+    .search-input-wrapper:focus-within {
+      border-color: #b47aff;
+      box-shadow: 0 0 12px rgba(150, 90, 255, 0.4);
+    }
+
+    .search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.7rem 1.1rem;
+      color: #e4d7ff;
+      font-size: 0.9rem;
+      outline: none;
+      font-family: inherit;
+      border-radius: 2.5rem;
+    }
+
+    .search-input::placeholder {
+      color: #5a4b7a;
+      font-size: 0.85rem;
+    }
+
+    .search-btn {
+      background: rgba(180, 130, 255, 0.2);
+      border: none;
+      color: #c9a9ff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-right: 0.25rem;
+      transition: 0.2s;
+      font-size: 1rem;
+    }
+
+    .search-btn:hover {
+      background: rgba(180, 130, 255, 0.5);
+      color: white;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #b37bff, #7d4bdb);
+      border: none;
+      color: white;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 22px rgba(170, 110, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      font-size: 1.4rem;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #c89aff, #9655f0);
+      box-shadow: 0 0 32px #b77eff;
+      transform: scale(1.05);
+    }
+
+    .search-results {
+      margin-top: 0.5rem;
+      max-height: 220px;
+      overflow-y: auto;
+      background: rgba(10, 8, 20, 0.95);
+      border-radius: 1rem;
+      border: 1px solid rgba(180, 150, 220, 0.3);
+      display: none;
+    }
+
+    .search-result-item {
+      padding: 0.7rem 1.1rem;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(180, 150, 220, 0.15);
+      transition: 0.15s;
+      color: #cbb8f0;
+      font-size: 0.9rem;
+    }
+
+    .search-result-item:hover {
+      background: rgba(123, 75, 255, 0.3);
+      color: white;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-spinner {
+      color: #b47aff;
+      font-size: 2.5rem;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      background: rgba(30, 25, 50, 0.95);
+      border: 1px solid rgba(200, 160, 255, 0.6);
+      border-radius: 2rem;
+      padding: 2rem;
+      text-align: center;
+      max-width: 350px;
+      box-shadow: 0 20px 40px black;
+    }
+
+    .modal-icon {
+      font-size: 3.5rem;
+      color: #c49bff;
+      margin-bottom: 1rem;
+    }
+    .duplicate-warning {
+      background: rgba(255, 107, 107, 0.15);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: #ff6b6b;
+      font-size: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.6rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    footer {
+      text-align: left;
+      padding: 0.8rem;
+      color: #5a507a;
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(120, 100, 180, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="top-bar">
+        <button class="logo-center" id="goHomeBtn" title="На главную">AniX</button>
+        <div class="profile-avatar-top" id="profileAvatarTop" title="Профиль">
+            <img id="topAvatarImg" src="" alt="" style="display:block;">
+            <div class="profile-avatar-placeholder" id="topAvatarPlaceholder">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+      <div class="add-card">
+        <div class="top-block">
+          <div class="cover-wrapper" id="coverWrapper">
+            <img id="coverImage" src="" alt="Обложка" style="display: none;">
+            <div class="cover-placeholder" id="coverPlaceholder">
+              <i class="fas fa-image"></i>
+              <span>Обложка</span>
+            </div>
+          </div>
+
+          <div class="right-info">
+            <div class="duplicate-warning" id="duplicateWarning" style="display:none;">
+              <i class="fas fa-exclamation-triangle"></i> Такое аниме уже есть. Режим редактирования
+            </div>
+            <div class="title-row">
+              <input type="text" class="title-input" id="animeTitle" placeholder="Название" readonly>
+              <i class="fas fa-lock icon-btn lock-icon locked" id="lockIcon" title="Разблокировать редактирование"></i>
+              <i class="fas fa-bookmark icon-btn bookmark-icon" id="bookmarkIcon" title="Добавить в закладки"></i>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-cell">
+                <span class="cell-label">Жанр</span>
+                <input type="text" class="cell-input" id="genreInput" placeholder="—" readonly>
+              </div>
+              <div class="info-cell">
+                <span class="cell-label">Серий</span>
+                <input type="text" class="cell-input" id="episodesInput" placeholder="—" readonly>
+              </div>
+              <div class="info-cell">
+                <span class="cell-label">Ср. оценка</span>
+                <input type="text" class="cell-input" id="avgRatingInput" placeholder="—" readonly>
+              </div>
+            </div>
+
+            <div class="info-grid">
+              <div class="info-cell">
+                <span class="cell-label">Дата выхода</span>
+                <input type="text" class="cell-input" id="releaseDateInput" placeholder="дд.мм.гггг" readonly>
+              </div>
+              <div class="info-cell">
+                <span class="cell-label">Статус</span>
+                <select class="cell-select" id="statusSelect" disabled>
+                  <option value="ongoing">Онгоинг</option>
+                  <option value="released">Вышел</option>
+                  <option value="announced">Анонсирован</option>
+                </select>
+              </div>
+              <div class="info-cell">
+                <span class="cell-label">Студия</span>
+                <input type="text" class="cell-input" id="studioInput" placeholder="—" readonly>
+              </div>
+            </div>
+                <!-- Список и тег -->
+            <div class="info-grid">
+                <div class="info-cell">
+                    <span class="cell-label">Список</span>
+                    <select class="cell-select" id="listSelect">
+                    <option value="watching">Смотрю</option>
+                    <option value="watched">Просмотрено</option>
+                    <option value="dropped">Брошено</option>
+                    <option value="planned">В планах</option>
+                    <option value="rewatching">Пересмотрю</option>
+                    </select>
+                </div>
+                <div class="info-cell" style="flex: 2;">
+                    <span class="cell-label">Специальный тег</span>
+                    <select class="cell-select" id="tagSelect">
+                    <option value="">—</option>
+                    <option value="isekai">Исекай</option>
+                    <option value="slice_of_life">Повседневное</option>
+                    <option value="psychology">Психология</option>
+                    <option value="sport">Спорт</option>
+                    <option value="hentai">Хентай</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Ползунок перенесён справа от обложки -->
+            <div class="rating-inline">
+              <span class="slider-label">Моя оценка</span>
+              <input type="range" class="rating-slider" id="ratingSlider" min="0" max="10" value="7" step="0.5">
+              <span class="rating-value" id="ratingDisplay">7</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="description-wrapper">
+          <div class="desc-label">Описание</div>
+          <textarea class="description-textarea" id="descriptionTextarea" placeholder="Краткое описание..."></textarea>
+        </div>
+
+        <div class="bottom-row">
+          <div class="search-input-wrapper">
+            <input type="text" class="search-input" id="searchInput" placeholder="Введите название аниме для поиска...">
+            <button class="search-btn" id="searchBtn" title="Найти через Shikimori">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <button class="submit-btn" id="submitAnimeBtn" title="Отправить">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+
+        <div class="search-results" id="searchResults"></div>
+      </div>
+    </main>
+    <footer>© AniX by Кяру</footer>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <i class="fas fa-circle-notch loading-spinner"></i>
+  </div>
+
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-box">
+      <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+      <div class="modal-text" style="font-weight:bold;font-size:1.4rem;">Аниме добавлено!</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Элементы
+
+      topAvatarImg.src = 'profile/avatar.gif';
+      topAvatarImg.style.display = 'block';
+      topAvatarPlaceholder.style.display = 'none';
+
+        profileAvatarTop.addEventListener('click', () => {
+            window.location.href = 'profile.html';
+        });
+
+      const coverImage = document.getElementById('coverImage');
+      const coverPlaceholder = document.getElementById('coverPlaceholder');
+      const animeTitle = document.getElementById('animeTitle');
+      const genreInput = document.getElementById('genreInput');
+      const episodesInput = document.getElementById('episodesInput');
+      const avgRatingInput = document.getElementById('avgRatingInput');
+      const releaseDateInput = document.getElementById('releaseDateInput');
+      const statusSelect = document.getElementById('statusSelect');
+      const studioInput = document.getElementById('studioInput');
+      const listSelect = document.getElementById('listSelect');
+      const tagSelect = document.getElementById('tagSelect');
+      const descriptionTextarea = document.getElementById('descriptionTextarea');
+      const ratingSlider = document.getElementById('ratingSlider');
+      const ratingDisplay = document.getElementById('ratingDisplay');
+      const bookmarkIcon = document.getElementById('bookmarkIcon');
+      const lockIcon = document.getElementById('lockIcon');
+      const submitBtn = document.getElementById('submitAnimeBtn');
+      const successModal = document.getElementById('successModal');
+      const searchInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById('searchBtn');
+      const searchResults = document.getElementById('searchResults');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+
+      let isBookmarked = false;
+      let isLocked = true; // По умолчанию заблокировано
+
+      // Список полей, которые можно блокировать
+      const lockableInputs = [animeTitle, genreInput, episodesInput, avgRatingInput, releaseDateInput, studioInput];
+      const lockableSelects = [statusSelect];
+
+      // Функция переключения блокировки
+      function toggleLock() {
+        isLocked = !isLocked;
+        
+        // Обновляем иконку
+        if (isLocked) {
+          lockIcon.classList.remove('unlocked');
+          lockIcon.classList.add('locked');
+          lockIcon.classList.remove('fa-lock-open');
+          lockIcon.classList.add('fa-lock');
+          lockIcon.title = 'Разблокировать редактирование';
+        } else {
+          lockIcon.classList.remove('locked');
+          lockIcon.classList.add('unlocked');
+          lockIcon.classList.remove('fa-lock');
+          lockIcon.classList.add('fa-lock-open');
+          lockIcon.title = 'Заблокировать редактирование';
+        }
+        // Блокируем/разблокируем поля ввода
+        lockableInputs.forEach(input => {
+          input.readOnly = isLocked;
+        });
+
+        // Блокируем/разблокируем селекты
+        lockableSelects.forEach(select => {
+          select.disabled = isLocked;
+        });
+
+        listSelect.disabled = false;
+        tagSelect.disabled = false; 
+      }
+
+      // Изначально блокируем поля
+      lockIcon.classList.add('locked');
+      lockIcon.classList.add('fa-lock');
+
+      // Обработчик замка
+      lockIcon.addEventListener('click', toggleLock);
+
+      // Закладка
+      bookmarkIcon.addEventListener('click', function() {
+        isBookmarked = !isBookmarked;
+        bookmarkIcon.classList.toggle('active', isBookmarked);
+      });
+
+      // Ползунок (всегда доступен)
+      ratingSlider.addEventListener('input', function() {
+        ratingDisplay.textContent = this.value;
+      });
+
+      // Автовысота textarea (всегда доступна)
+      function autoResizeTextarea() {
+        descriptionTextarea.style.height = 'auto';
+        descriptionTextarea.style.height = descriptionTextarea.scrollHeight + 'px';
+      }
+      descriptionTextarea.addEventListener('input', autoResizeTextarea);
+
+      function showLoading() {
+        loadingOverlay.style.display = 'flex';
+      }
+
+      function hideLoading() {
+        loadingOverlay.style.display = 'none';
+      }
+
+      // Очистка точек в конце названий студий
+      function cleanStudioName(name) {
+        if (!name) return '';
+        return name.replace(/\.+$/, '').trim();
+      }
+
+      // Конвертация статуса
+      function mapShikimoriStatus(status) {
+        const statusMap = {
+          'released': 'released',
+          'ongoing': 'ongoing',
+          'anons': 'announced'
+        };
+        return statusMap[status] || 'released';
+      }
+
+      // Форматирование даты
+      function formatShikimoriDate(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+          return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+        return dateStr;
+      }
+
+      // Очистка HTML из описания
+      function cleanDescription(html) {
+        if (!html) return '';
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        let text = div.textContent || div.innerText || '';
+        text = text.replace(/\[.*?\]/g, '').replace(/\s+/g, ' ').trim();
+        return text;
+      }
+
+      // Поиск аниме через Shikimori API
+      async function searchShikimori(query) {
+        const searchUrl = `https://shikimori.one/api/animes?search=${encodeURIComponent(query)}&limit=5&order=popularity`;
+        
+        const searchResponse = await fetch(searchUrl, {
+          headers: {
+            'User-Agent': 'AniX-Anime-App/1.0'
+          }
+        });
+
+        if (!searchResponse.ok) {
+          throw new Error('Ошибка запроса к Shikimori API');
+        }
+
+        const animes = await searchResponse.json();
+        console.log('Shikimori ответ:', animes);
+
+        // Получаем полные данные для каждого аниме
+        const detailedAnimes = await Promise.all(
+          animes.map(async (anime) => {
+            try {
+              const detailUrl = `https://shikimori.one/api/animes/${anime.id}`;
+              const detailResponse = await fetch(detailUrl, {
+                headers: {
+                  'User-Agent': 'AniX-Anime-App/1.0'
+                }
+              });
+              
+              if (detailResponse.ok) {
+                return await detailResponse.json();
+              }
+            } catch (err) {
+              console.warn(`Не удалось получить детали для аниме ${anime.id}:`, err);
+            }
+            return anime;
+          })
+        );
+
+        return detailedAnimes.map(anime => {
+          // Жанры
+          let genres = [];
+          if (anime.genres && Array.isArray(anime.genres)) {
+            genres = anime.genres.map(g => {
+              if (typeof g === 'string') return g;
+              return g.russian || g.name || g.english || String(g);
+            });
+          }
+
+          // Студии (очищаем точки в конце)
+          let studios = [];
+          if (anime.studios && Array.isArray(anime.studios)) {
+            studios = anime.studios.map(s => {
+              if (typeof s === 'string') return cleanStudioName(s);
+              return cleanStudioName(s.name || s.russian || String(s));
+            });
+          }
+
+          // Постер
+          let poster = null;
+          if (anime.image) {
+            poster = anime.image.original || anime.image.preview || '';
+            if (poster && !poster.startsWith('http')) {
+              poster = 'https://shikimori.one' + poster;
+            }
+          }
+
+          return {
+            id: anime.id,
+            title: anime.russian || anime.name || 'Без названия',
+            originalName: anime.name,
+            genres: genres,
+            episodes: anime.episodes || anime.episodes_aired || 0,
+            rating: anime.score || '—',
+            status: anime.status || 'released',
+            studios: studios,
+            poster: poster,
+            airedOn: anime.aired_on,
+            description: anime.description_html || anime.description || '',
+            url: `https://shikimori.one${anime.url}`
+          };
+        });
+      }
+
+      // Заполнение полей
+      function fillAnimeData(anime) {
+        // Временно разблокируем для заполнения
+        const wasLocked = isLocked;
+        if (wasLocked) {
+          lockableInputs.forEach(input => input.readOnly = false);
+          lockableSelects.forEach(select => select.disabled = false);
+        }
+
+        // Обложка
+        if (anime.poster) {
+          coverImage.src = anime.poster;
+          coverImage.style.display = 'block';
+          coverPlaceholder.style.display = 'none';
+        }
+
+        // Название
+        animeTitle.value = anime.title || '';
+
+        // Проверка на дубликат
+        const collection = JSON.parse(localStorage.getItem('anix_collection') || '[]');
+        const duplicate = collection.find(a => a.title === anime.title);
+        const warning = document.getElementById('duplicateWarning');
+        if (duplicate) {
+          warning.style.display = 'flex';
+          // Заполняем данные из существующего
+          animeTitle.value = duplicate.title || anime.title;
+          genreInput.value = duplicate.genre || '';
+          episodesInput.value = duplicate.episodes || '';
+          avgRatingInput.value = duplicate.avgRating || '';
+          releaseDateInput.value = duplicate.releaseDate || '';
+          statusSelect.value = duplicate.status || 'released';
+          studioInput.value = duplicate.studio || '';
+          listSelect.value = duplicate.list || 'watching';
+          tagSelect.value = duplicate.tag || '';
+          ratingSlider.value = duplicate.userRating || '7';
+          ratingDisplay.textContent = duplicate.userRating || '7';
+          descriptionTextarea.value = duplicate.description || '';
+          coverImage.src = duplicate.poster || anime.poster;
+          coverImage.style.display = 'block';
+          coverPlaceholder.style.display = 'none';
+          autoResizeTextarea();
+        } else {
+          warning.style.display = 'none';
+        }
+
+        // Жанры
+        genreInput.value = Array.isArray(anime.genres) ? anime.genres.join(', ') : '';
+
+        // Серии
+        episodesInput.value = anime.episodes || '';
+
+        // Оценка
+        avgRatingInput.value = anime.rating || '';
+
+        // Дата
+        releaseDateInput.value = formatShikimoriDate(anime.airedOn);
+
+        // Статус
+        statusSelect.value = mapShikimoriStatus(anime.status);
+
+        // Студия (уже очищена от точек)
+        studioInput.value = Array.isArray(anime.studios) ? anime.studios.join(', ') : '';
+
+        // Описание
+        const cleanDesc = cleanDescription(anime.description);
+        descriptionTextarea.value = cleanDesc;
+        autoResizeTextarea();
+
+        // Возвращаем блокировку если была
+        if (wasLocked) {
+          lockableInputs.forEach(input => input.readOnly = true);
+          lockableSelects.forEach(select => select.disabled = true);
+        }
+
+        // Список и тег (если есть в данных)
+        if (anime.list) listSelect.value = anime.list;
+        if (anime.tag) tagSelect.value = anime.tag;
+        searchResults.style.display = 'none';
+      }
+
+      // Отображение результатов
+      function displaySearchResults(results) {
+        searchResults.innerHTML = '';
+        
+        if (results.length === 0) {
+          searchResults.innerHTML = '<div class="search-result-item" style="color: #8b7aaa;">Ничего не найдено</div>';
+          searchResults.style.display = 'block';
+          return;
+        }
+
+        results.forEach((anime) => {
+          const item = document.createElement('div');
+          item.className = 'search-result-item';
+          
+          const year = anime.airedOn ? ` (${anime.airedOn.split('-')[0]})` : '';
+          const episodes = anime.episodes ? ` — ${anime.episodes} эп.` : '';
+          item.textContent = `${anime.title}${year}${episodes}`;
+          
+          item.addEventListener('click', () => {
+            fillAnimeData(anime);
+            searchInput.value = anime.title;
+          });
+          
+          searchResults.appendChild(item);
+        });
+        
+        searchResults.style.display = 'block';
+      }
+
+      // Обработчик поиска
+      async function handleSearch() {
+        const query = searchInput.value.trim();
+        if (!query) {
+          alert('Введите название аниме для поиска');
+          return;
+        }
+
+        showLoading();
+        searchResults.style.display = 'none';
+
+        try {
+          const results = await searchShikimori(query);
+          displaySearchResults(results);
+        } catch (error) {
+          console.error('Ошибка поиска:', error);
+          alert('Не удалось выполнить поиск. Проверьте соединение с интернетом.');
+        } finally {
+          hideLoading();
+        }
+      }
+
+      // События поиска
+      searchBtn.addEventListener('click', handleSearch);
+      
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSearch();
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!searchResults.contains(e.target) && e.target !== searchInput && e.target !== searchBtn) {
+          searchResults.style.display = 'none';
+        }
+      });
+
+      // Загрузка ссылки из sessionStorage
+      const savedLink = sessionStorage.getItem('anix_anime_link');
+      if (savedLink) {
+        const urlParts = savedLink.split('/');
+        const lastPart = urlParts[urlParts.length - 1] || urlParts[urlParts.length - 2];
+        if (lastPart) {
+          const searchQuery = lastPart.replace(/-/g, ' ').replace(/s\d+/i, '').trim();
+          searchInput.value = searchQuery;
+          handleSearch();
+        }
+        sessionStorage.removeItem('anix_anime_link');
+      }
+
+      // Навигация
+      document.getElementById('goHomeBtn').addEventListener('click', () => window.location.href = 'index.html');
+
+      // Отправка
+      submitBtn.addEventListener('click', function() {
+        const collection = JSON.parse(localStorage.getItem('anix_collection') || '[]');
+        const warning = document.getElementById('duplicateWarning');
+        const isEditing = warning.style.display === 'flex';
+
+        const animeData = {
+          id: Date.now(),
+          title: animeTitle.value || 'Без названия',
+          genre: genreInput.value || '',
+          episodes: episodesInput.value || '0',
+          avgRating: avgRatingInput.value || '—',
+          releaseDate: releaseDateInput.value || '',
+          status: statusSelect.value || 'released',
+          studio: studioInput.value || '',
+          list: listSelect.value,
+          tag: tagSelect.value,
+          userRating: ratingSlider.value || '7',
+          description: descriptionTextarea.value || '',
+          bookmarked: isBookmarked,
+          poster: coverImage.src && coverImage.src.startsWith('http') ? coverImage.src : '',
+          addedAt: new Date().toISOString(),
+        };
+        
+        const exists = collection.findIndex(item => item.title === animeData.title);
+        if (exists !== -1) {
+          collection[exists] = { ...collection[exists], ...animeData, id: collection[exists].id };
+        } else {
+          collection.unshift(animeData);
+        }
+
+        localStorage.setItem('anix_collection', JSON.stringify(collection));
+        
+        // Меняем текст в модалке
+        const modalText = document.querySelector('.modal-text');
+        if (modalText) {
+          modalText.textContent = isEditing ? 'Изменено!' : 'Аниме добавлено!';
+        }
+        
+        successModal.style.display = 'flex';
+        setTimeout(() => {
+          successModal.style.display = 'none';
+          window.location.href = 'animeadd.html';
+        }, 2000);
+      });
+    })();
+
+    function tryLoad(id, base) {
+      const f = ['.gif','.png','.jpg','.jpeg','.webp'];
+      const img = document.getElementById(id);
+      let i = 0;
+      function next() { if (i >= f.length) return; img.src = base + f[i]; i++; }
+      img.onerror = next;
+      next();
+    }
+    tryLoad('topAvatarImg', 'profile/avatar');
+  </script>
+</body>
+</html>

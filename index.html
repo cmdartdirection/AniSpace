@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>AniX — аниме портал</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+      background: #0e0e1a;
+      min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .app-wrapper { 
+      display: flex; flex-direction: column; flex: 1; width: 100%; min-height: 100vh; 
+      position: relative; z-index: 1; 
+    }
+    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
+    .logo-center {
+      background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold;
+      font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s;
+      box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2);
+    }
+    .logo-center:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
+    .profile-avatar-top {
+      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px;
+      border-radius: 50%; border: 2px solid rgba(180,130,255,0.6); cursor: pointer; overflow: hidden;
+      background: rgba(123,75,255,0.2); transition: 0.25s;
+    }
+    .profile-avatar-top:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
+    .profile-avatar-top img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c9a9ff; font-size: 1.1rem; }
+    .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; width: 100%; z-index: 1; }
+    .center-placeholder { text-align: center; }
+    .center-placeholder h2 { font-weight: 400; color: #cbb8f0; margin-bottom: 0.5rem; }
+    .btn-row { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
+    .btn {
+      font-weight: 600; font-size: 1.1rem; padding: 0.9rem 2.5rem; border-radius: 3rem; cursor: pointer;
+      transition: 0.3s; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .btn-outline { background: transparent; border: 2px solid rgba(180,130,255,0.5); color: #c9a9ff; }
+    .btn-outline:hover { border-color: #b47aff; color: white; box-shadow: 0 0 25px rgba(150,100,255,0.4); transform: translateY(-2px); }
+    .btn-filled { background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; box-shadow: 0 4px 12px rgba(123,75,255,0.5); }
+    .btn-filled:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
+    .btn i { font-size: 1.3rem; }
+    .bottom-row { display: flex; gap: 0.5rem; justify-content: center; padding: 0.5rem 0; }
+    .file-btn {
+      background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.3); color: #b5a3d4;
+      font-size: 0.75rem; padding: 0.4rem 1rem; border-radius: 2rem; cursor: pointer; transition: 0.2s;
+      display: flex; align-items: center; gap: 0.3rem; font-family: inherit;
+    }
+    .file-btn:hover { background: rgba(180,130,255,0.25); color: white; border-color: #b47aff; }
+    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="top-bar">
+      <button class="logo-center" id="goHomeBtn">AniX</button>
+      <div class="profile-avatar-top" id="profileAvatarTop">
+        <img id="topAvatarImg" src="" alt="" style="display:block;">
+        <div class="profile-avatar-placeholder" style="display:none;"><i class="fas fa-user"></i></div>
+      </div>
+    </div>
+
+    <main class="main-content">
+      <div class="center-placeholder"><h2>✨ Добро пожаловать в AniX</h2></div>
+      <div class="btn-row">
+        <button class="btn btn-filled" id="libBtn"><i class="fas fa-books"></i> Библиотека</button>
+        <button class="btn btn-outline" id="addAnimeBtn"><i class="fas fa-plus-circle"></i> Добавить</button>
+      </div>
+    </main>
+
+    <div class="bottom-row">
+      <button class="file-btn" id="exportBtn"><i class="fas fa-download"></i> Экспорт</button>
+      <button class="file-btn" id="importBtn"><i class="fas fa-upload"></i> Импорт</button>
+    </div>
+
+    <footer>© AniX by Кяру</footer>
+  </div>
+  <input type="file" id="importFileInput" accept=".json" style="display:none;">
+
+  <script>
+    const goHomeBtn = document.getElementById('goHomeBtn');
+    const profileAvatarTop = document.getElementById('profileAvatarTop');
+    const addAnimeBtn = document.getElementById('addAnimeBtn');
+    const libBtn = document.getElementById('libBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const importBtn = document.getElementById('importBtn');
+    const importFileInput = document.getElementById('importFileInput');
+
+    const getCollection = () => JSON.parse(localStorage.getItem('anix_collection') || '[]');
+
+    exportBtn.onclick = () => {
+      const data = {
+        collection: getCollection().map(a => ({...a, poster: a.poster && a.poster.startsWith('http') ? a.poster : ''})),
+        profile: (p => { delete p.avatar; delete p.banner; return p; })(JSON.parse(localStorage.getItem('anix_profile') || '{}')),
+        showcases: JSON.parse(localStorage.getItem('anix_showcases') || '[]'),
+        folders: JSON.parse(localStorage.getItem('anix_folders') || '[]'),
+        exportedAt: new Date().toISOString()
+      };
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
+      a.download = 'anix_collection.json';
+      a.click();
+    };
+
+    importBtn.onclick = () => importFileInput.click();
+    importFileInput.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const d = JSON.parse(ev.target.result);
+          if (d.collection) localStorage.setItem('anix_collection', JSON.stringify(d.collection));
+          if (d.profile) localStorage.setItem('anix_profile', JSON.stringify(d.profile));
+          if (d.showcases) localStorage.setItem('anix_showcases', JSON.stringify(d.showcases));
+          if (d.folders) localStorage.setItem('anix_folders', JSON.stringify(d.folders));
+          alert('Загружено!'); location.reload();
+        } catch(er) { alert('Ошибка: '+er.message); }
+      };
+      reader.readAsText(file);
+    };
+
+    addAnimeBtn.onclick = () => location.href = 'animeadd.html';
+    libBtn.onclick = () => location.href = 'lib.html';
+    goHomeBtn.onclick = () => scrollTo({top:0, behavior:'smooth'});
+    profileAvatarTop.onclick = () => location.href = 'profile.html';
+
+    function tryLoad(id, base) {
+      const f = ['.gif','.png','.jpg','.jpeg','.webp'];
+      const img = document.getElementById(id);
+      let i = 0;
+      function next() { if (i >= f.length) return; img.src = base + f[i]; i++; }
+      img.onerror = next;
+      next();
+    }
+    tryLoad('topAvatarImg', 'profile/avatar');
+  </script>
+
+  <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+  <script>
+  (function() {
+    const canvas = document.getElementById('ps3Canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Создаём 6 нитей
+    const threads = [];
+    const colors = [
+      'rgba(180,130,255,0.25)',
+      'rgba(200,150,255,0.2)',
+      'rgba(150,100,255,0.22)',
+      'rgba(123,75,255,0.18)',
+      'rgba(180,130,255,0.2)',
+      'rgba(200,150,255,0.15)'
+    ];
+    
+    for (let i = 0; i < 6; i++) {
+      threads.push({
+        points: [],
+        color: colors[i],
+        speed: 0.3 + Math.random() * 0.5,
+        amplitude: 10 + Math.random() * 25,
+        offset: Math.random() * Math.PI * 2,
+        y: canvas.height * 0.6 + (i * canvas.height * 0.06)
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const time = Date.now() * 0.001;
+      
+      threads.forEach(thread => {
+        // Обновляем Y-позицию (медленно двигаем вверх-вниз)
+        thread.y = canvas.height * 0.6 + 
+          (threads.indexOf(thread) * canvas.height * 0.01) + 
+          Math.sin(time * 0.2 + thread.offset) * 20;
+        
+        ctx.beginPath();
+        
+        for (let x = -50; x <= canvas.width + 50; x += 5) {
+          const progress = x / canvas.width;
+          const y = thread.y + 
+            Math.sin(x * 0.01 + time * thread.speed + thread.offset) * thread.amplitude +
+            Math.sin(x * 0.005 + time * 0.7 + thread.offset) * thread.amplitude * 0.5;
+          
+          if (x === -50) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        
+        // Свечение
+        ctx.shadowColor = 'rgba(180,130,255,0.5)';
+        ctx.shadowBlur = 10;
+        ctx.strokeStyle = thread.color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Второй проход для яркости
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = thread.color.replace('0.2', '0.35').replace('0.15', '0.25').replace('0.18', '0.3');
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+      
+      requestAnimationFrame(draw);
+    }
+    
+    draw();
+  })();
+  </script>
+</body>
+</html>
