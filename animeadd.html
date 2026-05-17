@@ -318,7 +318,7 @@
       localStorage.setItem('anix_collection', JSON.stringify(collection));
       document.querySelector('.modal-text').textContent = isEditing ? 'Изменено!' : 'Аниме добавлено!';
       successModal.style.display = 'flex';
-      setTimeout(() => { successModal.style.display = 'none'; location.href = 'index.html'; }, 2000);
+      setTimeout(() => { successModal.style.display = 'none'; location.href = 'animeadd.html'; }, 2000);
     };
 
     function tryLoad(id, base) {
