@@ -300,7 +300,14 @@
 
     function editFolder(id) { openFolderModal(id); }
     function deleteFolder(id) { if (confirm('Удалить?')) { saveFolders(getFolders().filter(f => f.id !== id)); renderFolders(); } }
-    editModal.onclick = e => { if (e.target === editModal) editModal.style.display = 'none'; };
+    let modalMouseDownTarget = null;
+    editModal.onmousedown = e => { modalMouseDownTarget = e.target; };
+    editModal.onmouseup = e => {
+      if (e.target === editModal && modalMouseDownTarget === editModal) {
+        editModal.style.display = 'none';
+        currentEditingFolder = null;
+      }
+    };
 
     modalSaveBtn.onclick = () => {
       const title = modalFolderName.value.trim(); if (!title) return;

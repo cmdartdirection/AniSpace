@@ -3,7 +3,7 @@
 <head>
   <meta name="theme-color" content="#0e0e1a">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniSpace — Профиль</title>
@@ -230,10 +230,16 @@
     }
 
     document.getElementById('lockBtn').onclick = () => { isEditingLocked = !isEditingLocked; updateEditMode(); };
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('editModal').style.display === 'flex') {
+        closeModal();
+      }
+    });
     document.getElementById('nicknameInput').oninput = function() {
       const p = getProfile(); p.nickname = this.value.trim() || 'Аниме-фан'; saveProfile(p);
       document.getElementById('nicknameDisplay').textContent = p.nickname;
     };
+    
     updateEditMode();
 
     document.getElementById('modalDesc').oninput = function() { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; };

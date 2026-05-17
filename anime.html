@@ -201,7 +201,25 @@
         </div>`;
 
       document.getElementById('editBtn').onclick = () => { sessionStorage.setItem('anix_anime_data', JSON.stringify(anime)); location.href = 'animeadd.html'; };
-      document.getElementById('delBtn').onclick = () => { if (confirm('Удалить?')) { const c = getCol().filter(a => a.id != anime.id); localStorage.setItem('anix_collection', JSON.stringify(c)); location.href = 'lib.html'; } };
+      document.getElementById('delBtn').onclick = () => {
+        if (confirm('Удалить?')) {
+          const c = getCol().filter(a => a.id != anime.id);
+          localStorage.setItem('anix_collection', JSON.stringify(c));
+          
+          // Очищаем удалённое аниме из всех папок
+          const folders = JSON.parse(localStorage.getItem('anix_folders') || '[]');
+          let changed = false;
+          folders.forEach(f => {
+            if (f.animeIds && f.animeIds.includes(anime.id)) {
+              f.animeIds = f.animeIds.filter(id => id != anime.id);
+              changed = true;
+            }
+          });
+          if (changed) localStorage.setItem('anix_folders', JSON.stringify(folders));
+          
+          location.href = 'lib.html';
+        }
+      };
       document.getElementById('watchBtn').onclick = () => { window.open(anime.url || `https://www.google.com/search?q=${encodeURIComponent(anime.title||'')}+смотреть+онлайн`, '_blank'); };
 
       document.getElementById('bmBtn').onclick = () => {
