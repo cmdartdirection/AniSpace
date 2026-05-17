@@ -2,413 +2,226 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniSpace — Просмотр аниме</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
       background: linear-gradient(145deg, #0e0e1a 0%, #1a1a2e 100%);
       min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0;
     }
-
-    .app-wrapper { display: flex; flex-direction: column; flex: 1; width: 100%; min-height: 100vh; }
-
-    .top-bar {
-      padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative;
+    .app { display: flex; flex-direction: column; flex: 1; width: 100%; }
+    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
+    .logo {
+      background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold;
+      font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s;
+      box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2);
     }
-
-    .logo-center {
-      background: linear-gradient(135deg, #7b4bff, #b084ff);
-      border: none; color: white; font-weight: bold; font-size: 1.2rem;
-      padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer;
-      transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(123,75,255,0.5);
-      letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.2);
+    .logo:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
+    .ava {
+      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px;
+      border-radius: 50%; border: 2px solid rgba(180,130,255,0.6); cursor: pointer; overflow: hidden;
+      background: rgba(123,75,255,0.2); transition: 0.25s;
     }
-    .logo-center:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
-
-    .profile-avatar-top {
-      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);
-      width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.6);
-      cursor: pointer; overflow: hidden; background: rgba(123,75,255,0.2); transition: 0.25s;
-    }
-    .profile-avatar-top:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
-    .profile-avatar-top img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .profile-avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c9a9ff; font-size: 1.1rem; }
-
+    .ava:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
+    .ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .back-btn {
-      position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%);
-      width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.4);
-      cursor: pointer; background: rgba(123,75,255,0.15); color: #c9a9ff; font-size: 1.1rem;
-      display: flex; align-items: center; justify-content: center; transition: 0.25s;
+      position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px;
+      border-radius: 50%; border: 2px solid rgba(180,130,255,0.4); cursor: pointer; background: rgba(123,75,255,0.15);
+      color: #c9a9ff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: 0.25s;
     }
-
-    .btn.bm-active {
-      background: rgba(240,179,0,0.2);
-      border-color: rgba(240,179,0,0.5);
-      color: #f0b300;
-    }
-
     .back-btn:hover { border-color: #b47aff; color: white; background: rgba(123,75,255,0.3); }
-
-    .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1.5rem 2rem; width: 100%; max-width: 800px; margin: 0 auto; }
-
-    .anime-card {
-      background: rgba(25,22,44,0.8); backdrop-filter: blur(20px); border-radius: 2rem;
-      padding: 2rem; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(180,130,255,0.25);
-      border: 1px solid rgba(255,255,255,0.1);
+    .main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; }
+    .card {
+      background: rgba(25,22,44,0.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 2rem; width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(180,130,255,0.25); border: 1px solid rgba(255,255,255,0.1);
     }
-
-    .top-block { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
-
-    .cover-column {
-      flex-shrink: 0; display: flex; flex-direction: column; gap: 0.6rem;
-      align-items: center; width: 180px;
+    .top-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .cover-col { flex-shrink: 0; display: flex; flex-direction: column; gap: 0.6rem; align-items: center; width: 180px; }
+    .cover { width: 180px; height: 255px; border-radius: 1rem; border: 1px solid rgba(200,170,255,0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .cover img { width: 100%; height: 100%; object-fit: cover; }
+    .list-badge { font-size: 0.7rem; font-weight: 600; padding: 0.35rem 0.7rem; border-radius: 0.6rem; text-align: center; width: 100%; }
+    .l-watching { background: rgba(136,212,152,0.2); color: #88D498; border: 1px solid rgba(136,212,152,0.4); }
+    .l-watched { background: rgba(128,155,206,0.2); color: #809BCE; border: 1px solid rgba(128,155,206,0.4); }
+    .l-dropped { background: rgba(242,132,130,0.2); color: #F28482; border: 1px solid rgba(242,132,130,0.4); }
+    .l-planned { background: rgba(149,125,173,0.2); color: #957DAD; border: 1px solid rgba(149,125,173,0.4); }
+    .l-rewatching { background: rgba(246,189,96,0.2); color: #F6BD60; border: 1px solid rgba(246,189,96,0.4); }
+    .info-col { flex: 1; display: flex; flex-direction: column; gap: 0.8rem; }
+    .title { font-size: 1.4rem; font-weight: 700; color: #e4d7ff; }
+    .subtitle { font-size: 0.9rem; color: #8b7aaa; }
+    .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.7rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
+    .b-rating { background: rgba(240,179,0,0.15); color: #f0b300; }
+    .b-tag { background: rgba(180,130,255,0.15); color: #b47aff; }
+    .b-ongoing { background: rgba(81,207,102,0.15); color: #51cf66; }
+    .b-released { background: rgba(128,155,206,0.15); color: #809BCE; }
+    .b-announced { background: rgba(246,189,96,0.15); color: #F6BD60; }
+    .grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .cell { flex: 1 1 calc(50% - 0.5rem); min-width: 100px; background: rgba(15,12,28,0.7); border-radius: 0.8rem; padding: 0.6rem 0.8rem; border: 1px solid rgba(160,140,210,0.3); }
+    .cell-l { font-size: 0.65rem; text-transform: uppercase; color: #8b7aaa; letter-spacing: 0.4px; font-weight: 600; margin-bottom: 0.2rem; }
+    .cell-v { font-weight: 600; font-size: 0.9rem; color: #e4d7ff; }
+    .desc { margin-top: 1rem; }
+    .desc-t { font-size: 0.85rem; font-weight: 600; color: #a494c4; margin-bottom: 0.5rem; text-transform: uppercase; }
+    .desc-c { font-size: 0.9rem; color: #b5a3d4; line-height: 1.6; }
+    .actions { display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: space-between; }
+    .actions-l { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .actions-r { display: flex; gap: 0.5rem; }
+    .btn {
+      background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.3); color: #c9a9ff;
+      font-size: 0.8rem; padding: 0.5rem 1.2rem; border-radius: 2rem; cursor: pointer; transition: 0.2s;
+      display: flex; align-items: center; gap: 0.4rem; font-family: inherit;
     }
-
-    .cover-wrapper {
-      width: 180px; height: 255px; border-radius: 1rem;
-      border: 1px solid rgba(200,170,255,0.4); overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .cover-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-
-    .list-indicator {
-      font-size: 0.7rem; font-weight: 600; padding: 0.35rem 0.7rem; border-radius: 0.6rem;
-      text-align: center; white-space: nowrap; width: 100%;
-    }
-    .list-watching { background: rgba(136,212,152,0.2); color: #88D498; border: 1px solid rgba(136,212,152,0.4); }
-    .list-watched { background: rgba(128,155,206,0.2); color: #809BCE; border: 1px solid rgba(128,155,206,0.4); }
-    .list-dropped { background: rgba(242,132,130,0.2); color: #F28482; border: 1px solid rgba(242,132,130,0.4); }
-    .list-planned { background: rgba(149,125,173,0.2); color: #957DAD; border: 1px solid rgba(149,125,173,0.4); }
-    .list-rewatching { background: rgba(246,189,96,0.2); color: #F6BD60; border: 1px solid rgba(246,189,96,0.4); }
-
-    .info-column { flex: 1; display: flex; flex-direction: column; gap: 0.8rem; }
-
-    .anime-title { font-size: 1.4rem; font-weight: 700; color: #e4d7ff; line-height: 1.3; }
-    .anime-subtitle { font-size: 0.9rem; color: #8b7aaa; font-weight: 400; }
-
-    .badges-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-    .rating-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(240,179,0,0.15); color: #f0b300; padding: 0.3rem 0.7rem; border-radius: 1rem; font-weight: 700; font-size: 0.9rem; }
-    .tag-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(180,130,255,0.15); color: #b47aff; padding: 0.3rem 0.7rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
-    .status-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.7rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
-    .status-ongoing { background: rgba(81,207,102,0.15); color: #51cf66; }
-    .status-released { background: rgba(128,155,206,0.15); color: #809BCE; }
-    .status-announced { background: rgba(246,189,96,0.15); color: #F6BD60; }
-
-    .info-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .info-cell { flex: 1 1 calc(50% - 0.5rem); min-width: 100px; background: rgba(15,12,28,0.7); border-radius: 0.8rem; padding: 0.6rem 0.8rem; border: 1px solid rgba(160,140,210,0.3); }
-    .cell-label { font-size: 0.65rem; text-transform: uppercase; color: #8b7aaa; letter-spacing: 0.4px; font-weight: 600; margin-bottom: 0.2rem; }
-    .cell-value { font-weight: 600; font-size: 0.9rem; color: #e4d7ff; }
-
-    .description-block { margin-top: 1rem; }
-    .desc-title { font-size: 0.85rem; font-weight: 600; color: #a494c4; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    .desc-text { font-size: 0.9rem; color: #b5a3d4; line-height: 1.6; }
-
-    .actions-row { display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: space-between; }
-    .actions-left { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .actions-right { display: flex; gap: 0.5rem; }
-
-    .action-btn {
-      background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.3);
-      color: #c9a9ff; font-size: 0.8rem; padding: 0.5rem 1.2rem; border-radius: 2rem;
-      cursor: pointer; transition: 0.2s; font-family: inherit; display: flex; align-items: center; gap: 0.4rem;
-    }
-    .action-btn:hover { background: rgba(180,130,255,0.25); border-color: #b47aff; color: white; }
-    .action-btn.danger { border-color: rgba(255,107,107,0.4); color: #ff6b6b; }
-    .action-btn.danger:hover { background: rgba(255,107,107,0.2); border-color: #ff6b6b; }
-    .action-btn.watch { background: rgba(81,207,102,0.15); border-color: rgba(81,207,102,0.4); color: #51cf66; }
-    .action-btn.watch:hover { background: rgba(81,207,102,0.3); border-color: #51cf66; color: white; }
-    .action-btn.folder { background: rgba(246,189,96,0.1); border-color: rgba(246,189,96,0.3); color: #F6BD60; }
-    .action-btn.folder:hover { background: rgba(246,189,96,0.2); border-color: #F6BD60; color: white; }
-
-    .not-found { text-align: center; color: #8b7aaa; padding: 3rem; font-size: 1rem; }
-
-    /* Модалка */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
-    .modal-box { background: rgba(25,22,44,0.98); border: 1px solid rgba(180,130,255,0.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 400px; width: 90%; box-shadow: 0 20px 40px black; }
+    .btn:hover { background: rgba(180,130,255,0.25); border-color: #b47aff; color: white; }
+    .btn-red { border-color: rgba(255,107,107,0.4); color: #ff6b6b; }
+    .btn-red:hover { background: rgba(255,107,107,0.2); border-color: #ff6b6b; }
+    .btn-green { background: rgba(81,207,102,0.15); border-color: rgba(81,207,102,0.4); color: #51cf66; }
+    .btn-green:hover { background: rgba(81,207,102,0.3); border-color: #51cf66; color: white; }
+    .btn-gold { background: rgba(246,189,96,0.1); border-color: rgba(246,189,96,0.3); color: #F6BD60; }
+    .btn-gold:hover { background: rgba(246,189,96,0.2); border-color: #F6BD60; color: white; }
+    .btn-bm { background: rgba(240,179,0,0.2); border-color: rgba(240,179,0,0.5); color: #f0b300; }
+    .empty { text-align: center; color: #8b7aaa; padding: 3rem; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+    .modal-box { background: rgba(25,22,44,0.98); border: 1px solid rgba(180,130,255,0.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 400px; width: 90%; }
     .modal-title { font-weight: 600; color: #cbb8f0; margin-bottom: 1rem; }
-    .modal-btns { display: flex; gap: 0.5rem; justify-content: flex-end; }
-    .modal-btn { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; transition: 0.2s; border: none; font-family: inherit; }
-    .modal-btn.cancel { background: rgba(255,255,255,0.1); color: #b5a3d4; }
-
-    .folder-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.5rem 0.8rem; border-radius: 0.5rem; cursor: pointer; margin-bottom: 0.3rem;
-      background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.2);
-      transition: 0.2s;
-    }
-    .folder-item:hover { background: rgba(180,130,255,0.2); border-color: rgba(180,130,255,0.4); }
-    .folder-item.in-folder { background: rgba(81,207,102,0.15); border-color: rgba(81,207,102,0.3); }
-
-    .action-btn.folder.bm-active {
-      background: rgba(240,179,0,0.25);
-      border-color: rgba(240,179,0,0.6);
-      color: #f0b300;
-    }
-
+    .modal-cancel { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; border: none; background: rgba(255,255,255,0.1); color: #b5a3d4; font-family: inherit; }
+    .folder-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.8rem; border-radius: 0.5rem; cursor: pointer; margin-bottom: 0.3rem; background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.2); }
+    .folder-item:hover { background: rgba(180,130,255,0.2); }
+    .folder-item.in { background: rgba(81,207,102,0.15); border-color: rgba(81,207,102,0.3); }
     footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
-
     @media (max-width: 600px) {
-      .top-block { flex-direction: column; align-items: center; }
-      .cover-wrapper { width: 140px; height: 200px; }
-      .cover-column { width: 140px; }
-      .actions-row { flex-direction: column; }
-      .actions-right { justify-content: flex-end; }
+      .top-row { flex-direction: column; align-items: center; }
+      .cover { width: 140px; height: 200px; }
+      .cover-col { width: 140px; }
+      .actions { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-  <div class="app-wrapper">
+  <div class="app">
     <div class="top-bar">
-      <div class="back-btn" id="backBtn" title="Назад"><i class="fas fa-arrow-left"></i></div>
-      <button class="logo-center" id="goHomeBtn" title="На главную">AniSpace</button>
-      <div class="profile-avatar-top" id="profileAvatarTop" title="Профиль">
+      <div class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></div>
+      <button class="logo" id="goHomeBtn">AniSpace</button>
+      <div class="ava" id="profileAvatarTop">
         <img id="topAvatarImg" src="" alt="" style="display:block;">
-        <div class="profile-avatar-placeholder" id="topAvatarPlaceholder"><i class="fas fa-user"></i></div>
       </div>
     </div>
-
-    <main class="main-content" id="mainContent"></main>
+    <main class="main" id="mainContent"></main>
     <footer>© AniSpace by cmd</footer>
   </div>
 
-  <!-- Модалка выбора папки -->
-  <div class="modal-overlay" id="folderModal">
+  <div class="modal" id="folderModal">
     <div class="modal-box">
       <div class="modal-title">Выберите папку</div>
-      <div id="folderList" style="display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem;"></div>
-      <div class="modal-btns">
-        <button class="modal-btn cancel" onclick="document.getElementById('folderModal').style.display='none'">Отмена</button>
-      </div>
+      <div id="folderList" style="display:flex;flex-direction:column;gap:0.3rem;margin-bottom:1rem;"></div>
+      <button class="modal-cancel" onclick="document.getElementById('folderModal').style.display='none'">Отмена</button>
     </div>
   </div>
 
   <script>
-    (function() {
-      const mainContent = document.getElementById('mainContent');
-      const goHomeBtn = document.getElementById('goHomeBtn');
-      const backBtn = document.getElementById('backBtn');
-      const profileAvatarTop = document.getElementById('profileAvatarTop');
+    const mainContent = document.getElementById('mainContent');
+    const folderModal = document.getElementById('folderModal');
+    const folderList = document.getElementById('folderList');
+    const params = new URLSearchParams(location.search);
+    const animeId = params.get('id');
 
-      topAvatarImg.src = 'profile/avatar.png';
-      topAvatarImg.style.display = 'block';
-      topAvatarPlaceholder.style.display = 'none';
-      
-      const folderModal = document.getElementById('folderModal');
-      const folderList = document.getElementById('folderList');
+    const lists = { watching:'Смотрю', watched:'Просмотрено', dropped:'Брошено', planned:'В планах', rewatching:'Пересмотрю' };
+    const listC = { watching:'l-watching', watched:'l-watched', dropped:'l-dropped', planned:'l-planned', rewatching:'l-rewatching' };
+    const statuses = { ongoing:'Онгоинг', released:'Вышел', announced:'Анонсирован' };
+    const statusC = { ongoing:'b-ongoing', released:'b-released', announced:'b-announced' };
+    const tags = { isekai:'Исекай', slice_of_life:'Повседневное', psychology:'Психология', sport:'Спорт', romance:'Романтика', action:'Экшен', comedy:'Комедия', drama:'Драма', fantasy:'Фэнтези', horror:'Ужасы', mecha:'Меха', music:'Музыка', mystery:'Детектив', sci_fi:'Фантастика', thriller:'Триллер', adventure:'Приключения', historical:'Историческое', military:'Военное', school:'Школа', supernatural:'Сверхъестественное', hentai:'Хентай' };
 
-      document.getElementById('topAvatarImg').src = 'profile/avatar.gif';
-      document.getElementById('topAvatarImg').style.display = 'block';
+    const getCol = () => JSON.parse(localStorage.getItem('anix_collection') || '[]');
 
-      const params = new URLSearchParams(window.location.search);
-      const animeId = params.get('id');
+    function render(anime) {
+      if (!anime.id) anime.id = Date.now();
+      const tag = anime.tag ? (tags[anime.tag] || anime.tag) : '';
 
-      const listNames = { watching:'Смотрю', watched:'Просмотрено', dropped:'Брошено', planned:'В планах', rewatching:'Пересмотрю' };
-      const listClasses = { watching:'list-watching', watched:'list-watched', dropped:'list-dropped', planned:'list-planned', rewatching:'list-rewatching' };
-      const statusNames = { ongoing:'Онгоинг', released:'Вышел', announced:'Анонсирован' };
-      const statusClasses = { ongoing:'status-ongoing', released:'status-released', announced:'status-announced' };
-      const tagNames = {
-        isekai:'Исекай', slice_of_life:'Повседневное', psychology:'Психология', sport:'Спорт',
-        romance:'Романтика', action:'Экшен', comedy:'Комедия', drama:'Драма', fantasy:'Фэнтези',
-        horror:'Ужасы', mecha:'Меха', music:'Музыка', mystery:'Детектив', sci_fi:'Фантастика',
-        thriller:'Триллер', adventure:'Приключения', historical:'Историческое', military:'Военное',
-        school:'Школа', supernatural:'Сверхъестественное', hentai: 'Хентай'
-      };
-
-      function getCollection() { return JSON.parse(localStorage.getItem('anix_collection') || '[]'); }
-      function saveCollection(c) { localStorage.setItem('anix_collection', JSON.stringify(c)); }
-
-      let currentAnime = null;
-
-      function renderAnime(anime) {
-        currentAnime = anime;
-        if (!anime.id) anime.id = Date.now();
-
-        const listName = listNames[anime.list] || 'Смотрю';
-        const listClass = listClasses[anime.list] || 'list-watching';
-        const statusName = statusNames[anime.status] || 'Вышел';
-        const statusClass = statusClasses[anime.status] || 'status-released';
-        const tagDisplay = anime.tag ? (tagNames[anime.tag] || anime.tag) : '';
-
-        mainContent.innerHTML = `
-          <div class="anime-card">
-            <div class="top-block">
-              <div class="cover-column">
-                <div class="cover-wrapper">
-                  ${anime.poster ? `<img src="${anime.poster}" alt="Обложка">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#5a4b7a;"><i class="fas fa-image" style="font-size:3rem;"></i></div>'}
-                </div>
-                <span class="list-indicator ${listClass}">${listName}</span>
-              </div>
-              <div class="info-column">
-                <div>
-                  <div class="anime-title">${anime.title || 'Без названия'}</div>
-                  ${anime.originalName ? `<div class="anime-subtitle">${anime.originalName}</div>` : ''}
-                </div>
-
-                <div class="badges-row">
-                  <span class="rating-badge"><i class="fas fa-star"></i> ${anime.userRating || anime.avgRating || '—'}</span>
-                  <span class="status-badge ${statusClass}">${statusName}</span>
-                  ${tagDisplay ? `<span class="tag-badge"><i class="fas fa-tag"></i> ${tagDisplay}</span>` : ''}
-                </div>
-
-                <div class="info-grid">
-                  <div class="info-cell">
-                    <div class="cell-label">Ср. оценка</div>
-                    <div class="cell-value">${anime.avgRating || '—'}</div>
-                  </div>
-                  <div class="info-cell">
-                    <div class="cell-label">Серий</div>
-                    <div class="cell-value">${anime.episodes || '—'}</div>
-                  </div>
-                  <div class="info-cell">
-                    <div class="cell-label">Студия</div>
-                    <div class="cell-value">${anime.studio || '—'}</div>
-                  </div>
-                  <div class="info-cell">
-                    <div class="cell-label">Дата выхода</div>
-                    <div class="cell-value">${anime.releaseDate || '—'}</div>
-                  </div>
-                  <div class="info-cell">
-                    <div class="cell-label">Жанр</div>
-                    <div class="cell-value">${anime.genre || '—'}</div>
-                  </div>
-                </div>
-              </div>
+      mainContent.innerHTML = `
+        <div class="card">
+          <div class="top-row">
+            <div class="cover-col">
+              <div class="cover">${anime.poster ? `<img src="${anime.poster}" alt="">` : '<div style="color:#5a4b7a;font-size:3rem;"><i class="fas fa-image"></i></div>'}</div>
+              <span class="list-badge ${listC[anime.list] || 'l-watching'}">${lists[anime.list] || 'Смотрю'}</span>
             </div>
-
-            <div class="description-block">
-              <div class="desc-title">Описание</div>
-              <div class="desc-text">${anime.description || 'Описание отсутствует'}</div>
-            </div>
-
-            <div class="actions-row">
-              <div class="actions-left">
-                <button class="action-btn ${anime.bookmarked ? 'folder' : ''}" id="bmBtn"><i class="fas fa-bookmark"></i> ${anime.bookmarked ? '' : ''}</button>
-                <button class="action-btn" id="editAnimeBtn"><i class="fas fa-pen"></i> Редактировать</button>
-                <button class="action-btn folder" id="addToFolderBtn"><i class="fas fa-folder-plus"></i> В папку</button>
-                <button class="action-btn danger" id="deleteAnimeBtn"><i class="fas fa-trash"></i> </button>
+            <div class="info-col">
+              <div>
+                <div class="title">${anime.title || 'Без названия'}</div>
+                ${anime.originalName ? `<div class="subtitle">${anime.originalName}</div>` : ''}
               </div>
-              <div class="actions-right">
-                <button class="action-btn watch" id="watchBtn"><i class="fas fa-play"></i> Смотреть</button>
+              <div class="badges">
+                <span class="badge b-rating"><i class="fas fa-star"></i> ${anime.userRating || anime.avgRating || '—'}</span>
+                <span class="badge ${statusC[anime.status] || 'b-released'}">${statuses[anime.status] || 'Вышел'}</span>
+                ${tag ? `<span class="badge b-tag"><i class="fas fa-tag"></i> ${tag}</span>` : ''}
+              </div>
+              <div class="grid">
+                <div class="cell"><div class="cell-l">Ср. оценка</div><div class="cell-v">${anime.avgRating || '—'}</div></div>
+                <div class="cell"><div class="cell-l">Серий</div><div class="cell-v">${anime.episodes || '—'}</div></div>
+                <div class="cell"><div class="cell-l">Студия</div><div class="cell-v">${anime.studio || '—'}</div></div>
+                <div class="cell"><div class="cell-l">Дата выхода</div><div class="cell-v">${anime.releaseDate || '—'}</div></div>
+                <div class="cell"><div class="cell-l">Жанр</div><div class="cell-v">${anime.genre || '—'}</div></div>
               </div>
             </div>
           </div>
-        `;
+          <div class="desc"><div class="desc-t">Описание</div><div class="desc-c">${anime.description || 'Описание отсутствует'}</div></div>
+          <div class="actions">
+            <div class="actions-l">
+              <button class="btn ${anime.bookmarked ? 'btn-bm' : ''}" id="bmBtn"><i class="fas fa-bookmark"></i></button>
+              <button class="btn" id="editBtn"><i class="fas fa-pen"></i> Редактировать</button>
+              <button class="btn btn-gold" id="folderBtn"><i class="fas fa-folder-plus"></i> В папку</button>
+              <button class="btn btn-red" id="delBtn"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="actions-r">
+              <button class="btn btn-green" id="watchBtn"><i class="fas fa-play"></i> Смотреть</button>
+            </div>
+          </div>
+        </div>`;
 
-        // Редактировать
-        document.getElementById('editAnimeBtn').addEventListener('click', () => {
-          sessionStorage.setItem('anix_anime_data', JSON.stringify(anime));
-          window.location.href = 'animeadd.html';
+      document.getElementById('editBtn').onclick = () => { sessionStorage.setItem('anix_anime_data', JSON.stringify(anime)); location.href = 'animeadd.html'; };
+      document.getElementById('delBtn').onclick = () => { if (confirm('Удалить?')) { const c = getCol().filter(a => a.id != anime.id); localStorage.setItem('anix_collection', JSON.stringify(c)); location.href = 'lib.html'; } };
+      document.getElementById('watchBtn').onclick = () => { window.open(anime.url || `https://www.google.com/search?q=${encodeURIComponent(anime.title||'')}+смотреть+онлайн`, '_blank'); };
+
+      document.getElementById('bmBtn').onclick = () => {
+        const col = getCol();
+        const idx = col.findIndex(a => a.id == anime.id);
+        if (idx !== -1) {
+          col[idx].bookmarked = !col[idx].bookmarked;
+          localStorage.setItem('anix_collection', JSON.stringify(col));
+          render(col[idx]);
+        }
+      };
+
+      document.getElementById('folderBtn').onclick = () => {
+        const folders = JSON.parse(localStorage.getItem('anix_folders') || '[]');
+        if (!folders.length) return alert('Нет папок.');
+        folderList.innerHTML = folders.map((f, i) => {
+          const inF = (f.animeIds || []).includes(anime.id);
+          return `<div class="folder-item ${inF ? 'in' : ''}" data-i="${i}"><span>${f.title} (${(f.animeIds||[]).length})</span><span style="font-size:0.7rem;color:${inF?'#51cf66':'#8b7aaa'};">${inF ? '✓' : '+'}</span></div>`;
+        }).join('');
+        folderList.querySelectorAll('.folder-item').forEach(el => el.onclick = () => {
+          const i = +el.dataset.i;
+          if (!folders[i].animeIds) folders[i].animeIds = [];
+          folders[i].animeIds.includes(anime.id) ? folders[i].animeIds = folders[i].animeIds.filter(id => id !== anime.id) : folders[i].animeIds.push(anime.id);
+          localStorage.setItem('anix_folders', JSON.stringify(folders));
+          folderModal.style.display = 'none';
+          render(anime);
         });
+        folderModal.style.display = 'flex';
+      };
+    }
 
-        // В папку
-        document.getElementById('addToFolderBtn').addEventListener('click', () => {
-          const folders = JSON.parse(localStorage.getItem('anix_folders') || '[]');
-          
-          if (folders.length === 0) {
-            alert('Нет папок. Создайте папку в библиотеке.');
-            return;
-          }
-          
-          folderList.innerHTML = folders.map((f, i) => {
-            const inFolder = (f.animeIds || []).includes(anime.id);
-            return `
-              <div class="folder-item ${inFolder ? 'in-folder' : ''}" data-index="${i}">
-                <span>${f.title} <span style="font-size:0.7rem;color:#8b7aaa;">(${(f.animeIds||[]).length})</span></span>
-                <span style="font-size:0.7rem;color:${inFolder ? '#51cf66' : '#8b7aaa'};">
-                  ${inFolder ? '✓ В папке' : '+ Добавить'}
-                </span>
-              </div>`;
-          }).join('');
-          
-          folderList.querySelectorAll('.folder-item').forEach(item => {
-            item.addEventListener('click', function() {
-              const index = parseInt(this.dataset.index);
-              if (!folders[index].animeIds) folders[index].animeIds = [];
-              
-              if (folders[index].animeIds.includes(anime.id)) {
-                folders[index].animeIds = folders[index].animeIds.filter(id => id !== anime.id);
-              } else {
-                folders[index].animeIds.push(anime.id);
-              }
-              
-              localStorage.setItem('anix_folders', JSON.stringify(folders));
-              folderModal.style.display = 'none';
-              renderAnime(anime);
-            });
-          });
-          
-          folderModal.style.display = 'flex';
-        });
+    if (animeId) {
+      const anime = getCol().find(a => a.id == animeId);
+      anime ? render(anime) : (mainContent.innerHTML = '<div class="empty"><i class="fas fa-exclamation-circle" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>Аниме не найдено</p></div>');
+    } else {
+      mainContent.innerHTML = '<div class="empty"><p>Аниме не найдено</p></div>';
+    }
 
-        // Удалить
-        document.getElementById('deleteAnimeBtn').addEventListener('click', () => {
-          if (confirm('Удалить это аниме из коллекции?')) {
-            const collection = getCollection().filter(a => a.id != anime.id);
-            saveCollection(collection);
-            window.location.href = 'lib.html';
-          }
-        });
-        // Избранное
-        document.getElementById('bmBtn').addEventListener('click', () => {
-          const col = getCollection();
-          const idx = col.findIndex(a => a.id == anime.id);
-          if (idx !== -1) {
-            col[idx].bookmarked = !col[idx].bookmarked;
-            localStorage.setItem('anix_collection', JSON.stringify(col));
-            const btn = document.getElementById('bmBtn');
-            if (col[idx].bookmarked) {
-              btn.classList.add('folder');
-              btn.innerHTML = '<i class="fas fa-bookmark"></i>';
-            } else {
-              btn.classList.remove('folder');
-              btn.innerHTML = '<i class="fas fa-bookmark"></i>';
-            }
-          }
-        });
-        // Смотреть
-        document.getElementById('watchBtn').addEventListener('click', () => {
-          if (anime.url) {
-            window.open(anime.url, '_blank');
-            return;
-          }
-          const query = encodeURIComponent(anime.title || '');
-          window.open(`https://www.google.com/search?q=${query}+смотреть+онлайн`, '_blank');
-        });
-        
-      }
-
-      function renderNotFound() {
-        mainContent.innerHTML = `
-          <div class="not-found">
-            <i class="fas fa-exclamation-circle" style="font-size:3rem;display:block;margin-bottom:1rem;"></i>
-            <p>Аниме не найдено</p>
-            <p style="font-size:0.8rem;margin-top:0.5rem;">Возможно, оно было удалено или ссылка неверна</p>
-            <button class="action-btn" style="margin-top:1.5rem;" onclick="window.location.href='lib.html'">
-              <i class="fas fa-books"></i> Перейти в библиотеку
-            </button>
-          </div>`;
-      }
-
-      if (animeId) {
-        const collection = getCollection();
-        const anime = collection.find(a => a.id == animeId);
-        if (anime) { renderAnime(anime); } else { renderNotFound(); }
-      } else { renderNotFound(); }
-
-      // Закрытие модалки по клику вне
-      folderModal.addEventListener('click', function(e) {
-        if (e.target === folderModal) folderModal.style.display = 'none';
-      });
-
-      backBtn.addEventListener('click', () => window.history.back());
-      goHomeBtn.addEventListener('click', () => window.location.href = 'index.html');
-      profileAvatarTop.addEventListener('click', () => window.location.href = 'profile.html');
-    })();
+    folderModal.onclick = e => { if (e.target === folderModal) folderModal.style.display = 'none'; };
+    document.getElementById('backBtn').onclick = () => history.back();
+    document.getElementById('goHomeBtn').onclick = () => location.href = 'index.html';
+    document.getElementById('profileAvatarTop').onclick = () => location.href = 'profile.html';
 
     function tryLoad(id, base) {
       const f = ['.gif','.png','.jpg','.jpeg','.webp'];
