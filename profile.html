@@ -102,6 +102,26 @@
     .m-btn.danger { background: rgba(255,80,80,0.3); color: #ff6b6b; }
     footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
     @media (max-width: 750px) { .content { flex-direction: column; padding: 3.5rem 1rem 1rem; } .right { width: 100%; } .avatar-row { left: 25px; bottom: -40px; } .avatar-w { width: 100px; height: 100px; } .nick { font-size: 1.2rem; } .banner { height: 220px; } }
+
+    /* Мобильная оптимизация */
+    @media (max-width: 600px) {
+      .top-bar { padding: 0.75rem 1rem; }
+      .logo { font-size: 1rem; padding: 0.4rem 1rem; }
+      .ava { width: 32px; height: 32px; right: 1rem; }
+      .mode { width: 32px; height: 32px; left: 1rem; }
+
+      .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
+      .btn-row { flex-direction: column; gap: 0.5rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; }
+      .card-over { opacity: 1; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 0.3rem; }
+      .card-ttl { font-size: 0.6rem; }
+      .tabs { gap: 0.2rem; }
+      .tab { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
+      .ctrls { gap: 0.3rem; }
+      .sel { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
+      .rand { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
+    }
+
   </style>
 </head>
 <body>

@@ -70,6 +70,26 @@
     .modal-inp { width: 100%; background: rgba(10,8,20,0.7); border: 1px solid rgba(180,150,220,0.35); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: #e4d7ff; font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
     .modal-inp:focus { border-color: #b47aff; }
     .modal-btn { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; border: none; font-family: inherit; background: linear-gradient(135deg, #7b4bff, #b084ff); color: white; }
+    
+    /* Мобильная оптимизация */
+    @media (max-width: 600px) {
+      .top-bar { padding: 0.75rem 1rem; }
+      .logo { font-size: 1rem; padding: 0.4rem 1rem; }
+      .ava { width: 32px; height: 32px; right: 1rem; }
+      .mode { width: 32px; height: 32px; left: 1rem; }
+      .main { padding: 1rem; }
+      .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
+      .btn-row { flex-direction: column; gap: 0.5rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; }
+      .card-over { opacity: 1; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 0.3rem; }
+      .card-ttl { font-size: 0.6rem; }
+      .tabs { gap: 0.2rem; }
+      .tab { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
+      .ctrls { gap: 0.3rem; }
+      .sel { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
+      .rand { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
+    }
+
     footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
   </style>
 </head>

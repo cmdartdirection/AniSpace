@@ -78,6 +78,26 @@
     .modal-box { background: rgba(30,25,50,0.95); border: 1px solid rgba(200,160,255,0.6); border-radius: 2rem; padding: 2rem; text-align: center; max-width: 350px; box-shadow: 0 20px 40px black; }
     .modal-ico { font-size: 3.5rem; color: #c49bff; margin-bottom: 1rem; }
     .dup { background: rgba(255,107,107,0.15); border: 1px solid rgba(255,107,107,0.3); color: #ff6b6b; font-size: 0.75rem; padding: 0.4rem 0.8rem; border-radius: 0.6rem; margin-bottom: 0.5rem; display: none; align-items: center; gap: 0.4rem; }
+
+    /* Мобильная оптимизация */
+    @media (max-width: 600px) {
+      .top-bar { padding: 0.75rem 1rem; }
+      .logo { font-size: 1rem; padding: 0.4rem 1rem; }
+      .ava { width: 32px; height: 32px; right: 1rem; }
+      .mode { width: 32px; height: 32px; left: 1rem; }
+      .main { padding: 1rem; }
+      .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
+      .btn-row { flex-direction: column; gap: 0.5rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; }
+      .card-over { opacity: 1; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 0.3rem; }
+      .card-ttl { font-size: 0.6rem; }
+      .tabs { gap: 0.2rem; }
+      .tab { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
+      .ctrls { gap: 0.3rem; }
+      .sel { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
+      .rand { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
+    }
+
     footer { text-align: left; padding: 0.8rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); }
   </style>
 </head>
