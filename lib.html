@@ -73,7 +73,8 @@
     .modal-inp { width: 100%; background: rgba(10,8,20,0.7); border: 1px solid rgba(180,150,220,0.35); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: #e4d7ff; font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
     .modal-inp:focus { border-color: #b47aff; }
     .modal-btn { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; border: none; font-family: inherit; background: linear-gradient(135deg, #7b4bff, #b084ff); color: white; }
-    
+    .search-inp:focus { border-color: #b47aff; }
+
     /* Мобильная оптимизация */
     @media (max-width: 600px) {
       .top-bar { padding: 0.75rem 1rem; }
@@ -124,6 +125,7 @@
           <option value="avgRating">По рейтингу Shikimori</option>
         </select>
         <span class="cnt" id="countText">0 аниме</span>
+        <input type="text" class="search-inp" id="libSearchInput" placeholder="Поиск по названию..." style="flex:1;background:rgba(10,8,20,0.7);border:1px solid rgba(180,150,220,0.3);color:#e4d7ff;font-size:0.8rem;padding:0.4rem 0.8rem;border-radius:1.5rem;outline:none;font-family:inherit;margin-left:auto;">
         <button class="rand" id="randomBtn"><i class="fas fa-random"></i> Случайное</button>
       </div>
       <div class="grid" id="animeGrid"></div>
@@ -335,6 +337,20 @@
     genreFilter.onchange = () => renderNormal();
     tagFilter.onchange = () => renderNormal();
     sortSelect.onchange = () => renderNormal();
+    const libSearchInput = document.getElementById('libSearchInput');
+    libSearchInput.addEventListener('input', () => {
+      const q = libSearchInput.value.trim().toLowerCase();
+      const cards = animeGrid.querySelectorAll('.card');
+      cards.forEach(card => {
+        const title = card.querySelector('.card-ttl')?.textContent?.toLowerCase() || '';
+        card.style.display = !q || title.includes(q) ? '' : 'none';
+      });
+      // Скрываем пустые папки
+      document.querySelectorAll('.folder').forEach(folder => {
+        const visible = folder.querySelectorAll('.card:not([style*="display: none"])').length > 0;
+        folder.style.display = visible ? '' : 'none';
+      });
+    });
     randomBtn.onclick = () => {
       let pool = folderMode ? allAnime : getFiltered();
       if (!pool.length) return;
