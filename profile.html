@@ -414,6 +414,7 @@
         document.getElementById('bannerPlaceholder').style.display = 'none';
       }
       document.getElementById('nicknameDisplay').textContent = profile.nickname || 'Аниме-фан';
+      document.title = `AniSpace - ${profile.nickname || 'Профиль'}`;
       const eps = collection.filter(a => a.list === 'watched').reduce((s,a) => s + (parseInt(a.episodes)||0), 0);
       document.getElementById('totalEpisodes').textContent = eps;
       document.getElementById('totalHours').textContent = Math.round(eps*24/60)||0;

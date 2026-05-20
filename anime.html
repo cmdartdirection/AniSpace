@@ -3,121 +3,101 @@
 <head>
   <meta name="theme-color" content="#0e0e1a">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniSpace — Просмотр аниме</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-      background: #0e0e1a;
-      min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0;
-    }
+    body { font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif; background: #0e0e1a; min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0; }
     .app { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; width: 100%; }
     .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
-    .logo {
-      background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold;
-      font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s;
-      box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2);
-    }
-    .logo:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
-    .ava {
-      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px;
-      border-radius: 50%; border: 2px solid rgba(180,130,255,0.6); cursor: pointer; overflow: hidden;
-      background: rgba(123,75,255,0.2); transition: 0.25s;
-    }
-    .ava:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
+    .logo { background: linear-gradient(135deg,#7b4bff,#b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: .25s; box-shadow: 0 4px 12px rgba(123,75,255,.5); border: 1px solid rgba(255,255,255,.2); }
+    .logo:hover { background: linear-gradient(135deg,#925fff,#c09aff); transform: translateY(-1px); }
+    .ava { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,.6); cursor: pointer; overflow: hidden; background: rgba(123,75,255,.2); transition: .25s; }
+    .ava:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,.5); }
     .ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .back-btn {
-      position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px;
-      border-radius: 50%; border: 2px solid rgba(180,130,255,0.4); cursor: pointer; background: rgba(123,75,255,0.15);
-      color: #c9a9ff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: 0.25s;
-    }
-    .back-btn:hover { border-color: #b47aff; color: white; background: rgba(123,75,255,0.3); }
+    .back-btn { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,.4); cursor: pointer; background: rgba(123,75,255,.15); color: #c9a9ff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: .25s; }
+    .back-btn:hover { border-color: #b47aff; color: white; background: rgba(123,75,255,.3); }
     .main { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; }
-    .card {
-      background: rgba(25,22,44,0.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 2rem; width: 100%;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(180,130,255,0.25); border: 1px solid rgba(255,255,255,0.1);
-      position: relative; z-index: 1;
-    }
+    .card { background: rgba(25,22,44,.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 2rem; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); position: relative; z-index: 1; }
+    .comment-card { background: rgba(25,22,44,.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 1.5rem; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); margin-top: 1rem; position: relative; z-index: 2; }
+    .comment-card img { max-width: 100%; border-radius: .5rem; margin: .5rem 0; }
     .top-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
-    .cover-col { flex-shrink: 0; display: flex; flex-direction: column; gap: 0.6rem; align-items: center; width: 180px; }
-    .cover { width: 180px; height: 255px; border-radius: 1rem; border: 1px solid rgba(200,170,255,0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .cover-col { flex-shrink: 0; display: flex; flex-direction: column; gap: .6rem; align-items: center; width: 180px; }
+    .cover { width: 180px; height: 255px; border-radius: 1rem; border: 1px solid rgba(200,170,255,.4); overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .cover img { width: 100%; height: 100%; object-fit: cover; }
-    .list-badge { font-size: 0.7rem; font-weight: 600; padding: 0.35rem 0.7rem; border-radius: 0.6rem; text-align: center; width: 100%; }
-    .l-watching { background: rgba(136,212,152,0.2); color: #88D498; border: 1px solid rgba(136,212,152,0.4); }
-    .l-watched { background: rgba(128,155,206,0.2); color: #809BCE; border: 1px solid rgba(128,155,206,0.4); }
-    .l-dropped { background: rgba(242,132,130,0.2); color: #F28482; border: 1px solid rgba(242,132,130,0.4); }
-    .l-planned { background: rgba(149,125,173,0.2); color: #957DAD; border: 1px solid rgba(149,125,173,0.4); }
-    .l-rewatching { background: rgba(246,189,96,0.2); color: #F6BD60; border: 1px solid rgba(246,189,96,0.4); }
-    .info-col { flex: 1; display: flex; flex-direction: column; gap: 0.8rem; }
+    .list-badge { font-size: .7rem; font-weight: 600; padding: .35rem .7rem; border-radius: .6rem; text-align: center; width: 100%; }
+    .l-watching { background: rgba(136,212,152,.2); color: #88D498; border: 1px solid rgba(136,212,152,.4); }
+    .l-watched { background: rgba(128,155,206,.2); color: #809BCE; border: 1px solid rgba(128,155,206,.4); }
+    .l-dropped { background: rgba(242,132,130,.2); color: #F28482; border: 1px solid rgba(242,132,130,.4); }
+    .l-planned { background: rgba(149,125,173,.2); color: #957DAD; border: 1px solid rgba(149,125,173,.4); }
+    .l-rewatching { background: rgba(246,189,96,.2); color: #F6BD60; border: 1px solid rgba(246,189,96,.4); }
+    .info-col { flex: 1; display: flex; flex-direction: column; gap: .8rem; }
     .title { font-size: 1.4rem; font-weight: 700; color: #e4d7ff; }
-    .subtitle { font-size: 0.9rem; color: #8b7aaa; }
-    .badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.7rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
-    .b-rating { background: rgba(240,179,0,0.15); color: #f0b300; }
-    .b-tag { background: rgba(180,130,255,0.15); color: #b47aff; }
-    .b-ongoing { background: rgba(81,207,102,0.15); color: #51cf66; }
-    .b-released { background: rgba(128,155,206,0.15); color: #809BCE; }
-    .b-announced { background: rgba(246,189,96,0.15); color: #F6BD60; }
-    .grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .cell { flex: 1 1 calc(50% - 0.5rem); min-width: 100px; background: rgba(15,12,28,0.7); border-radius: 0.8rem; padding: 0.6rem 0.8rem; border: 1px solid rgba(160,140,210,0.3); }
-    .cell-l { font-size: 0.65rem; text-transform: uppercase; color: #8b7aaa; letter-spacing: 0.4px; font-weight: 600; margin-bottom: 0.2rem; }
-    .cell-v { font-weight: 600; font-size: 0.9rem; color: #e4d7ff; }
+    .subtitle { font-size: .9rem; color: #8b7aaa; }
+    .badges { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; gap: .3rem; padding: .3rem .7rem; border-radius: 1rem; font-size: .8rem; font-weight: 600; }
+    .b-rating { background: rgba(240,179,0,.15); color: #f0b300; }
+    .b-tag { background: rgba(180,130,255,.15); color: #b47aff; }
+    .b-ongoing { background: rgba(81,207,102,.15); color: #51cf66; }
+    .b-released { background: rgba(128,155,206,.15); color: #809BCE; }
+    .b-announced { background: rgba(246,189,96,.15); color: #F6BD60; }
+    .grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .cell { flex: 1 1 calc(50% - .5rem); min-width: 100px; background: rgba(15,12,28,.7); border-radius: .8rem; padding: .6rem .8rem; border: 1px solid rgba(160,140,210,.3); }
+    .cell-l { font-size: .65rem; text-transform: uppercase; color: #8b7aaa; letter-spacing: .4px; font-weight: 600; margin-bottom: .2rem; }
+    .cell-v { font-weight: 600; font-size: .9rem; color: #e4d7ff; }
     .desc { margin-top: 1rem; }
-    .desc-t { font-size: 0.85rem; font-weight: 600; color: #a494c4; margin-bottom: 0.5rem; text-transform: uppercase; }
-    .desc-c { font-size: 0.9rem; color: #b5a3d4; line-height: 1.6; }
-    .actions { display: flex; gap: 0.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: space-between; }
-    .actions-l { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .actions-r { display: flex; gap: 0.5rem; }
-    .btn {
-      background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.3); color: #c9a9ff;
-      font-size: 0.8rem; padding: 0.5rem 1.2rem; border-radius: 2rem; cursor: pointer; transition: 0.2s;
-      display: flex; align-items: center; gap: 0.4rem; font-family: inherit;
-    }
-    .btn:hover { background: rgba(180,130,255,0.25); border-color: #b47aff; color: white; }
-    .btn-red { border-color: rgba(255,107,107,0.4); color: #ff6b6b; }
-    .btn-red:hover { background: rgba(255,107,107,0.2); border-color: #ff6b6b; }
-    .btn-green { background: rgba(81,207,102,0.15); border-color: rgba(81,207,102,0.4); color: #51cf66; }
-    .btn-green:hover { background: rgba(81,207,102,0.3); border-color: #51cf66; color: white; }
-    .btn-gold { background: rgba(246,189,96,0.1); border-color: rgba(246,189,96,0.3); color: #F6BD60; }
-    .btn-gold:hover { background: rgba(246,189,96,0.2); border-color: #F6BD60; color: white; }
-    .btn-bm { background: rgba(240,179,0,0.2); border-color: rgba(240,179,0,0.5); color: #f0b300; }
+    .desc-t { font-size: .85rem; font-weight: 600; color: #a494c4; margin-bottom: .5rem; text-transform: uppercase; }
+    .desc-c { font-size: .9rem; color: #b5a3d4; line-height: 1.6; }
+    .actions { display: flex; gap: .5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: space-between; }
+    .actions-l, .actions-r { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .btn { background: rgba(180,130,255,.1); border: 1px solid rgba(180,130,255,.3); color: #c9a9ff; font-size: .8rem; padding: .5rem 1.2rem; border-radius: 2rem; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: .4rem; font-family: inherit; }
+    .btn:hover { background: rgba(180,130,255,.25); border-color: #b47aff; color: white; }
+    .btn-red { border-color: rgba(255,107,107,.4); color: #ff6b6b; }
+    .btn-red:hover { background: rgba(255,107,107,.2); border-color: #ff6b6b; }
+    .btn-green { background: rgba(81,207,102,.15); border-color: rgba(81,207,102,.4); color: #51cf66; }
+    .btn-green:hover { background: rgba(81,207,102,.3); border-color: #51cf66; color: white; }
+    .btn-gold { background: rgba(246,189,96,.1); border-color: rgba(246,189,96,.3); color: #F6BD60; }
+    .btn-gold:hover { background: rgba(246,189,96,.2); border-color: #F6BD60; color: white; }
+    .btn-bm { background: rgba(240,179,0,.2); border-color: rgba(240,179,0,.5); color: #f0b300; }
+    .btn-sm { font-size: .7rem; padding: .3rem .6rem; }
     .empty { text-align: center; color: #8b7aaa; padding: 3rem; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
-    .modal-box { background: rgba(25,22,44,0.98); border: 1px solid rgba(180,130,255,0.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 400px; width: 90%; }
-    .modal-title { font-weight: 600; color: #cbb8f0; margin-bottom: 1rem; }
-    .modal-cancel { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; border: none; background: rgba(255,255,255,0.1); color: #b5a3d4; font-family: inherit; }
-    .folder-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.8rem; border-radius: 0.5rem; cursor: pointer; margin-bottom: 0.3rem; background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.2); }
-    .folder-item:hover { background: rgba(180,130,255,0.2); }
-    .folder-item.in { background: rgba(81,207,102,0.15); border-color: rgba(81,207,102,0.3); }
-    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
-    @media (max-width: 600px) {
-      .top-row { flex-direction: column; align-items: center; }
-      .cover { width: 140px; height: 200px; }
-      .cover-col { width: 140px; }
-      .actions { flex-direction: column; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+    .modal-box { background: rgba(25,22,44,.98); border: 1px solid rgba(180,130,255,.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 400px; width: 90%; box-shadow: 0 20px 40px black; }
+    .modal-ttl { font-weight: 600; color: #cbb8f0; margin-bottom: 1rem; }
+    .modal-inp { width: 100%; background: rgba(10,8,20,.7); border: 1px solid rgba(180,150,220,.35); border-radius: .6rem; padding: .5rem .8rem; color: #e4d7ff; font-size: .85rem; margin-bottom: .8rem; font-family: inherit; outline: none; }
+    .modal-inp:focus { border-color: #b47aff; }
+    .m-btn { padding: .45rem 1.2rem; border-radius: 1.5rem; font-size: .8rem; cursor: pointer; transition: .2s; border: none; font-family: inherit; }
+    .m-btn.cancel { background: rgba(255,255,255,.1); color: #b5a3d4; }
+    .m-btn.save { background: linear-gradient(135deg,#7b4bff,#b084ff); color: white; }
+    .folder-item { display: flex; align-items: center; justify-content: space-between; padding: .5rem .8rem; border-radius: .5rem; cursor: pointer; margin-bottom: .3rem; background: rgba(180,130,255,.1); border: 1px solid rgba(180,130,255,.2); }
+    .folder-item:hover { background: rgba(180,130,255,.2); }
+    .folder-item.in { background: rgba(81,207,102,.15); border-color: rgba(81,207,102,.3); }
+    .cmt-ta { width: 100%; background: rgba(10,8,20,.7); border: 1px solid rgba(180,150,220,.35); border-radius: .6rem; padding: .5rem .8rem; color: #e4d7ff; font-size: .85rem; resize: none; overflow: hidden; min-height: 60px; font-family: inherit; outline: none; }
+    .cmt-ta:focus { border-color: #b47aff; }
+    .cmt-text { font-size: .85rem; color: #b5a3d4; line-height: 1.5; }
+    .comment-card img, .cmt-text img {
+      max-width: 300px;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: .5rem;
+      margin: .5rem 0;
+      cursor: pointer;
+      transition: transform .2s;
     }
 
-    /* Мобильная оптимизация */
-    @media (max-width: 600px) {
-      .top-bar { padding: 0.75rem 1rem; }
-      .logo { font-size: 1rem; padding: 0.4rem 1rem; }
-      .ava { width: 32px; height: 32px; right: 1rem; }
-      .mode { width: 32px; height: 32px; left: 1rem; }
-      .main { padding: 1rem; }
-      .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
-      .btn-row { flex-direction: column; gap: 0.5rem; }
-      .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; }
-      .card-over { opacity: 1; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 0.3rem; }
-      .card-ttl { font-size: 0.6rem; }
-      .tabs { gap: 0.2rem; }
-      .tab { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
-      .ctrls { gap: 0.3rem; }
-      .sel { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
-      .rand { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
+    .comment-card img:hover, .cmt-text img:hover {
+      transform: scale(1.05);
+    }
+    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: .8rem; border-top: 1px solid rgba(120,100,180,.3); margin-top: auto; }
+    @media (max-width:600px) {
+      .top-row { flex-direction: column; align-items: center; }
+      .cover { width: 140px; height: 200px; } .cover-col { width: 140px; }
+      .actions { flex-direction: column; }
+      .top-bar { padding: .75rem 1rem; } .logo { font-size: 1rem; padding: .4rem 1rem; }
+      .ava { width: 32px; height: 32px; right: 1rem; } .main { padding: 1rem; }
+      .btn { font-size: .9rem; padding: .7rem 1.5rem; }
     }
   </style>
 </head>
@@ -126,232 +106,164 @@
     <div class="top-bar">
       <div class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></div>
       <button class="logo" id="goHomeBtn">AniSpace</button>
-      <div class="ava" id="profileAvatarTop">
-        <img id="topAvatarImg" src="" alt="" style="display:block;">
-      </div>
+      <div class="ava" id="profileAvatarTop"><img id="topAvatarImg" src="" alt="" style="display:block;"></div>
     </div>
     <main class="main" id="mainContent"></main>
     <footer>© AniSpace by cmd</footer>
   </div>
 
   <div class="modal" id="folderModal">
-    <div class="modal-box">
-      <div class="modal-title">Выберите папку</div>
-      <div id="folderList" style="display:flex;flex-direction:column;gap:0.3rem;margin-bottom:1rem;"></div>
-      <button class="modal-cancel" onclick="document.getElementById('folderModal').style.display='none'">Отмена</button>
-    </div>
+    <div class="modal-box"><div class="modal-ttl">Выберите папку</div><div id="folderList" style="display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem;"></div><button class="m-btn cancel" onclick="document.getElementById('folderModal').style.display='none'">Отмена</button></div>
   </div>
-
-  <script>
-    const mainContent = document.getElementById('mainContent');
-    const folderModal = document.getElementById('folderModal');
-    const folderList = document.getElementById('folderList');
-    const params = new URLSearchParams(location.search);
-    const animeId = params.get('id');
-
-    const lists = { watching:'Смотрю', watched:'Просмотрено', dropped:'Брошено', planned:'В планах', rewatching:'Пересмотрю' };
-    const listC = { watching:'l-watching', watched:'l-watched', dropped:'l-dropped', planned:'l-planned', rewatching:'l-rewatching' };
-    const statuses = { ongoing:'Онгоинг', released:'Вышел', announced:'Анонсирован' };
-    const statusC = { ongoing:'b-ongoing', released:'b-released', announced:'b-announced' };
-    const tags = { isekai:'Исекай', slice_of_life:'Повседневное', psychology:'Психология', sport:'Спорт', romance:'Романтика', action:'Экшен', comedy:'Комедия', drama:'Драма', fantasy:'Фэнтези', horror:'Ужасы', mecha:'Меха', music:'Музыка', mystery:'Детектив', sci_fi:'Фантастика', thriller:'Триллер', adventure:'Приключения', historical:'Историческое', military:'Военное', school:'Школа', supernatural:'Сверхъестественное', hentai:'Хентай' };
-
-    const getCol = () => JSON.parse(localStorage.getItem('anix_collection') || '[]');
-
-    function render(anime) {
-      if (!anime.id) anime.id = Date.now();
-      const tag = anime.tag ? (tags[anime.tag] || anime.tag) : '';
-
-      mainContent.innerHTML = `
-        <div class="card">
-          <div class="top-row">
-            <div class="cover-col">
-              <div class="cover">${anime.poster ? `<img src="${anime.poster}" alt="">` : '<div style="color:#5a4b7a;font-size:3rem;"><i class="fas fa-image"></i></div>'}</div>
-              <span class="list-badge ${listC[anime.list] || 'l-watching'}">${lists[anime.list] || 'Смотрю'}</span>
-            </div>
-            <div class="info-col">
-              <div>
-                <div class="title">${anime.title || 'Без названия'}</div>
-                ${anime.originalName ? `<div class="subtitle">${anime.originalName}</div>` : ''}
-              </div>
-              <div class="badges">
-                <span class="badge b-rating"><i class="fas fa-star"></i> ${anime.userRating || anime.avgRating || '—'}</span>
-                <span class="badge ${statusC[anime.status] || 'b-released'}">${statuses[anime.status] || 'Вышел'}</span>
-                ${tag ? `<span class="badge b-tag"><i class="fas fa-tag"></i> ${tag}</span>` : ''}
-              </div>
-              <div class="grid">
-                <div class="cell"><div class="cell-l">Ср. оценка</div><div class="cell-v">${anime.avgRating || '—'}</div></div>
-                <div class="cell"><div class="cell-l">Серий</div><div class="cell-v">${anime.episodes || '—'}</div></div>
-                <div class="cell"><div class="cell-l">Студия</div><div class="cell-v">${anime.studio || '—'}</div></div>
-                <div class="cell"><div class="cell-l">Дата выхода</div><div class="cell-v">${anime.releaseDate || '—'}</div></div>
-                <div class="cell"><div class="cell-l">Жанр</div><div class="cell-v">${anime.genre || '—'}</div></div>
-              </div>
-            </div>
-          </div>
-          <div class="desc"><div class="desc-t">Описание</div><div class="desc-c">${anime.description || 'Описание отсутствует'}</div></div>
-          <div class="actions">
-            <div class="actions-l">
-              <button class="btn ${anime.bookmarked ? 'btn-bm' : ''}" id="bmBtn"><i class="fas fa-bookmark"></i></button>
-              <button class="btn" id="editBtn"><i class="fas fa-pen"></i> Редактировать</button>
-              <button class="btn btn-gold" id="folderBtn"><i class="fas fa-folder-plus"></i> В папку</button>
-              <button class="btn btn-red" id="delBtn"><i class="fas fa-trash"></i></button>
-            </div>
-            <div class="actions-r">
-              <button class="btn btn-green" id="watchBtn"><i class="fas fa-play"></i> Смотреть</button>
-            </div>
-          </div>
-        </div>`;
-
-      document.getElementById('editBtn').onclick = () => { sessionStorage.setItem('anix_anime_data', JSON.stringify(anime)); location.href = 'animeadd.html'; };
-      document.getElementById('delBtn').onclick = () => {
-        if (confirm('Удалить?')) {
-          const c = getCol().filter(a => a.id != anime.id);
-          localStorage.setItem('anix_collection', JSON.stringify(c));
-          
-          // Очищаем удалённое аниме из всех папок
-          const folders = JSON.parse(localStorage.getItem('anix_folders') || '[]');
-          let changed = false;
-          folders.forEach(f => {
-            if (f.animeIds && f.animeIds.includes(anime.id)) {
-              f.animeIds = f.animeIds.filter(id => id != anime.id);
-              changed = true;
-            }
-          });
-          if (changed) localStorage.setItem('anix_folders', JSON.stringify(folders));
-          
-          location.href = 'lib.html';
-        }
-      };
-      document.getElementById('watchBtn').onclick = () => { window.open(anime.url || `https://www.google.com/search?q=${encodeURIComponent(anime.title||'')}+смотреть+онлайн`, '_blank'); };
-
-      document.getElementById('bmBtn').onclick = () => {
-        const col = getCol();
-        const idx = col.findIndex(a => a.id == anime.id);
-        if (idx !== -1) {
-          col[idx].bookmarked = !col[idx].bookmarked;
-          localStorage.setItem('anix_collection', JSON.stringify(col));
-          render(col[idx]);
-        }
-      };
-
-      document.getElementById('folderBtn').onclick = () => {
-        const folders = JSON.parse(localStorage.getItem('anix_folders') || '[]');
-        if (!folders.length) return alert('Нет папок.');
-        folderList.innerHTML = folders.map((f, i) => {
-          const inF = (f.animeIds || []).includes(anime.id);
-          return `<div class="folder-item ${inF ? 'in' : ''}" data-i="${i}"><span>${f.title} (${(f.animeIds||[]).length})</span><span style="font-size:0.7rem;color:${inF?'#51cf66':'#8b7aaa'};">${inF ? '✓' : '+'}</span></div>`;
-        }).join('');
-        folderList.querySelectorAll('.folder-item').forEach(el => el.onclick = () => {
-          const i = +el.dataset.i;
-          if (!folders[i].animeIds) folders[i].animeIds = [];
-          folders[i].animeIds.includes(anime.id) ? folders[i].animeIds = folders[i].animeIds.filter(id => id !== anime.id) : folders[i].animeIds.push(anime.id);
-          localStorage.setItem('anix_folders', JSON.stringify(folders));
-          folderModal.style.display = 'none';
-          render(anime);
-        });
-        folderModal.style.display = 'flex';
-      };
-    }
-
-    if (animeId) {
-      const anime = getCol().find(a => a.id == animeId);
-      anime ? render(anime) : (mainContent.innerHTML = '<div class="empty"><i class="fas fa-exclamation-circle" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>Аниме не найдено</p></div>');
-    } else {
-      mainContent.innerHTML = '<div class="empty"><p>Аниме не найдено</p></div>';
-    }
-
-    folderModal.onclick = e => { if (e.target === folderModal) folderModal.style.display = 'none'; };
-    document.getElementById('backBtn').onclick = () => history.back();
-    document.getElementById('goHomeBtn').onclick = () => location.href = 'index.html';
-    document.getElementById('profileAvatarTop').onclick = () => location.href = 'profile.html';
-
-    const profile = JSON.parse(localStorage.getItem('anix_profile') || '{}');
-    if (profile.avatar) {
-      document.getElementById('topAvatarImg').src = profile.avatar;
-      document.getElementById('topAvatarImg').style.display = 'block';
-    }
-  </script>
+  <div class="modal" id="imageModal">
+    <div class="modal-box"><div class="modal-ttl">Вставьте URL изображения</div><input type="text" class="modal-inp" id="imageUrlInput" placeholder="https://..."><div style="display:flex;gap:.5rem;justify-content:flex-end;"><button class="m-btn cancel" onclick="document.getElementById('imageModal').style.display='none'">Отмена</button><button class="m-btn save" id="insertImageBtn">Вставить</button></div></div>
+  </div>
 
   <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
   <script>
-  (function() {
-    const canvas = document.getElementById('ps3Canvas');
-    const ctx = canvas.getContext('2d');
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
+  (function(){const c=document.getElementById('ps3Canvas'),ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight});const t=[];for(let i=0;i<6;i++)t.push({color:['rgba(180,130,255,.25)','rgba(200,150,255,.2)','rgba(150,100,255,.22)','rgba(123,75,255,.18)','rgba(180,130,255,.2)','rgba(200,150,255,.15)'][i],speed:.3+Math.random()*.5,amp:10+Math.random()*25,off:Math.random()*Math.PI*2,y:c.height*.6+i*c.height*.06});function d(){ctx.clearRect(0,0,c.width,c.height);const tm=Date.now()*.001;t.forEach(th=>{th.y=c.height*.6+t.indexOf(th)*c.height*.01+Math.sin(tm*.2+th.off)*20;ctx.beginPath();for(let x=-50;x<=c.width+50;x+=5){const y=th.y+Math.sin(x*.01+tm*th.speed+th.off)*th.amp+Math.sin(x*.005+tm*.7+th.off)*th.amp*.5;x===-50?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.shadowColor='rgba(180,130,255,.5)';ctx.shadowBlur=10;ctx.strokeStyle=th.color;ctx.lineWidth=2;ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle=th.color.replace('.2','.35').replace('.15','.25').replace('.18','.3');ctx.lineWidth=1;ctx.stroke()});requestAnimationFrame(d)}d()})();
+  </script>
 
-    // Создаём 6 нитей
-    const threads = [];
-    const colors = [
-      'rgba(180,130,255,0.25)',
-      'rgba(200,150,255,0.2)',
-      'rgba(150,100,255,0.22)',
-      'rgba(123,75,255,0.18)',
-      'rgba(180,130,255,0.2)',
-      'rgba(200,150,255,0.15)'
-    ];
-    
-    for (let i = 0; i < 6; i++) {
-      threads.push({
-        points: [],
-        color: colors[i],
-        speed: 0.3 + Math.random() * 0.5,
-        amplitude: 10 + Math.random() * 25,
-        offset: Math.random() * Math.PI * 2,
-        y: canvas.height * 0.6 + (i * canvas.height * 0.06)
-      });
-    }
+  <script>
+    const main=document.getElementById('mainContent'),folderModal=document.getElementById('folderModal'),folderList=document.getElementById('folderList'),imageModal=document.getElementById('imageModal'),params=new URLSearchParams(location.search),animeId=params.get('id');
+    const lists={watching:'Смотрю',watched:'Просмотрено',dropped:'Брошено',planned:'В планах',rewatching:'Пересмотрю'},listC={watching:'l-watching',watched:'l-watched',dropped:'l-dropped',planned:'l-planned',rewatching:'l-rewatching'},statuses={ongoing:'Онгоинг',released:'Вышел',announced:'Анонсирован'},statusC={ongoing:'b-ongoing',released:'b-released',announced:'b-announced'},tags={isekai:'Исекай',slice_of_life:'Повседневное',psychology:'Психология',sport:'Спорт',romance:'Романтика',action:'Экшен',comedy:'Комедия',drama:'Драма',fantasy:'Фэнтези',horror:'Ужасы',mecha:'Меха',music:'Музыка',mystery:'Детектив',sci_fi:'Фантастика',thriller:'Триллер',adventure:'Приключения',historical:'Историческое',military:'Военное',school:'Школа',supernatural:'Сверхъестественное',hentai:'Хентай'};
+    const gCol=()=>JSON.parse(localStorage.getItem('anix_collection')||'[]'),sCol=c=>localStorage.setItem('anix_collection',JSON.stringify(c));
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      const time = Date.now() * 0.001;
-      
-      threads.forEach(thread => {
-        // Обновляем Y-позицию (медленно двигаем вверх-вниз)
-        thread.y = canvas.height * 0.6 + 
-          (threads.indexOf(thread) * canvas.height * 0.01) + 
-          Math.sin(time * 0.2 + thread.offset) * 20;
-        
-        ctx.beginPath();
-        
-        for (let x = -50; x <= canvas.width + 50; x += 5) {
-          const progress = x / canvas.width;
-          const y = thread.y + 
-            Math.sin(x * 0.01 + time * thread.speed + thread.offset) * thread.amplitude +
-            Math.sin(x * 0.005 + time * 0.7 + thread.offset) * thread.amplitude * 0.5;
-          
-          if (x === -50) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
+    function render(anime){
+      if(!anime.id)anime.id=Date.now();
+      const tag=anime.tag?tags[anime.tag]||anime.tag:'',comment=anime.comment||'',commentDate=anime.commentDate?new Date(anime.commentDate).toLocaleString('ru-RU'):'';
+      main.innerHTML=`<div class="card"><div class="top-row"><div class="cover-col"><div class="cover">${anime.poster?`<img src="${anime.poster}" alt="">`:'<div style="color:#5a4b7a;font-size:3rem;"><i class="fas fa-image"></i></div>'}</div><span class="list-badge ${listC[anime.list]||'l-watching'}">${lists[anime.list]||'Смотрю'}</span></div><div class="info-col"><div><div class="title">${anime.title||'Без названия'}</div>${anime.originalName?`<div class="subtitle">${anime.originalName}</div>`:''}</div><div class="badges"><span class="badge b-rating"><i class="fas fa-star"></i> ${anime.userRating||anime.avgRating||'—'}</span><span class="badge ${statusC[anime.status]||'b-released'}">${statuses[anime.status]||'Вышел'}</span>${tag?`<span class="badge b-tag"><i class="fas fa-tag"></i> ${tag}</span>`:''}</div><div class="grid"><div class="cell"><div class="cell-l">Ср. оценка</div><div class="cell-v">${anime.avgRating||'—'}</div></div><div class="cell"><div class="cell-l">Серий</div><div class="cell-v">${anime.episodes||'—'}</div></div><div class="cell"><div class="cell-l">Студия</div><div class="cell-v">${anime.studio||'—'}</div></div><div class="cell"><div class="cell-l">Дата выхода</div><div class="cell-v">${anime.releaseDate||'—'}</div></div><div class="cell"><div class="cell-l">Жанр</div><div class="cell-v">${anime.genre||'—'}</div></div></div></div></div><div class="desc"><div class="desc-t">Описание</div><div class="desc-c">${anime.description||'Описание отсутствует'}</div></div><div class="actions"><div class="actions-l"><button class="btn ${anime.bookmarked?'btn-bm':''}" id="bmBtn"><i class="fas fa-bookmark"></i></button><button class="btn" id="editBtn"><i class="fas fa-pen"></i> Редактировать</button><button class="btn btn-gold" id="folderBtn"><i class="fas fa-folder-plus"></i> В папку</button><button class="btn btn-red" id="delBtn"><i class="fas fa-trash"></i></button></div><div class="actions-r"><button class="btn btn-green" id="watchBtn"><i class="fas fa-play"></i> Смотреть</button></div></div></div>
+      <div class="comment-card" style="background:rgba(25,22,44,.8);backdrop-filter:blur(20px);border-radius:2rem;padding:1.5rem;width:100%;box-shadow:0 20px 40px rgba(0,0,0,.6),0 0 0 1px rgba(180,130,255,.25);border:1px solid rgba(255,255,255,.1);margin-top:1rem;">
+        <div id="cmtDisplay" style="${comment?'':'display:none;'}">
+          <div class="cmt-text">${(comment||'').replace(/\n/g,'<br>')}</div>
+          <div style="display:flex;gap:.4rem;align-items:center;margin-top:.5rem;flex-wrap:wrap;justify-content:flex-end;">
+            ${commentDate?`<span style="font-size:.7rem;color:#6b5b8c;margin-right:auto;">${commentDate}</span>`:''}
+            ${comment?`<button class="btn btn-red btn-sm" id="cmtDelete"><i class="fas fa-trash"></i></button>`:''}
+            <button class="btn btn-sm" id="cmtEdit"><i class="fas fa-pen"></i></button>
+          </div>
+        </div>
+        <div id="cmtEditBlock" style="${comment?'display:none;':''}">
+          <textarea class="cmt-ta" id="commentInput" placeholder="Оставьте комментарий...">${comment}</textarea>
+          <div style="display:flex;gap:.4rem;align-items:center;margin-top:.5rem;flex-wrap:wrap;">
+            <button class="btn btn-sm" id="cmtBold"><b>B</b></button>
+            <button class="btn btn-sm" id="cmtItalic"><i>I</i></button>
+            <button class="btn btn-sm" id="cmtUnderline"><u>U</u></button>
+            <button class="btn btn-sm" id="cmtBr">↩</button>
+            <button class="btn btn-sm" id="cmtImage">🖼</button>
+            <span style="margin-left:auto;display:flex;gap:.4rem;align-items:center;">
+              ${commentDate?`<span style="font-size:.7rem;color:#6b5b8c;">${commentDate}</span>`:''}
+              ${comment?`<button class="btn btn-red btn-sm" id="cmtDeleteEdit"><i class="fas fa-trash"></i></button>`:''}
+              <button class="btn btn-green btn-sm" id="cmtSave"><i class="fas fa-save"></i></button>
+            </span>
+          </div>
+        </div>
+      </div>`;
+
+      document.title = `AniSpace - ${anime.title || 'Аниме'}`;
+
+      const cmtDisplay=document.getElementById('cmtDisplay'),cmtEditBlock=document.getElementById('cmtEditBlock'),cmtInput=document.getElementById('commentInput');
+
+      // Переключение в режим редактирования
+      const editBtn=document.getElementById('cmtEdit');
+      if(editBtn)editBtn.onclick=()=>{
+        cmtDisplay.style.display='none';
+        cmtEditBlock.style.display='block';
+        // Заменяем <br> на \n для редактирования
+        cmtInput.value=(anime.comment||'').replace(/<br>/g,'\n').replace(/<br\s*\/?>/g,'\n');
+        cmtInput.style.height='auto';
+        cmtInput.style.height=cmtInput.scrollHeight+'px';
+        cmtInput.focus();
+        // Сохраняем высоту при вводе
+        cmtInput.oninput=()=>{cmtInput.style.height='auto';cmtInput.style.height=cmtInput.scrollHeight+'px'};
+      };
+
+      cmtInput.onkeydown=e=>{
+        if(e.key==='Enter'){
+          if(e.shiftKey){
+            // Shift+Enter — перенос строки
+            e.preventDefault();
+            const s=cmtInput.selectionStart;
+            cmtInput.value=cmtInput.value.substring(0,s)+'\n'+cmtInput.value.substring(s);
+            cmtInput.selectionStart=cmtInput.selectionEnd=s+1;
+            cmtInput.dispatchEvent(new Event('input'));
+          }else{
+            // Enter — сохранение
+            e.preventDefault();
+            document.getElementById('cmtSave').click();
           }
         }
-        
-        // Свечение
-        ctx.shadowColor = 'rgba(180,130,255,0.5)';
-        ctx.shadowBlur = 10;
-        ctx.strokeStyle = thread.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // Второй проход для яркости
-        ctx.shadowBlur = 0;
-        ctx.strokeStyle = thread.color.replace('0.2', '0.35').replace('0.15', '0.25').replace('0.18', '0.3');
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      });
-      
-      requestAnimationFrame(draw);
+      };
+
+      // Форматирование
+      const fmt=(open,close)=>{const s=cmtInput.selectionStart,e=cmtInput.selectionEnd;cmtInput.value=cmtInput.value.substring(0,s)+open+cmtInput.value.substring(s,e)+close+cmtInput.value.substring(e);cmtInput.focus();cmtInput.selectionStart=s+open.length;cmtInput.selectionEnd=e+open.length};
+      document.getElementById('cmtBold').onclick=()=>fmt('<b>','</b>');
+      document.getElementById('cmtItalic').onclick=()=>fmt('<i>','</i>');
+      document.getElementById('cmtUnderline').onclick=()=>fmt('<u>','</u>');
+      document.getElementById('cmtImage').onclick=()=>{imageModal.style.display='flex';document.getElementById('imageUrlInput').value='';document.getElementById('imageUrlInput').focus();window._cmtInput=cmtInput};
+      document.getElementById('cmtBr').onclick=()=>{
+        const s=cmtInput.selectionStart;
+        cmtInput.value=cmtInput.value.substring(0,s)+'\n'+cmtInput.value.substring(s);
+        cmtInput.selectionStart=cmtInput.selectionEnd=s+1;
+        cmtInput.dispatchEvent(new Event('input'));
+      };
+      document.getElementById('insertImageBtn').onclick=()=>{
+        const url=document.getElementById('imageUrlInput').value.trim();
+        const ta=window._cmtInput||cmtInput;
+        if(url&&ta){
+          const s=ta.selectionStart;
+          ta.value=ta.value.substring(0,s)+`<img src="${url}" alt="" style="max-width:300px;max-height:200px;object-fit:cover;border-radius:.5rem;">`+ta.value.substring(s);
+          ta.focus()
+        }
+        imageModal.style.display='none';
+      };
+      document.getElementById('imageModal').onclick=e=>{if(e.target===imageModal)imageModal.style.display='none'};
+
+      // Сохранение
+      document.getElementById('cmtSave').onclick=()=>{
+        const c=gCol();const i=c.findIndex(a=>a.id==anime.id);
+        if(i!==-1){
+          // Сохраняем с \n (в базе остаются \n)
+          c[i].comment=cmtInput.value;
+          c[i].commentDate=new Date().toISOString();sCol(c);anime=c[i]
+        }
+        // При отображении заменяем \n на <br>
+        cmtDisplay.querySelector('.cmt-text').innerHTML=(anime.comment||'').replace(/\n/g,'<br>');
+        cmtDisplay.style.display='block';
+        cmtEditBlock.style.display='none';
+        // Обновляем дату
+        const dateEl=cmtDisplay.querySelector('span');
+        if(dateEl)dateEl.textContent=new Date(anime.commentDate).toLocaleString('ru-RU');
+        const delBtnDisplay=cmtDisplay.querySelector('#cmtDelete');
+        if(anime.comment&&!delBtnDisplay){
+          const btn=document.createElement('button');btn.className='btn btn-red btn-sm';btn.id='cmtDelete';btn.innerHTML='<i class="fas fa-trash"></i>';
+          btn.onclick=()=>{if(confirm('Удалить комментарий?')){const c=gCol();const i=c.findIndex(a=>a.id==anime.id);if(i!==-1){c[i].comment='';c[i].commentDate='';sCol(c);render(c[i])}}};
+          cmtDisplay.querySelector('div').insertBefore(btn,cmtDisplay.querySelector('#cmtEdit'));
+        }
+        const delBtnEdit=document.getElementById('cmtDeleteEdit');
+        if(!anime.comment&&delBtnEdit)delBtnEdit.style.display='none';
+      };
+
+      // Удаление (в режиме просмотра)
+      document.getElementById('cmtDelete')?.addEventListener('click',()=>{if(confirm('Удалить комментарий?')){const c=gCol();const i=c.findIndex(a=>a.id==anime.id);if(i!==-1){c[i].comment='';c[i].commentDate='';sCol(c);render(c[i])}}});
+
+      // Удаление (в режиме редактирования)
+      document.getElementById('cmtDeleteEdit')?.addEventListener('click',()=>{if(confirm('Удалить комментарий?')){const c=gCol();const i=c.findIndex(a=>a.id==anime.id);if(i!==-1){c[i].comment='';c[i].commentDate='';sCol(c);render(c[i])}}});
+
+      // Кнопки аниме
+      document.getElementById('editBtn').onclick=()=>{sessionStorage.setItem('anix_anime_data',JSON.stringify(anime));location.href='animeadd.html'};
+      document.getElementById('delBtn').onclick=()=>{if(confirm('Удалить?')){const c=gCol().filter(a=>a.id!=anime.id);sCol(c);const f=JSON.parse(localStorage.getItem('anix_folders')||'[]');f.forEach(f=>{if(f.animeIds)f.animeIds=f.animeIds.filter(id=>id!=anime.id)});localStorage.setItem('anix_folders',JSON.stringify(f));location.href='lib.html'}};
+      document.getElementById('watchBtn').onclick=()=>{window.open(anime.url||`https://www.google.com/search?q=${encodeURIComponent(anime.title||'')}+смотреть+онлайн`,'_blank')};
+      document.getElementById('bmBtn').onclick=()=>{const c=gCol();const i=c.findIndex(a=>a.id==anime.id);if(i!==-1){c[i].bookmarked=!c[i].bookmarked;sCol(c);render(c[i])}};
+      document.getElementById('folderBtn').onclick=()=>{const f=JSON.parse(localStorage.getItem('anix_folders')||'[]');if(!f.length)return alert('Нет папок.');folderList.innerHTML=f.map((f,i)=>{const inF=(f.animeIds||[]).includes(anime.id);return`<div class="folder-item ${inF?'in':''}" data-i="${i}"><span>${f.title} (${(f.animeIds||[]).length})</span><span style="font-size:.7rem;color:${inF?'#51cf66':'#8b7aaa'};">${inF?'✓':'+'}</span></div>`}).join('');folderList.querySelectorAll('.folder-item').forEach(el=>el.onclick=()=>{const i=+el.dataset.i;if(!f[i].animeIds)f[i].animeIds=[];f[i].animeIds.includes(anime.id)?f[i].animeIds=f[i].animeIds.filter(id=>id!==anime.id):f[i].animeIds.push(anime.id);localStorage.setItem('anix_folders',JSON.stringify(f));folderModal.style.display='none';render(anime)});folderModal.style.display='flex'};
     }
-    
-    draw();
-  })();
+
+    if(animeId){const a=gCol().find(a=>a.id==animeId);a?render(a):(main.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>Аниме не найдено</p></div>')}else main.innerHTML='<div class="empty"><p>Аниме не найдено</p></div>';
+    folderModal.onclick=e=>{if(e.target===folderModal)folderModal.style.display='none'};
+    document.getElementById('backBtn').onclick=()=>history.back();
+    document.getElementById('goHomeBtn').onclick=()=>location.href='index.html';
+    document.getElementById('profileAvatarTop').onclick=()=>location.href='profile.html';
+    const profile=JSON.parse(localStorage.getItem('anix_profile')||'{}');
+    if(profile.avatar){document.getElementById('topAvatarImg').src=profile.avatar;document.getElementById('topAvatarImg').style.display='block'}
   </script>
 </body>
 </html>
