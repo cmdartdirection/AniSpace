@@ -90,6 +90,13 @@
     .comment-card img:hover, .cmt-text img:hover {
       transform: scale(1.05);
     }
+    .cmt-text a, .comment-card a {
+      color: #b47aff;
+      text-decoration: underline;
+    }
+    .cmt-text a:hover, .comment-card a:hover {
+      color: #d0b0ff;
+    }
     footer { text-align: left; padding: 1rem; color: #5a507a; font-size: .8rem; border-top: 1px solid rgba(120,100,180,.3); margin-top: auto; }
     @media (max-width:600px) {
       .top-row { flex-direction: column; align-items: center; }
@@ -117,6 +124,17 @@
   </div>
   <div class="modal" id="imageModal">
     <div class="modal-box"><div class="modal-ttl">Вставьте URL изображения</div><input type="text" class="modal-inp" id="imageUrlInput" placeholder="https://..."><div style="display:flex;gap:.5rem;justify-content:flex-end;"><button class="m-btn cancel" onclick="document.getElementById('imageModal').style.display='none'">Отмена</button><button class="m-btn save" id="insertImageBtn">Вставить</button></div></div>
+  </div>
+
+  <div class="modal" id="linkModal">
+    <div class="modal-box">
+      <div class="modal-ttl">Вставьте ссылку</div>
+      <input type="text" class="modal-inp" id="linkUrlInput" placeholder="URL (https://...)">
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;">
+        <button class="m-btn cancel" onclick="document.getElementById('linkModal').style.display='none'">Отмена</button>
+        <button class="m-btn save" id="insertLinkBtn">Вставить</button>
+      </div>
+    </div>
   </div>
 
   <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
@@ -149,6 +167,7 @@
             <button class="btn btn-sm" id="cmtItalic"><i>I</i></button>
             <button class="btn btn-sm" id="cmtUnderline"><u>U</u></button>
             <button class="btn btn-sm" id="cmtBr">↩</button>
+            <button class="btn btn-sm" id="cmtLink">🔗</button>
             <button class="btn btn-sm" id="cmtImage">🖼</button>
             <span style="margin-left:auto;display:flex;gap:.4rem;align-items:center;">
               ${commentDate?`<span style="font-size:.7rem;color:#6b5b8c;">${commentDate}</span>`:''}
@@ -199,6 +218,11 @@
       document.getElementById('cmtBold').onclick=()=>fmt('<b>','</b>');
       document.getElementById('cmtItalic').onclick=()=>fmt('<i>','</i>');
       document.getElementById('cmtUnderline').onclick=()=>fmt('<u>','</u>');
+      document.getElementById('cmtLink').onclick=()=>{
+        document.getElementById('linkModal').style.display='flex';
+        document.getElementById('linkUrlInput').value='';
+        document.getElementById('linkUrlInput').focus();
+      };
       document.getElementById('cmtImage').onclick=()=>{imageModal.style.display='flex';document.getElementById('imageUrlInput').value='';document.getElementById('imageUrlInput').focus();window._cmtInput=cmtInput};
       document.getElementById('cmtBr').onclick=()=>{
         const s=cmtInput.selectionStart;
@@ -206,18 +230,23 @@
         cmtInput.selectionStart=cmtInput.selectionEnd=s+1;
         cmtInput.dispatchEvent(new Event('input'));
       };
-      document.getElementById('insertImageBtn').onclick=()=>{
-        const url=document.getElementById('imageUrlInput').value.trim();
-        const ta=window._cmtInput||cmtInput;
-        if(url&&ta){
-          const s=ta.selectionStart;
-          ta.value=ta.value.substring(0,s)+`<img src="${url}" alt="" style="max-width:300px;max-height:200px;object-fit:cover;border-radius:.5rem;">`+ta.value.substring(s);
-          ta.focus()
+      document.getElementById('insertLinkBtn').onclick=()=>{
+        const url=document.getElementById('linkUrlInput').value.trim();
+        if(url){
+          const s=cmtInput.selectionStart;
+          const e=cmtInput.selectionEnd;
+          const selectedText=cmtInput.value.substring(s,e)||url;
+          cmtInput.value=cmtInput.value.substring(0,s)+`<a href="${url}" target="_blank">${selectedText}</a>`+cmtInput.value.substring(e);
+          cmtInput.focus();
         }
-        imageModal.style.display='none';
+        document.getElementById('linkModal').style.display='none';
       };
       document.getElementById('imageModal').onclick=e=>{if(e.target===imageModal)imageModal.style.display='none'};
 
+      // Закрытие модалки ссылки по клику вне
+      document.getElementById('linkModal').onclick=e=>{
+        if(e.target===document.getElementById('linkModal'))document.getElementById('linkModal').style.display='none';
+      };
       // Сохранение
       document.getElementById('cmtSave').onclick=()=>{
         const c=gCol();const i=c.findIndex(a=>a.id==anime.id);

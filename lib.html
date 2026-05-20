@@ -118,8 +118,8 @@
         <select class="sel" id="genreFilter"><option value="">Все жанры</option></select>
         <select class="sel" id="tagFilter"><option value="">Все теги</option></select>
         <select class="sel" id="sortSelect">
+          <option value="addedAt" selected>По дате добавления</option>
           <option value="title">По названию</option>
-          <option value="addedAt">По дате добавления</option>
           <option value="releaseDate">По дате выхода</option>
           <option value="userRating">По личному рейтингу</option>
           <option value="avgRating">По рейтингу Shikimori</option>
@@ -234,7 +234,7 @@
       genreFilter.style.display = tagFilter.style.display = sortSelect.style.display = 'inline';
       renderGrid(getFiltered());
     }
-
+    sortSelect.value = 'addedAt';
     function moveFolder(id, dir) {
       let folders = getFolders();
       const i = folders.findIndex(f => f.id === id);
