@@ -182,8 +182,17 @@
 
       const cmtDisplay=document.getElementById('cmtDisplay'),cmtEditBlock=document.getElementById('cmtEditBlock'),cmtInput=document.getElementById('commentInput');
 
+      // Авто-высота для нового комментария при первой загрузке
+      if (!comment) {
+        cmtInput.style.height = 'auto';
+        cmtInput.oninput = () => {
+          cmtInput.style.height = 'auto';
+          cmtInput.style.height = cmtInput.scrollHeight + 'px';
+        };
+      }
+
       // Переключение в режим редактирования
-      const editBtn=document.getElementById('cmtEdit');
+      const editBtn = document.getElementById('cmtEdit');
       if(editBtn)editBtn.onclick=()=>{
         cmtDisplay.style.display='none';
         cmtEditBlock.style.display='block';
@@ -196,17 +205,17 @@
         cmtInput.oninput=()=>{cmtInput.style.height='auto';cmtInput.style.height=cmtInput.scrollHeight+'px'};
       };
 
-      cmtInput.onkeydown=e=>{
-        if(e.key==='Enter'){
-          if(e.shiftKey){
-            // Shift+Enter — перенос строки
+      cmtInput.onkeydown = e => {
+        if (e.key === 'Enter') {
+          if (e.shiftKey) {
             e.preventDefault();
-            const s=cmtInput.selectionStart;
-            cmtInput.value=cmtInput.value.substring(0,s)+'\n'+cmtInput.value.substring(s);
-            cmtInput.selectionStart=cmtInput.selectionEnd=s+1;
+            const s = cmtInput.selectionStart;
+            cmtInput.value = cmtInput.value.substring(0, s) + '\n' + cmtInput.value.substring(s);
+            cmtInput.selectionStart = cmtInput.selectionEnd = s + 1;
             cmtInput.dispatchEvent(new Event('input'));
-          }else{
-            // Enter — сохранение
+            // Предотвращаем прыжок в Safari
+            cmtInput.scrollTop = cmtInput.scrollHeight;
+          } else {
             e.preventDefault();
             document.getElementById('cmtSave').click();
           }
@@ -224,6 +233,16 @@
         document.getElementById('linkUrlInput').focus();
       };
       document.getElementById('cmtImage').onclick=()=>{imageModal.style.display='flex';document.getElementById('imageUrlInput').value='';document.getElementById('imageUrlInput').focus();window._cmtInput=cmtInput};
+      document.getElementById('insertImageBtn').onclick=()=>{
+        const url=document.getElementById('imageUrlInput').value.trim();
+        const ta=window._cmtInput||cmtInput;
+        if(url&&ta){
+          const s=ta.selectionStart;
+          ta.value=ta.value.substring(0,s)+`<img src="${url}" alt="" style="max-width:300px;max-height:200px;object-fit:cover;border-radius:.5rem;">`+ta.value.substring(s);
+          ta.focus();
+        }
+        document.getElementById('imageModal').style.display='none';
+      };
       document.getElementById('cmtBr').onclick=()=>{
         const s=cmtInput.selectionStart;
         cmtInput.value=cmtInput.value.substring(0,s)+'\n'+cmtInput.value.substring(s);
