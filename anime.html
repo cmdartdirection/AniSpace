@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif; background: #0e0e1a; min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0; }
+    body { font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif; background: #0e0e1a; min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0; -webkit-overflow-scrolling: auto; overscroll-behavior: none; }
     .app { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; width: 100%; }
     .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
     .logo { background: linear-gradient(135deg,#7b4bff,#b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: .25s; box-shadow: 0 4px 12px rgba(123,75,255,.5); border: 1px solid rgba(255,255,255,.2); }
@@ -222,11 +222,11 @@
           if (e.shiftKey) {
             e.preventDefault();
             const s = cmtInput.selectionStart;
+            const scrollTop = window.scrollY; // Запоминаем позицию
             cmtInput.value = cmtInput.value.substring(0, s) + '\n' + cmtInput.value.substring(s);
             cmtInput.selectionStart = cmtInput.selectionEnd = s + 1;
             cmtInput.dispatchEvent(new Event('input'));
-            // Предотвращаем прыжок в Safari
-            cmtInput.scrollTop = cmtInput.scrollHeight;
+            window.scrollTo(0, scrollTop); // Восстанавливаем позицию
           } else {
             e.preventDefault();
             document.getElementById('cmtSave').click();
