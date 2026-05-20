@@ -22,7 +22,15 @@
     .main { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; }
     .card { background: rgba(25,22,44,.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 2rem; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); position: relative; z-index: 1; }
     .comment-card { background: rgba(25,22,44,.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 1.5rem; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); margin-top: 1rem; position: relative; z-index: 2; }
-    .comment-card img { max-width: 100%; border-radius: .5rem; margin: .5rem 0; }
+    .comment-card img, .cmt-text img {
+      max-width: 600px;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: .5rem;
+      margin: .5rem 0;
+      cursor: pointer;
+      transition: transform .2s;
+    }
     .top-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
     .cover-col { flex-shrink: 0; display: flex; flex-direction: column; gap: .6rem; align-items: center; width: 180px; }
     .cover { width: 180px; height: 255px; border-radius: 1rem; border: 1px solid rgba(200,170,255,.4); overflow: hidden; display: flex; align-items: center; justify-content: center; }
@@ -96,6 +104,10 @@
     }
     .cmt-text a:hover, .comment-card a:hover {
       color: #d0b0ff;
+    }
+    .cmt-ta {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     footer { text-align: left; padding: 1rem; color: #5a507a; font-size: .8rem; border-top: 1px solid rgba(120,100,180,.3); margin-top: auto; }
     @media (max-width:600px) {
@@ -238,7 +250,7 @@
         const ta=window._cmtInput||cmtInput;
         if(url&&ta){
           const s=ta.selectionStart;
-          ta.value=ta.value.substring(0,s)+`<img src="${url}" alt="" style="max-width:300px;max-height:200px;object-fit:cover;border-radius:.5rem;">`+ta.value.substring(s);
+          ta.value=ta.value.substring(0,s)+`<img src="${url}" alt="" style="max-width:600px;max-height:400px;object-fit:cover;border-radius:.5rem;">`+ta.value.substring(s);
           ta.focus();
         }
         document.getElementById('imageModal').style.display='none';
