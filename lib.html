@@ -12,9 +12,33 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-      background: #0e0e1a;
-      min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0;
+      background: var(--bg);
+      min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0;
     }
+    :root {
+      --bg: #0e0e1a;
+      --text: #f0e6ff;
+      --text-secondary: #8b7aaa;
+      --card-bg: rgba(25,22,44,0.6);
+      --input-bg: rgba(10,8,20,0.7);
+      --folder-bg: rgba(25,22,44,0.4);
+      --folder-hdr: rgba(30,25,50,0.5);
+      --modal-bg: rgba(25,22,44,0.98);
+      --border: rgba(180,150,220,0.3);
+    }
+
+    .light-theme {
+      --bg: #f0edf5;
+      --text: #2a1a4a;
+      --text-secondary: #6b5b8c;
+      --card-bg: rgba(255,255,255,0.7);
+      --input-bg: rgba(245,242,252,0.95);
+      --folder-bg: rgba(245,242,252,0.7);
+      --folder-hdr: rgba(240,237,250,0.7);
+      --modal-bg: rgba(245,242,252,0.95);
+      --border: rgba(123,75,255,0.3);
+    }
+
     .app { display: flex; flex-direction: column; flex: 1; width: 100%; }
     .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
     .logo { background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s; box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2); }
@@ -31,13 +55,13 @@
     .tab.bm.active { background: linear-gradient(135deg, #f5d57a, #fce9a9); border-color: #e8c547; color: #5a4a2a; }
     .tab:hover { background: rgba(123,75,255,0.3); color: white; }
     .ctrls { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
-    .sel { background: rgba(15,12,28,0.8); border: 1px solid rgba(180,150,220,0.3); color: #cbb8f0; font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 1.5rem; cursor: pointer; font-family: inherit; outline: none; }
+    .sel { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 1.5rem; cursor: pointer; font-family: inherit; outline: none; }
     .sel:focus { border-color: #b47aff; }
     .rand { background: linear-gradient(135deg, #ff6b9d, #ff4444); border: none; color: white; font-size: 0.8rem; padding: 0.4rem 1rem; border-radius: 2rem; cursor: pointer; transition: 0.2s; font-family: inherit; display: flex; align-items: center; gap: 0.3rem; margin-left: auto; }
     .rand:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255,68,68,0.5); }
-    .cnt { font-size: 0.8rem; color: #8b7aaa; }
+    .cnt { font-size: 0.8rem; color: var(--text-secondary); }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.8rem; }
-    .card { position: relative; aspect-ratio: 2/3; border-radius: 0.6rem; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid rgba(180,130,255,0.2); background: rgba(25,22,44,0.6); }
+    .card { position: relative; aspect-ratio: 2/3; border-radius: 0.6rem; overflow: hidden; cursor: pointer; transition: 0.2s; border: 1px solid rgba(180,130,255,0.2); background: var(--card-bg); }
     .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); border-color: rgba(180,130,255,0.5); }
     .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .card-over { position: absolute; bottom: 0; left: 0; width: 100%; padding: 0.5rem; background: linear-gradient(transparent, rgba(0,0,0,0.9)); opacity: 0; transition: 0.2s; }
@@ -48,14 +72,14 @@
     .card:hover .card-list { opacity: 0; transition: 0.2s; }
     .card-list { position: absolute; bottom: 0.4rem; left: 0.4rem; font-size: 0.55rem; padding: 0.1rem 0.35rem; border-radius: 0.3rem; font-weight: 600; color: white; opacity: 1; transition: 0.2s; }
     .card-emp { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #5a4b7a; }
-    .empty { text-align: center; color: #8b7aaa; padding: 3rem; font-size: 0.95rem; grid-column: 1 / -1; }
-    .folder { margin-bottom: 1rem; background: rgba(25,22,44,0.4); border-radius: 0.8rem; border: 1px solid rgba(180,130,255,0.15); overflow: hidden; width: 100%; }
-    .f-hdr { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.6rem 0.8rem; background: rgba(30,25,50,0.5); border-bottom: 1px solid rgba(180,130,255,0.1); }
+    .empty { text-align: center; color: var(--text-secondary); padding: 3rem; font-size: 0.95rem; grid-column: 1 / -1; }
+    .folder { margin-bottom: 1rem; background: var(--folder-bg); border-radius: 0.8rem; border: 1px solid rgba(180,130,255,0.15); overflow: hidden; width: 100%; }
+    .f-hdr { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.6rem 0.8rem; background: var(--folder-hdr); border-bottom: 1px solid rgba(180,130,255,0.1); }
     .f-hdr:hover .f-ttl { color: white; }
     .f-ttl { font-size: 0.85rem; font-weight: 600; color: #cbb8f0; transition: 0.2s; }
-    .f-cnt { font-size: 0.7rem; color: #8b7aaa; }
+    .f-cnt { font-size: 0.7rem; color: var(--text-secondary); }
     .f-avg { font-size: 0.7rem; color: #f0b300; margin-left: auto; }
-    .f-tog { color: #8b7aaa; transition: 0.2s; font-size: 0.7rem; }
+    .f-tog { color: var(--text-secondary); transition: 0.2s; font-size: 0.7rem; }
     .f-tog.col i { transform: rotate(-90deg); }
     .f-body { transition: 0.2s; padding: 0.6rem; }
     .f-body.col { display: none; }
@@ -65,27 +89,32 @@
     .f-cont { display: flex; flex-direction: column; gap: 1rem; }
     .f-grid { display: flex; gap: 0.8rem; flex-wrap: wrap; }
     .f-grid .card { width: 130px; flex-shrink: 0; }
-    .add-f { background: rgba(180,130,255,0.1); border: 1px dashed rgba(180,130,255,0.3); color: #8b7aaa; padding: 0.5rem; border-radius: 0.6rem; cursor: pointer; font-size: 0.8rem; transition: 0.2s; text-align: center; margin-top: 1rem; width: 100%; }
+    .add-f { background: rgba(180,130,255,0.1); border: 1px dashed rgba(180,130,255,0.3); color: var(--text-secondary); padding: 0.5rem; border-radius: 0.6rem; cursor: pointer; font-size: 0.8rem; transition: 0.2s; text-align: center; margin-top: 1rem; width: 100%; }
     .add-f:hover { background: rgba(180,130,255,0.2); color: #cbb8f0; }
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
-    .modal-box { background: rgba(25,22,44,0.98); border: 1px solid rgba(180,130,255,0.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 450px; width: 90%; box-shadow: 0 20px 40px black; }
+    .modal-box { background: var(--modal-bg); border: 1px solid rgba(180,130,255,0.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 450px; width: 90%; box-shadow: 0 20px 40px black; }
     .modal-ttl { font-weight: 600; color: #cbb8f0; margin-bottom: 1rem; }
-    .modal-inp { width: 100%; background: rgba(10,8,20,0.7); border: 1px solid rgba(180,150,220,0.35); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: #e4d7ff; font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
+    .modal-inp { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: var(--text); font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
     .modal-inp:focus { border-color: #b47aff; }
     .modal-btn { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; border: none; font-family: inherit; background: linear-gradient(135deg, #7b4bff, #b084ff); color: white; }
+    .search-inp { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); }
+    .search-inp::placeholder { color: var(--text-secondary); }
     .search-inp:focus { border-color: #b47aff; }
+    .light-theme .f-hdr:hover .f-ttl { color: #2a1a4a; }
+    .light-theme .folder { border-color: rgba(123,75,255,0.2); }
+    .light-theme .add-f { background: rgba(123,75,255,0.05); }
+    .light-theme .sel option, .light-theme .modal-inp option { background: #fff; color: #2a1a4a; }
 
-    /* Мобильная оптимизация */
+    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
+
     @media (max-width: 600px) {
       .top-bar { padding: 0.75rem 1rem; }
       .logo { font-size: 1rem; padding: 0.4rem 1rem; }
       .ava { width: 32px; height: 32px; right: 1rem; }
       .mode { width: 32px; height: 32px; left: 1rem; }
       .main { padding: 1rem; }
-      .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
-      .btn-row { flex-direction: column; gap: 0.5rem; }
       .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; }
-      .card-over { opacity: 1; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 0.3rem; }
+      .card-over { opacity: 1; padding: 0.3rem; }
       .card-ttl { font-size: 0.6rem; }
       .tabs { gap: 0.2rem; }
       .tab { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
@@ -93,8 +122,6 @@
       .sel { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
       .rand { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
     }
-
-    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
   </style>
 </head>
 <body>
@@ -125,7 +152,7 @@
           <option value="avgRating">По рейтингу Shikimori</option>
         </select>
         <span class="cnt" id="countText">0 аниме</span>
-        <input type="text" class="search-inp" id="libSearchInput" placeholder="Поиск по названию..." style="flex:1;background:rgba(10,8,20,0.7);border:1px solid rgba(180,150,220,0.3);color:#e4d7ff;font-size:0.8rem;padding:0.4rem 0.8rem;border-radius:1.5rem;outline:none;font-family:inherit;margin-left:auto;">
+        <input type="text" class="search-inp" id="libSearchInput" placeholder="Поиск по названию..." style="flex:1;background:var(--input-bg);border:1px solid var(--border);color:var(--text);font-size:0.8rem;padding:0.4rem 0.8rem;border-radius:1.5rem;outline:none;font-family:inherit;margin-left:auto;">
         <button class="rand" id="randomBtn"><i class="fas fa-random"></i> Случайное</button>
       </div>
       <div class="grid" id="animeGrid"></div>
@@ -140,6 +167,12 @@
       <button class="modal-btn" id="modalSaveBtn">Сохранить</button>
     </div>
   </div>
+
+  <script>
+    if (localStorage.getItem('anix_theme') === 'light') {
+      document.body.classList.add('light-theme');
+    }
+  </script>
 
   <script>
     const goHomeBtn = document.getElementById('goHomeBtn');

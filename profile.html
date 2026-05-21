@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta name="theme-color" content="#0e0e1a">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#f0edf5">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniSpace — Профиль</title>
@@ -11,26 +11,80 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-      background: #0e0e1a;
-      min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0;
+      background: var(--bg);
+      min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0;
     }
+    :root {
+      --bg: #0e0e1a;
+      --text: #f0e6ff;
+      --text-secondary: #8b7aaa;
+      --card-bg: rgba(25,22,44,0.6);
+      --card-header-bg: rgba(30,25,50,0.8);
+      --border: rgba(180,130,255,0.2);
+      --input-bg: rgba(10,8,20,0.7);
+      --modal-bg: rgba(25,22,44,0.98);
+      --shadow: 0 20px 40px black;
+      --banner-gradient: linear-gradient(135deg, #1a1030 0%, #3a2060 50%, #5a3090 100%);
+      --banner-fade: #0e0e1a;
+      --top-bar-bg: rgba(14,14,26,0.9);
+      --avatar-border: rgba(180,130,255,0.6);
+      --avatar-shadow: 0 0 12px rgba(150,100,255,0.3);
+      --nick-color: #e4d7ff;
+      --chart-bg: rgba(25,22,44,0.7);
+      --stat-border: rgba(180,150,220,0.1);
+      --stat-v-color: #cbb8f0;
+      --add-show-bg: rgba(180,130,255,0.1);
+      --add-show-border: rgba(180,130,255,0.3);
+      --edit-prof-bg: rgba(255,255,255,0.05);
+      --footer-color: #5a507a;
+      --footer-border: rgba(120,100,180,0.3);
+      --modal-border: rgba(180,130,255,0.5);
+    }
+
+    .light-theme {
+      --bg: #f0edf5;
+      --text: #2a1a4a;
+      --text-secondary: #6b5b8c;
+      --card-bg: rgba(235,230,245,0.8);
+      --card-header-bg: rgba(245,242,252,0.9);
+      --border: rgba(123,75,255,0.2);
+      --input-bg: rgba(245,242,252,0.95);
+      --modal-bg: rgba(245,242,252,0.95);
+      --shadow: 0 4px 15px rgba(0,0,0,0.1);
+      --banner-gradient: linear-gradient(135deg, #e0d6f5 0%, #c4b0e0 50%, #a890d0 100%);
+      --banner-fade: #f0edf5;
+      --top-bar-bg: rgba(240,237,245,0.9);
+      --avatar-border: rgba(123,75,255,0.5);
+      --avatar-shadow: 0 0 12px rgba(100,50,200,0.2);
+      --nick-color: #3a2a5a;
+      --chart-bg: rgba(235,230,245,0.9);
+      --stat-border: rgba(123,75,255,0.1);
+      --stat-v-color: #4a3a6a;
+      --add-show-bg: rgba(123,75,255,0.05);
+      --add-show-border: rgba(123,75,255,0.25);
+      --edit-prof-bg: rgba(0,0,0,0.02);
+      --footer-color: #7a6a9a;
+      --footer-border: rgba(123,75,255,0.2);
+      --modal-border: rgba(123,75,255,0.4);
+    }
+
     .app { display: flex; flex-direction: column; flex: 1; width: 100%; }
-    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; z-index: 100; background: linear-gradient(to bottom, rgba(14,14,26,0.9) 0%, rgba(14,14,26,0.4) 0%, transparent 100%); border-bottom: none; }
+    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; z-index: 100; border-bottom: none; }
     .logo { background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s; box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2); }
     .logo:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
-    .ava { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.6); cursor: pointer; overflow: hidden; background: rgba(123,75,255,0.2); transition: 0.25s; box-shadow: 0 0 12px rgba(150,100,255,0.3); }
+    .ava { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--avatar-border); cursor: pointer; overflow: hidden; background: rgba(123,75,255,0.2); transition: 0.25s; box-shadow: var(--avatar-shadow); }
     .ava:hover { border-color: #b47aff; box-shadow: 0 0 18px rgba(150,100,255,0.5); }
     .ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .main { flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 2rem; padding-top: 2px; }
-    .banner { position: relative; width: 100%; height: 320px; background: linear-gradient(135deg, #1a1030 0%, #3a2060 50%, #5a3090 100%); overflow: visible; margin-top: 0; }
-    .banner::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(transparent, #0e0e1a); z-index: 2; pointer-events: none; }
+    .banner { position: relative; width: 100%; height: 320px; background: var(--banner-gradient); overflow: visible; margin-top: 0; }
+    .banner::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(transparent, var(--banner-fade)); z-index: 2; pointer-events: none; }
     .banner img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 0; }
-    .banner-ph { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1030 0%, #3a2060 50%, #5a3090 100%); z-index: 0; }
+    .banner-ph { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--banner-gradient); z-index: 0; }
     .avatar-row { position: absolute; bottom: -50px; left: 60px; z-index: 20; display: flex; align-items: flex-end; gap: 1rem; }
-    .avatar-w { position: relative; width: 130px; height: 130px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.7); box-shadow: 0 0 30px rgba(123,75,255,0.4), 0 8px 25px rgba(0,0,0,0.5); overflow: hidden; background: rgba(30,20,50,0.95); flex-shrink: 0; }
+    .avatar-w { position: relative; width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--avatar-border); box-shadow: 0 0 30px rgba(123,75,255,0.4), 0 8px 25px rgba(0,0,0,0.2); overflow: hidden; background: rgba(30,20,50,0.95); flex-shrink: 0; }
     .avatar-w img { width: 100%; height: 100%; object-fit: cover; display: none; }
     .nick-block { margin-bottom: 18px; display: flex; align-items: center; gap: 0.6rem; }
-    .nick { font-size: 1.4rem; font-weight: 700; color: #e4d7ff; }
+    .nick { font-size: 1.4rem; font-weight: 700; color: var(--nick-color); }
     .rank { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 0.4rem; font-weight: 700; font-size: 0.85rem; }
     .r-sss-plus { background: linear-gradient(135deg, #f00, #f44); color: white; animation: glow-red 1.5s infinite alternate; }
     .r-sss { background: linear-gradient(135deg, #ff4500, #ff6347); color: white; animation: glow-orange 1.5s infinite alternate; }
@@ -45,58 +99,59 @@
     @keyframes glow-orange { 0% { box-shadow: 0 0 8px rgba(255,69,0,0.4); } 100% { box-shadow: 0 0 20px rgba(255,69,0,0.7); } }
     .content { display: flex; gap: 2rem; padding: 4rem 2rem 1rem; max-width: 1000px; margin: 0 auto; width: 100%; z-index: 5; }
     .left { flex: 1; min-width: 0; }
-    .show { background: rgba(25,22,44,0.6); border-radius: 0.8rem; border: 1px solid rgba(180,130,255,0.2); overflow: hidden; margin-bottom: 0.8rem; }
-    .show-h { background: rgba(30,25,50,0.8); padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(180,130,255,0.15); }
-    .show-ttl { font-size: 0.8rem; font-weight: 600; color: #cbb8f0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .show { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 0.8rem; border: 1px solid var(--border); overflow: hidden; margin-bottom: 0.8rem; }
+    .show-h { background: var(--card-header-bg); padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .show-ttl { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
     .show-acts { display: flex; gap: 0.3rem; }
-    .show-act { background: transparent; border: none; color: #6b5b8c; cursor: pointer; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 0.3rem; transition: 0.2s; }
-    .show-act:hover { color: white; background: rgba(180,130,255,0.2); }
+    .show-act { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 0.3rem; transition: 0.2s; }
+    .show-act:hover { color: #7b4bff; background: rgba(123,75,255,0.1); }
     .show-body { padding: 0.8rem; }
     .top-row { display: flex; gap: 0.5rem; }
     .top-card { flex: 1; border-radius: 0.5rem; overflow: hidden; cursor: pointer; position: relative; aspect-ratio: 2/3; }
-    .top-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+    .top-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
     .top-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
     .top-over { position: absolute; bottom: 0; left: 0; width: 100%; padding: 0.4rem; background: linear-gradient(transparent, rgba(0,0,0,0.85)); }
     .top-name { font-weight: 600; font-size: 0.65rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .top-rate { font-size: 0.6rem; color: #f0b300; }
     .top-empty { width: 100%; height: 100%; background: rgba(25,22,44,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; color: #5a4b7a; font-size: 0.7rem; position: absolute; top: 0; left: 0; }
-    .desc-show { padding: 0.5rem; color: #b5a3d4; font-size: 0.85rem; line-height: 1.6; }
+    .desc-show { padding: 0.5rem; color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6; }
     .desc-show img { max-width: 100%; border-radius: 0.5rem; margin: 0.5rem 0; }
     .right { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.8rem; }
-    .chart { background: rgba(25,22,44,0.7); border-radius: 1rem; padding: 0.8rem; border: 1px solid rgba(180,130,255,0.25); text-align: center; }
-    .chart-ttl { font-size: 0.75rem; color: #8b7aaa; margin-bottom: 0.5rem; }
+    .chart { background: var(--chart-bg); backdrop-filter: blur(10px); border-radius: 1rem; padding: 0.8rem; border: 1px solid var(--border); text-align: center; }
+    .chart-ttl { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
     .pie-w { display: flex; justify-content: center; }
     .pie-leg { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; justify-content: center; }
-    .leg-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.6rem; color: #b5a3d4; padding: 0.1rem 0.4rem; border-radius: 0.3rem; }
+    .leg-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.6rem; color: var(--text-secondary); padding: 0.1rem 0.4rem; border-radius: 0.3rem; }
     .leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .total-b { font-size: 0.7rem; color: #8b7aaa; margin-top: 0.3rem; }
-    .stats { background: rgba(25,22,44,0.7); border-radius: 1rem; padding: 1rem 1.2rem; border: 1px solid rgba(180,130,255,0.25); }
-    .stat { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid rgba(180,150,220,0.1); }
+    .total-b { font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.3rem; }
+    .stats { background: var(--chart-bg); backdrop-filter: blur(10px); border-radius: 1rem; padding: 1rem 1.2rem; border: 1px solid var(--border); }
+    .stat { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid var(--stat-border); }
     .stat:last-child { border-bottom: none; }
-    .stat-l { font-size: 0.8rem; color: #8b7aaa; }
-    .stat-v { font-weight: 700; font-size: 1rem; color: #cbb8f0; }
+    .stat-l { font-size: 0.8rem; color: var(--text-secondary); }
+    .stat-v { font-weight: 700; font-size: 1rem; color: var(--stat-v-color); }
     .hrs { cursor: pointer; }
-    .hrs:hover { color: #e4d7ff; }
-    .add-show { display: block; width: 100%; margin-top: 0.8rem; background: rgba(180,130,255,0.1); border: 1px dashed rgba(180,130,255,0.3); color: #8b7aaa; padding: 0.6rem; border-radius: 0.6rem; cursor: pointer; font-size: 0.8rem; text-align: center; }
-    .add-show:hover { background: rgba(180,130,255,0.2); color: #cbb8f0; }
-    .edit-prof-btn { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(180,130,255,0.25); color: #b5a3d4; font-size: 0.8rem; padding: 0.6rem; border-radius: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
-    .edit-prof-btn:hover { background: rgba(180,130,255,0.1); border-color: #b47aff; color: white; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
-    .modal-box { background: rgba(25,22,44,0.98); border: 1px solid rgba(180,130,255,0.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 500px; width: 90%; box-shadow: 0 20px 40px black; max-height: 80vh; overflow-y: auto; }
-    .modal-ttl { font-weight: 600; color: #cbb8f0; margin-bottom: 1rem; }
-    .modal-inp, .modal-ta, .modal-sel { width: 100%; background: rgba(10,8,20,0.7); border: 1px solid rgba(180,150,220,0.35); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: #e4d7ff; font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
+    .hrs:hover { color: var(--text); }
+    .add-show { display: block; width: 100%; margin-top: 0.8rem; background: var(--add-show-bg); border: 1px dashed var(--add-show-border); color: var(--text-secondary); padding: 0.6rem; border-radius: 0.6rem; cursor: pointer; font-size: 0.8rem; text-align: center; transition: 0.2s; }
+    .add-show:hover { background: rgba(123,75,255,0.15); color: var(--text); border-color: #7b4bff; }
+    .edit-prof-btn { width: 100%; background: var(--edit-prof-bg); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; padding: 0.6rem; border-radius: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+    .edit-prof-btn:hover { background: rgba(123,75,255,0.1); border-color: #7b4bff; color: var(--text); }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+    .modal-box { background: var(--modal-bg); border: 1px solid var(--modal-border); border-radius: 1.2rem; padding: 1.5rem; max-width: 500px; width: 90%; box-shadow: var(--shadow); max-height: 80vh; overflow-y: auto; }
+    .modal-ttl { font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+    .modal-inp, .modal-ta, .modal-sel { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: var(--text); font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
     .modal-ta { min-height: 100px; resize: none; overflow: hidden; }
-    .modal-inp:focus, .modal-ta:focus { border-color: #b47aff; }
+    .modal-inp:focus, .modal-ta:focus { border-color: #7b4bff; }
     .modal-btns { display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; }
     .modal-btns-r { display: flex; gap: 0.5rem; }
     .fmt-btns { display: flex; gap: 0.2rem; }
-    .fmt-btn { background: rgba(180,130,255,0.15); border: 1px solid rgba(180,130,255,0.3); color: #b5a3d4; padding: 0.25rem 0.5rem; border-radius: 0.4rem; cursor: pointer; font-size: 0.7rem; transition: 0.2s; }
-    .fmt-btn:hover { background: rgba(180,130,255,0.3); color: white; }
+    .fmt-btn { background: rgba(123,75,255,0.15); border: 1px solid rgba(123,75,255,0.3); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 0.4rem; cursor: pointer; font-size: 0.7rem; transition: 0.2s; }
+    .fmt-btn:hover { background: rgba(123,75,255,0.3); color: white; }
     .m-btn { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; transition: 0.2s; border: none; font-family: inherit; }
-    .m-btn.cancel { background: rgba(255,255,255,0.1); color: #b5a3d4; }
+    .m-btn.cancel { background: rgba(0,0,0,0.1); color: var(--text-secondary); }
+    .light-theme .m-btn.cancel { background: rgba(0,0,0,0.05); }
     .m-btn.save { background: linear-gradient(135deg, #7b4bff, #b084ff); color: white; }
     .m-btn.danger { background: rgba(255,80,80,0.3); color: #ff6b6b; }
-    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
+    footer { text-align: left; padding: 1rem; color: var(--footer-color); font-size: 0.8rem; border-top: 1px solid var(--footer-border); margin-top: auto; }
     @media (max-width: 750px) { .content { flex-direction: column; padding: 3.5rem 1rem 1rem; } .right { width: 100%; } .avatar-row { left: 25px; bottom: -40px; } .avatar-w { width: 100px; height: 100px; } .nick { font-size: 1.2rem; } .banner { height: 220px; } }
   </style>
 </head>
@@ -142,9 +197,9 @@
       <select class="modal-sel" id="modalType"><option value="top">3 аниме</option><option value="desc">Описание</option></select>
       <input type="text" class="modal-inp" id="modalShowcaseTitle" placeholder="Название витрины">
       <div id="modalTopEdit" style="display:none;">
-        <label style="font-size:0.75rem;color:#8b7aaa;">Позиция 1</label><select class="modal-sel" id="topPos1"><option value="">—</option></select>
-        <label style="font-size:0.75rem;color:#8b7aaa;">Позиция 2</label><select class="modal-sel" id="topPos2"><option value="">—</option></select>
-        <label style="font-size:0.75rem;color:#8b7aaa;">Позиция 3</label><select class="modal-sel" id="topPos3"><option value="">—</option></select>
+        <label style="font-size:0.75rem;color:var(--text-secondary);">Позиция 1</label><select class="modal-sel" id="topPos1"><option value="">—</option></select>
+        <label style="font-size:0.75rem;color:var(--text-secondary);">Позиция 2</label><select class="modal-sel" id="topPos2"><option value="">—</option></select>
+        <label style="font-size:0.75rem;color:var(--text-secondary);">Позиция 3</label><select class="modal-sel" id="topPos3"><option value="">—</option></select>
       </div>
       <div id="modalDescBlock" style="display:none;"><textarea class="modal-ta" id="modalDesc" placeholder="Описание..."></textarea></div>
       <div class="modal-btns">
@@ -189,6 +244,12 @@
       </div>
     </div>
   </div>
+
+  <script>
+    if (localStorage.getItem('anix_theme') === 'light') {
+      document.body.classList.add('light-theme');
+    }
+  </script>
 
   <script>
     let currentEditingShowcase = null, showHours = true, rankedGlobal = [];
@@ -344,7 +405,6 @@
           <button class="show-act" data-action="up" data-id="${sc.id}"><i class="fas fa-arrow-up"></i></button>
           <button class="show-act" data-action="down" data-id="${sc.id}"><i class="fas fa-arrow-down"></i></button>
           <button class="show-act" data-action="edit" data-id="${sc.id}"><i class="fas fa-pen"></i></button>
-          <!-- <button class="show-act" data-action="delete" data-id="${sc.id}"><i class="fas fa-trash"></i></button> -->
         </div></div><div class="show-body">`;
         if (sc.type === 'desc') {
           html += `<div class="desc-show">${sc.desc || 'Нет описания'}</div>`;
@@ -384,7 +444,7 @@
       const counts = {}; let total = 0;
       collection.forEach(a => { const list = a.list || 'watching'; counts[list] = (counts[list]||0)+1; total++; });
       const chartBars = document.getElementById('chartBars');
-      if (total === 0) { chartBars.innerHTML = '<p style="color:#6b5b8c;font-size:0.7rem;">Нет данных</p><div class="total-b">Всего: 0</div>'; return; }
+      if (total === 0) { chartBars.innerHTML = '<p style="color:var(--text-secondary);font-size:0.7rem;">Нет данных</p><div class="total-b">Всего: 0</div>'; return; }
       const entries = Object.entries(listNames).filter(([key]) => counts[key] > 0);
       const size = 140, cx = size/2, cy = size/2, r = 55;
       let angle = -Math.PI / 2, paths = '';
@@ -392,7 +452,7 @@
         const slice = (counts[key] / total) * Math.PI * 2;
         const x1 = cx + r * Math.cos(angle), y1 = cy + r * Math.sin(angle);
         const x2 = cx + r * Math.cos(angle + slice), y2 = cy + r * Math.sin(angle + slice);
-        paths += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${slice>Math.PI?1:0} 1 ${x2} ${y2} Z" fill="${listColors[key]}" stroke="#1a1a2e" stroke-width="1.5"/>`;
+        paths += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${slice>Math.PI?1:0} 1 ${x2} ${y2} Z" fill="${listColors[key]}" stroke="var(--bg)" stroke-width="1.5"/>`;
         angle += slice;
       });
       chartBars.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${entries.map(([key, name]) => `<div class="leg-item"><div class="leg-dot" style="background:${listColors[key]};"></div>${name}: ${counts[key]}</div>`).join('')}</div><div class="total-b">Всего: ${total}</div>`;
@@ -400,14 +460,12 @@
 
     function loadProfile() {
       const profile = getProfile(), collection = getCollection();
-      // Аватарка из ссылки профиля или из файлов
       if (profile.avatar) {
         document.getElementById('avatarImage').src = profile.avatar;
         document.getElementById('avatarImage').style.display = 'block';
         document.getElementById('topAvatarImg').src = profile.avatar;
         document.getElementById('topAvatarImg').style.display = 'block';
       }
-      // Баннер из ссылки профиля или из файлов
       if (profile.banner) {
         document.getElementById('bannerImage').src = profile.banner;
         document.getElementById('bannerImage').style.display = 'block';
@@ -439,7 +497,6 @@
       document.getElementById('hoursLabel').textContent = showHours ? 'Часов' : 'Дней';
     };
 
-    // Закрытие модалок по Escape
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         if (document.getElementById('editModal').style.display === 'flex') closeModal();

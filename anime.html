@@ -1,15 +1,71 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta name="theme-color" content="#0e0e1a">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#f0edf5">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AniSpace — Просмотр аниме</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif; background: #0e0e1a; min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0; -webkit-overflow-scrolling: auto; overscroll-behavior: none; }
+    body { font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0; -webkit-overflow-scrolling: auto; overscroll-behavior: none; }
+    :root {
+      --bg: #0e0e1a;
+      --text: #f0e6ff;
+      --text-secondary: #8b7aaa;
+      --card-bg: rgba(25,22,44,0.8);
+      --cell-bg: rgba(15,12,28,0.7);
+      --input-bg: rgba(10,8,20,0.7);
+      --border: rgba(180,150,220,0.35);
+      --shadow: 0 20px 40px rgba(0,0,0,0.6);
+      --modal-bg: rgba(25,22,44,0.98);
+      --modal-border: rgba(180,130,255,0.5);
+      --title-color: #e4d7ff;
+      --cell-v-color: #e4d7ff;
+      --desc-title-color: #a494c4;
+      --desc-text-color: #b5a3d4;
+      --cmt-text-color: #b5a3d4;
+      --footer-color: #5a507a;
+      --footer-border: rgba(120,100,180,0.3);
+      --btn-bg: rgba(180,130,255,0.1);
+      --btn-border: rgba(180,130,255,0.3);
+      --btn-color: #c9a9ff;
+      --folder-item-bg: rgba(180,130,255,0.1);
+      --folder-item-border: rgba(180,130,255,0.2);
+      --badge-rating-bg: rgba(240,179,0,0.15);
+      --badge-tag-bg: rgba(180,130,255,0.15);
+      --cover-bg: rgba(40,30,60,0.7);
+    }
+
+    .light-theme {
+      --bg: #f0edf5;
+      --text: #2a1a4a;
+      --text-secondary: #6b5b8c;
+      --card-bg: rgba(235,230,245,0.9);
+      --cell-bg: rgba(245,242,252,0.95);
+      --input-bg: rgba(245,242,252,0.95);
+      --border: rgba(123,75,255,0.25);
+      --shadow: 0 4px 15px rgba(0,0,0,0.1);
+      --modal-bg: rgba(255,255,255,0.98);
+      --modal-border: rgba(123,75,255,0.4);
+      --title-color: #3a2a5a;
+      --cell-v-color: #4a3a6a;
+      --desc-title-color: #6b5b8c;
+      --desc-text-color: #5a4a7a;
+      --cmt-text-color: #5a4a7a;
+      --footer-color: #7a6a9a;
+      --footer-border: rgba(123,75,255,0.2);
+      --btn-bg: rgba(123,75,255,0.08);
+      --btn-border: rgba(123,75,255,0.25);
+      --btn-color: #6b4ab0;
+      --folder-item-bg: rgba(123,75,255,0.08);
+      --folder-item-border: rgba(123,75,255,0.2);
+      --badge-rating-bg: rgba(240,179,0,0.12);
+      --badge-tag-bg: rgba(123,75,255,0.12);
+      --cover-bg: rgba(240,235,250,0.9);
+    }
+
     .app { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; width: 100%; }
     .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
     .logo { background: linear-gradient(135deg,#7b4bff,#b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: .25s; box-shadow: 0 4px 12px rgba(123,75,255,.5); border: 1px solid rgba(255,255,255,.2); }
@@ -20,8 +76,8 @@
     .back-btn { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,.4); cursor: pointer; background: rgba(123,75,255,.15); color: #c9a9ff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: .25s; }
     .back-btn:hover { border-color: #b47aff; color: white; background: rgba(123,75,255,.3); }
     .main { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; }
-    .card { background: rgba(25,22,44,.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 2rem; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); position: relative; z-index: 1; }
-    .comment-card { background: rgba(25,22,44,.8); backdrop-filter: blur(20px); border-radius: 2rem; padding: 1.5rem; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); margin-top: 1rem; position: relative; z-index: 2; }
+    .card { background: var(--card-bg); backdrop-filter: blur(20px); border-radius: 2rem; padding: 2rem; width: 100%; box-shadow: var(--shadow), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); position: relative; z-index: 1; }
+    .comment-card { background: var(--card-bg); backdrop-filter: blur(20px); border-radius: 2rem; padding: 1.5rem; width: 100%; box-shadow: var(--shadow), 0 0 0 1px rgba(180,130,255,.25); border: 1px solid rgba(255,255,255,.1); margin-top: 1rem; position: relative; z-index: 2; }
     .comment-card img, .cmt-text img {
       max-width: 600px;
       max-height: 400px;
@@ -33,7 +89,7 @@
     }
     .top-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
     .cover-col { flex-shrink: 0; display: flex; flex-direction: column; gap: .6rem; align-items: center; width: 180px; }
-    .cover { width: 180px; height: 255px; border-radius: 1rem; border: 1px solid rgba(200,170,255,.4); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .cover { width: 180px; height: 255px; border-radius: 1rem; border: 1px solid rgba(200,170,255,.4); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--cover-bg); }
     .cover img { width: 100%; height: 100%; object-fit: cover; }
     .list-badge { font-size: .7rem; font-weight: 600; padding: .35rem .7rem; border-radius: .6rem; text-align: center; width: 100%; }
     .l-watching { background: rgba(136,212,152,.2); color: #88D498; border: 1px solid rgba(136,212,152,.4); }
@@ -42,26 +98,26 @@
     .l-planned { background: rgba(149,125,173,.2); color: #957DAD; border: 1px solid rgba(149,125,173,.4); }
     .l-rewatching { background: rgba(246,189,96,.2); color: #F6BD60; border: 1px solid rgba(246,189,96,.4); }
     .info-col { flex: 1; display: flex; flex-direction: column; gap: .8rem; }
-    .title { font-size: 1.4rem; font-weight: 700; color: #e4d7ff; }
-    .subtitle { font-size: .9rem; color: #8b7aaa; }
+    .title { font-size: 1.4rem; font-weight: 700; color: var(--title-color); }
+    .subtitle { font-size: .9rem; color: var(--text-secondary); }
     .badges { display: flex; gap: .5rem; flex-wrap: wrap; }
     .badge { display: inline-flex; align-items: center; gap: .3rem; padding: .3rem .7rem; border-radius: 1rem; font-size: .8rem; font-weight: 600; }
-    .b-rating { background: rgba(240,179,0,.15); color: #f0b300; }
-    .b-tag { background: rgba(180,130,255,.15); color: #b47aff; }
+    .b-rating { background: var(--badge-rating-bg); color: #f0b300; }
+    .b-tag { background: var(--badge-tag-bg); color: #b47aff; }
     .b-ongoing { background: rgba(81,207,102,.15); color: #51cf66; }
     .b-released { background: rgba(128,155,206,.15); color: #809BCE; }
     .b-announced { background: rgba(246,189,96,.15); color: #F6BD60; }
     .grid { display: flex; flex-wrap: wrap; gap: .5rem; }
-    .cell { flex: 1 1 calc(50% - .5rem); min-width: 100px; background: rgba(15,12,28,.7); border-radius: .8rem; padding: .6rem .8rem; border: 1px solid rgba(160,140,210,.3); }
-    .cell-l { font-size: .65rem; text-transform: uppercase; color: #8b7aaa; letter-spacing: .4px; font-weight: 600; margin-bottom: .2rem; }
-    .cell-v { font-weight: 600; font-size: .9rem; color: #e4d7ff; }
+    .cell { flex: 1 1 calc(50% - .5rem); min-width: 100px; background: var(--cell-bg); border-radius: .8rem; padding: .6rem .8rem; border: 1px solid var(--border); }
+    .cell-l { font-size: .65rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: .4px; font-weight: 600; margin-bottom: .2rem; }
+    .cell-v { font-weight: 600; font-size: .9rem; color: var(--cell-v-color); }
     .desc { margin-top: 1rem; }
-    .desc-t { font-size: .85rem; font-weight: 600; color: #a494c4; margin-bottom: .5rem; text-transform: uppercase; }
-    .desc-c { font-size: .9rem; color: #b5a3d4; line-height: 1.6; }
+    .desc-t { font-size: .85rem; font-weight: 600; color: var(--desc-title-color); margin-bottom: .5rem; text-transform: uppercase; }
+    .desc-c { font-size: .9rem; color: var(--desc-text-color); line-height: 1.6; }
     .actions { display: flex; gap: .5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: space-between; }
     .actions-l, .actions-r { display: flex; gap: .5rem; flex-wrap: wrap; }
-    .btn { background: rgba(180,130,255,.1); border: 1px solid rgba(180,130,255,.3); color: #c9a9ff; font-size: .8rem; padding: .5rem 1.2rem; border-radius: 2rem; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: .4rem; font-family: inherit; }
-    .btn:hover { background: rgba(180,130,255,.25); border-color: #b47aff; color: white; }
+    .btn { background: var(--btn-bg); border: 1px solid var(--btn-border); color: var(--btn-color); font-size: .8rem; padding: .5rem 1.2rem; border-radius: 2rem; cursor: pointer; transition: .2s; display: flex; align-items: center; gap: .4rem; font-family: inherit; }
+    .btn:hover { background: rgba(123,75,255,.25); border-color: #7b4bff; color: white; }
     .btn-red { border-color: rgba(255,107,107,.4); color: #ff6b6b; }
     .btn-red:hover { background: rgba(255,107,107,.2); border-color: #ff6b6b; }
     .btn-green { background: rgba(81,207,102,.15); border-color: rgba(81,207,102,.4); color: #51cf66; }
@@ -70,21 +126,22 @@
     .btn-gold:hover { background: rgba(246,189,96,.2); border-color: #F6BD60; color: white; }
     .btn-bm { background: rgba(240,179,0,.2); border-color: rgba(240,179,0,.5); color: #f0b300; }
     .btn-sm { font-size: .7rem; padding: .3rem .6rem; }
-    .empty { text-align: center; color: #8b7aaa; padding: 3rem; }
+    .empty { text-align: center; color: var(--text-secondary); padding: 3rem; }
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
-    .modal-box { background: rgba(25,22,44,.98); border: 1px solid rgba(180,130,255,.5); border-radius: 1.2rem; padding: 1.5rem; max-width: 400px; width: 90%; box-shadow: 0 20px 40px black; }
-    .modal-ttl { font-weight: 600; color: #cbb8f0; margin-bottom: 1rem; }
-    .modal-inp { width: 100%; background: rgba(10,8,20,.7); border: 1px solid rgba(180,150,220,.35); border-radius: .6rem; padding: .5rem .8rem; color: #e4d7ff; font-size: .85rem; margin-bottom: .8rem; font-family: inherit; outline: none; }
+    .modal-box { background: var(--modal-bg); border: 1px solid var(--modal-border); border-radius: 1.2rem; padding: 1.5rem; max-width: 400px; width: 90%; box-shadow: 0 20px 40px black; }
+    .modal-ttl { font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+    .modal-inp { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: .6rem; padding: .5rem .8rem; color: var(--text); font-size: .85rem; margin-bottom: .8rem; font-family: inherit; outline: none; }
     .modal-inp:focus { border-color: #b47aff; }
     .m-btn { padding: .45rem 1.2rem; border-radius: 1.5rem; font-size: .8rem; cursor: pointer; transition: .2s; border: none; font-family: inherit; }
-    .m-btn.cancel { background: rgba(255,255,255,.1); color: #b5a3d4; }
+    .m-btn.cancel { background: rgba(0,0,0,0.1); color: var(--text-secondary); }
+    .light-theme .m-btn.cancel { background: rgba(0,0,0,0.05); }
     .m-btn.save { background: linear-gradient(135deg,#7b4bff,#b084ff); color: white; }
-    .folder-item { display: flex; align-items: center; justify-content: space-between; padding: .5rem .8rem; border-radius: .5rem; cursor: pointer; margin-bottom: .3rem; background: rgba(180,130,255,.1); border: 1px solid rgba(180,130,255,.2); }
-    .folder-item:hover { background: rgba(180,130,255,.2); }
+    .folder-item { display: flex; align-items: center; justify-content: space-between; padding: .5rem .8rem; border-radius: .5rem; cursor: pointer; margin-bottom: .3rem; background: var(--folder-item-bg); border: 1px solid var(--folder-item-border); color: var(--text); }
+    .folder-item:hover { background: rgba(123,75,255,.2); }
     .folder-item.in { background: rgba(81,207,102,.15); border-color: rgba(81,207,102,.3); }
-    .cmt-ta { width: 100%; background: rgba(10,8,20,.7); border: 1px solid rgba(180,150,220,.35); border-radius: .6rem; padding: .5rem .8rem; color: #e4d7ff; font-size: .85rem; resize: none; overflow: hidden; min-height: 60px; font-family: inherit; outline: none; }
+    .cmt-ta { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: .6rem; padding: .5rem .8rem; color: var(--text); font-size: .85rem; resize: none; overflow: hidden; min-height: 60px; font-family: inherit; outline: none; }
     .cmt-ta:focus { border-color: #b47aff; }
-    .cmt-text { font-size: .85rem; color: #b5a3d4; line-height: 1.5; }
+    .cmt-text { font-size: .85rem; color: var(--cmt-text-color); line-height: 1.5; }
     .comment-card img, .cmt-text img {
       max-width: 300px;
       max-height: 200px;
@@ -109,7 +166,7 @@
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
     }
-    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: .8rem; border-top: 1px solid rgba(120,100,180,.3); margin-top: auto; }
+    footer { text-align: left; padding: 1rem; color: var(--footer-color); font-size: .8rem; border-top: 1px solid var(--footer-border); margin-top: auto; }
     @media (max-width:600px) {
       .top-row { flex-direction: column; align-items: center; }
       .cover { width: 140px; height: 200px; } .cover-col { width: 140px; }
@@ -155,6 +212,12 @@
   </script>
 
   <script>
+    if (localStorage.getItem('anix_theme') === 'light') {
+      document.body.classList.add('light-theme');
+    }
+  </script>
+
+  <script>
     const main=document.getElementById('mainContent'),folderModal=document.getElementById('folderModal'),folderList=document.getElementById('folderList'),imageModal=document.getElementById('imageModal'),params=new URLSearchParams(location.search),animeId=params.get('id');
     const lists={watching:'Смотрю',watched:'Просмотрено',dropped:'Брошено',planned:'В планах',rewatching:'Пересмотрю'},listC={watching:'l-watching',watched:'l-watched',dropped:'l-dropped',planned:'l-planned',rewatching:'l-rewatching'},statuses={ongoing:'Онгоинг',released:'Вышел',announced:'Анонсирован'},statusC={ongoing:'b-ongoing',released:'b-released',announced:'b-announced'},tags={isekai:'Исекай',slice_of_life:'Повседневное',psychology:'Психология',sport:'Спорт',romance:'Романтика',action:'Экшен',comedy:'Комедия',drama:'Драма',fantasy:'Фэнтези',horror:'Ужасы',mecha:'Меха',music:'Музыка',mystery:'Детектив',sci_fi:'Фантастика',thriller:'Триллер',adventure:'Приключения',historical:'Историческое',military:'Военное',school:'Школа',supernatural:'Сверхъестественное',hentai:'Хентай'};
     const gCol=()=>JSON.parse(localStorage.getItem('anix_collection')||'[]'),sCol=c=>localStorage.setItem('anix_collection',JSON.stringify(c));
@@ -163,11 +226,11 @@
       if(!anime.id)anime.id=Date.now();
       const tag=anime.tag?tags[anime.tag]||anime.tag:'',comment=anime.comment||'',commentDate=anime.commentDate?new Date(anime.commentDate).toLocaleString('ru-RU'):'';
       main.innerHTML=`<div class="card"><div class="top-row"><div class="cover-col"><div class="cover">${anime.poster?`<img src="${anime.poster}" alt="">`:'<div style="color:#5a4b7a;font-size:3rem;"><i class="fas fa-image"></i></div>'}</div><span class="list-badge ${listC[anime.list]||'l-watching'}">${lists[anime.list]||'Смотрю'}</span></div><div class="info-col"><div><div class="title">${anime.title||'Без названия'}</div>${anime.originalName?`<div class="subtitle">${anime.originalName}</div>`:''}</div><div class="badges"><span class="badge b-rating"><i class="fas fa-star"></i> ${anime.userRating||anime.avgRating||'—'}</span><span class="badge ${statusC[anime.status]||'b-released'}">${statuses[anime.status]||'Вышел'}</span>${tag?`<span class="badge b-tag"><i class="fas fa-tag"></i> ${tag}</span>`:''}</div><div class="grid"><div class="cell"><div class="cell-l">Ср. оценка</div><div class="cell-v">${anime.avgRating||'—'}</div></div><div class="cell"><div class="cell-l">Серий</div><div class="cell-v">${anime.episodes||'—'}</div></div><div class="cell"><div class="cell-l">Студия</div><div class="cell-v">${anime.studio||'—'}</div></div><div class="cell"><div class="cell-l">Дата выхода</div><div class="cell-v">${anime.releaseDate||'—'}</div></div><div class="cell"><div class="cell-l">Жанр</div><div class="cell-v">${anime.genre||'—'}</div></div></div></div></div><div class="desc"><div class="desc-t">Описание</div><div class="desc-c">${anime.description||'Описание отсутствует'}</div></div><div class="actions"><div class="actions-l"><button class="btn ${anime.bookmarked?'btn-bm':''}" id="bmBtn"><i class="fas fa-bookmark"></i></button><button class="btn" id="editBtn"><i class="fas fa-pen"></i> Редактировать</button><button class="btn btn-gold" id="folderBtn"><i class="fas fa-folder-plus"></i> В папку</button><button class="btn btn-red" id="delBtn"><i class="fas fa-trash"></i></button></div><div class="actions-r"><button class="btn btn-green" id="watchBtn"><i class="fas fa-play"></i> Смотреть</button></div></div></div>
-      <div class="comment-card" style="background:rgba(25,22,44,.8);backdrop-filter:blur(20px);border-radius:2rem;padding:1.5rem;width:100%;box-shadow:0 20px 40px rgba(0,0,0,.6),0 0 0 1px rgba(180,130,255,.25);border:1px solid rgba(255,255,255,.1);margin-top:1rem;">
+      <div class="comment-card">
         <div id="cmtDisplay" style="${comment?'':'display:none;'}">
           <div class="cmt-text">${(comment||'').replace(/\n/g,'<br>')}</div>
           <div style="display:flex;gap:.4rem;align-items:center;margin-top:.5rem;flex-wrap:wrap;justify-content:flex-end;">
-            ${commentDate?`<span style="font-size:.7rem;color:#6b5b8c;margin-right:auto;">${commentDate}</span>`:''}
+            ${commentDate?`<span style="font-size:.7rem;color:var(--text-secondary);margin-right:auto;">${commentDate}</span>`:''}
             ${comment?`<button class="btn btn-red btn-sm" id="cmtDelete"><i class="fas fa-trash"></i></button>`:''}
             <button class="btn btn-sm" id="cmtEdit"><i class="fas fa-pen"></i></button>
           </div>
@@ -182,7 +245,7 @@
             <button class="btn btn-sm" id="cmtLink">🔗</button>
             <button class="btn btn-sm" id="cmtImage">🖼</button>
             <span style="margin-left:auto;display:flex;gap:.4rem;align-items:center;">
-              ${commentDate?`<span style="font-size:.7rem;color:#6b5b8c;">${commentDate}</span>`:''}
+              ${commentDate?`<span style="font-size:.7rem;color:var(--text-secondary);">${commentDate}</span>`:''}
               ${comment?`<button class="btn btn-red btn-sm" id="cmtDeleteEdit"><i class="fas fa-trash"></i></button>`:''}
               <button class="btn btn-green btn-sm" id="cmtSave"><i class="fas fa-save"></i></button>
             </span>
@@ -194,7 +257,6 @@
 
       const cmtDisplay=document.getElementById('cmtDisplay'),cmtEditBlock=document.getElementById('cmtEditBlock'),cmtInput=document.getElementById('commentInput');
 
-      // Авто-высота для нового комментария при первой загрузке
       if (!comment) {
         cmtInput.style.height = 'auto';
         cmtInput.oninput = () => {
@@ -203,17 +265,14 @@
         };
       }
 
-      // Переключение в режим редактирования
       const editBtn = document.getElementById('cmtEdit');
       if(editBtn)editBtn.onclick=()=>{
         cmtDisplay.style.display='none';
         cmtEditBlock.style.display='block';
-        // Заменяем <br> на \n для редактирования
         cmtInput.value=(anime.comment||'').replace(/<br>/g,'\n').replace(/<br\s*\/?>/g,'\n');
         cmtInput.style.height='auto';
         cmtInput.style.height=cmtInput.scrollHeight+'px';
         cmtInput.focus();
-        // Сохраняем высоту при вводе
         cmtInput.oninput=()=>{cmtInput.style.height='auto';cmtInput.style.height=cmtInput.scrollHeight+'px'};
       };
 
@@ -222,11 +281,11 @@
           if (e.shiftKey) {
             e.preventDefault();
             const s = cmtInput.selectionStart;
-            const scrollTop = window.scrollY; // Запоминаем позицию
+            const scrollTop = window.scrollY;
             cmtInput.value = cmtInput.value.substring(0, s) + '\n' + cmtInput.value.substring(s);
             cmtInput.selectionStart = cmtInput.selectionEnd = s + 1;
             cmtInput.dispatchEvent(new Event('input'));
-            window.scrollTo(0, scrollTop); // Восстанавливаем позицию
+            window.scrollTo(0, scrollTop);
           } else {
             e.preventDefault();
             document.getElementById('cmtSave').click();
@@ -234,7 +293,6 @@
         }
       };
 
-      // Форматирование
       const fmt=(open,close)=>{const s=cmtInput.selectionStart,e=cmtInput.selectionEnd;cmtInput.value=cmtInput.value.substring(0,s)+open+cmtInput.value.substring(s,e)+close+cmtInput.value.substring(e);cmtInput.focus();cmtInput.selectionStart=s+open.length;cmtInput.selectionEnd=e+open.length};
       document.getElementById('cmtBold').onclick=()=>fmt('<b>','</b>');
       document.getElementById('cmtItalic').onclick=()=>fmt('<i>','</i>');
@@ -274,23 +332,18 @@
       };
       document.getElementById('imageModal').onclick=e=>{if(e.target===imageModal)imageModal.style.display='none'};
 
-      // Закрытие модалки ссылки по клику вне
       document.getElementById('linkModal').onclick=e=>{
         if(e.target===document.getElementById('linkModal'))document.getElementById('linkModal').style.display='none';
       };
-      // Сохранение
       document.getElementById('cmtSave').onclick=()=>{
         const c=gCol();const i=c.findIndex(a=>a.id==anime.id);
         if(i!==-1){
-          // Сохраняем с \n (в базе остаются \n)
           c[i].comment=cmtInput.value;
           c[i].commentDate=new Date().toISOString();sCol(c);anime=c[i]
         }
-        // При отображении заменяем \n на <br>
         cmtDisplay.querySelector('.cmt-text').innerHTML=(anime.comment||'').replace(/\n/g,'<br>');
         cmtDisplay.style.display='block';
         cmtEditBlock.style.display='none';
-        // Обновляем дату
         const dateEl=cmtDisplay.querySelector('span');
         if(dateEl)dateEl.textContent=new Date(anime.commentDate).toLocaleString('ru-RU');
         const delBtnDisplay=cmtDisplay.querySelector('#cmtDelete');
@@ -303,18 +356,15 @@
         if(!anime.comment&&delBtnEdit)delBtnEdit.style.display='none';
       };
 
-      // Удаление (в режиме просмотра)
       document.getElementById('cmtDelete')?.addEventListener('click',()=>{if(confirm('Удалить комментарий?')){const c=gCol();const i=c.findIndex(a=>a.id==anime.id);if(i!==-1){c[i].comment='';c[i].commentDate='';sCol(c);render(c[i])}}});
 
-      // Удаление (в режиме редактирования)
       document.getElementById('cmtDeleteEdit')?.addEventListener('click',()=>{if(confirm('Удалить комментарий?')){const c=gCol();const i=c.findIndex(a=>a.id==anime.id);if(i!==-1){c[i].comment='';c[i].commentDate='';sCol(c);render(c[i])}}});
 
-      // Кнопки аниме
       document.getElementById('editBtn').onclick=()=>{sessionStorage.setItem('anix_anime_data',JSON.stringify(anime));location.href='animeadd.html'};
       document.getElementById('delBtn').onclick=()=>{if(confirm('Удалить?')){const c=gCol().filter(a=>a.id!=anime.id);sCol(c);const f=JSON.parse(localStorage.getItem('anix_folders')||'[]');f.forEach(f=>{if(f.animeIds)f.animeIds=f.animeIds.filter(id=>id!=anime.id)});localStorage.setItem('anix_folders',JSON.stringify(f));location.href='lib.html'}};
       document.getElementById('watchBtn').onclick=()=>{window.open(anime.url||`https://www.google.com/search?q=${encodeURIComponent(anime.title||'')}+смотреть+онлайн`,'_blank')};
       document.getElementById('bmBtn').onclick=()=>{const c=gCol();const i=c.findIndex(a=>a.id==anime.id);if(i!==-1){c[i].bookmarked=!c[i].bookmarked;sCol(c);render(c[i])}};
-      document.getElementById('folderBtn').onclick=()=>{const f=JSON.parse(localStorage.getItem('anix_folders')||'[]');if(!f.length)return alert('Нет папок.');folderList.innerHTML=f.map((f,i)=>{const inF=(f.animeIds||[]).includes(anime.id);return`<div class="folder-item ${inF?'in':''}" data-i="${i}"><span>${f.title} (${(f.animeIds||[]).length})</span><span style="font-size:.7rem;color:${inF?'#51cf66':'#8b7aaa'};">${inF?'✓':'+'}</span></div>`}).join('');folderList.querySelectorAll('.folder-item').forEach(el=>el.onclick=()=>{const i=+el.dataset.i;if(!f[i].animeIds)f[i].animeIds=[];f[i].animeIds.includes(anime.id)?f[i].animeIds=f[i].animeIds.filter(id=>id!==anime.id):f[i].animeIds.push(anime.id);localStorage.setItem('anix_folders',JSON.stringify(f));folderModal.style.display='none';render(anime)});folderModal.style.display='flex'};
+      document.getElementById('folderBtn').onclick=()=>{const f=JSON.parse(localStorage.getItem('anix_folders')||'[]');if(!f.length)return alert('Нет папок.');folderList.innerHTML=f.map((f,i)=>{const inF=(f.animeIds||[]).includes(anime.id);return`<div class="folder-item ${inF?'in':''}" data-i="${i}"><span>${f.title} (${(f.animeIds||[]).length})</span><span style="font-size:.7rem;color:${inF?'#51cf66':'var(--text-secondary)'};">${inF?'✓':'+'}</span></div>`}).join('');folderList.querySelectorAll('.folder-item').forEach(el=>el.onclick=()=>{const i=+el.dataset.i;if(!f[i].animeIds)f[i].animeIds=[];f[i].animeIds.includes(anime.id)?f[i].animeIds=f[i].animeIds.filter(id=>id!==anime.id):f[i].animeIds.push(anime.id);localStorage.setItem('anix_folders',JSON.stringify(f));folderModal.style.display='none';render(anime)});folderModal.style.display='flex'};
     }
 
     if(animeId){const a=gCol().find(a=>a.id==animeId);a?render(a):(main.innerHTML='<div class="empty"><i class="fas fa-exclamation-circle" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>Аниме не найдено</p></div>')}else main.innerHTML='<div class="empty"><p>Аниме не найдено</p></div>';

@@ -3,7 +3,6 @@
 <head>
   <meta name="theme-color" content="#0e0e1a">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>AniSpace</title>
@@ -11,10 +10,22 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
+    :root {
+      --bg: #0e0e1a;
+      --text: #f0e6ff;
+      --text-secondary: #8b7aaa;
+    }
+
+    .light-theme {
+      --bg: #f0edf5;
+      --text: #2a1a4a;
+      --text-secondary: #6b5b8c;
+    }
+
     body {
       font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-      background: #0e0e1a;
-      min-height: 100vh; display: flex; flex-direction: column; color: #f0e6ff; margin: 0;
+      background: var(--bg);
+      min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0;
       position: relative;
       overflow-x: hidden;
     }
@@ -37,7 +48,6 @@
     }
     .profile-avatar-top:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
     .profile-avatar-top img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .profile-avatar-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #c9a9ff; font-size: 1.1rem; }
     .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; width: 100%; z-index: 1; }
     .center-placeholder { text-align: center; }
     .center-placeholder h2 { font-weight: 400; color: #cbb8f0; margin-bottom: 0.5rem; }
@@ -58,27 +68,12 @@
       display: flex; align-items: center; gap: 0.3rem; font-family: inherit;
     }
     .file-btn:hover { background: rgba(180,130,255,0.25); color: white; border-color: #b47aff; }
+    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
 
-    /* Мобильная оптимизация */
     @media (max-width: 600px) {
-      .top-bar { padding: 0.75rem 1rem; }
-      .logo { font-size: 1rem; padding: 0.4rem 1rem; }
-      .ava { width: 32px; height: 32px; right: 1rem; }
-      .mode { width: 32px; height: 32px; left: 1rem; }
-      .main { padding: 1rem; }
       .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
       .btn-row { flex-direction: column; gap: 0.5rem; }
-      .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; }
-      .card-over { opacity: 1; background: linear-gradient(transparent, rgba(0,0,0,0.7)); padding: 0.3rem; }
-      .card-ttl { font-size: 0.6rem; }
-      .tabs { gap: 0.2rem; }
-      .tab { font-size: 0.7rem; padding: 0.3rem 0.7rem; }
-      .ctrls { gap: 0.3rem; }
-      .sel { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
-      .rand { font-size: 0.7rem; padding: 0.3rem 0.8rem; }
     }
-
-    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
   </style>
 </head>
 <body>
@@ -87,7 +82,6 @@
       <button class="logo-center" id="goHomeBtn">AniSpace</button>
       <div class="profile-avatar-top" id="profileAvatarTop">
         <img id="topAvatarImg" src="" alt="" style="display:block;">
-        <div class="profile-avatar-placeholder" style="display:none;"><i class="fas fa-user"></i></div>
       </div>
     </div>
 
@@ -100,6 +94,7 @@
     </main>
 
     <div class="bottom-row">
+      <button class="file-btn" id="themeToggle"><i class="fas fa-sun"></i> Тема</button>
       <button class="file-btn" id="exportBtn"><i class="fas fa-download"></i> Экспорт</button>
       <button class="file-btn" id="importBtn"><i class="fas fa-upload"></i> Импорт</button>
     </div>
@@ -108,6 +103,33 @@
   </div>
   <input type="file" id="importFileInput" accept=".json" style="display:none;">
 
+  <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+  <script>
+  (function() {
+    const canvas = document.getElementById('ps3Canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    const threads = [];
+    const colors = ['rgba(180,130,255,0.25)','rgba(200,150,255,0.2)','rgba(150,100,255,0.22)','rgba(123,75,255,0.18)','rgba(180,130,255,0.2)','rgba(200,150,255,0.15)'];
+    for (let i=0;i<6;i++) threads.push({color:colors[i],speed:0.3+Math.random()*0.5,amplitude:10+Math.random()*25,offset:Math.random()*Math.PI*2,y:canvas.height*0.6+(i*canvas.height*0.06)});
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const t=Date.now()*0.001;
+      threads.forEach(th=>{
+        th.y=canvas.height*0.6+(threads.indexOf(th)*canvas.height*0.01)+Math.sin(t*0.2+th.offset)*20;
+        ctx.beginPath();
+        for(let x=-50;x<=canvas.width+50;x+=5){const y=th.y+Math.sin(x*0.01+t*th.speed+th.offset)*th.amplitude+Math.sin(x*0.005+t*0.7+th.offset)*th.amplitude*0.5;x===-50?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+        ctx.shadowColor='rgba(180,130,255,0.5)';ctx.shadowBlur=10;ctx.strokeStyle=th.color;ctx.lineWidth=2;ctx.stroke();
+        ctx.shadowBlur=0;ctx.strokeStyle=th.color.replace('0.2','0.35').replace('0.15','0.25').replace('0.18','0.3');ctx.lineWidth=1;ctx.stroke();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+  </script>
+
   <script>
     const goHomeBtn = document.getElementById('goHomeBtn');
     const profileAvatarTop = document.getElementById('profileAvatarTop');
@@ -115,10 +137,24 @@
     const libBtn = document.getElementById('libBtn');
     const exportBtn = document.getElementById('exportBtn');
     const importBtn = document.getElementById('importBtn');
+    const themeToggle = document.getElementById('themeToggle');
     const importFileInput = document.getElementById('importFileInput');
 
     const getCollection = () => JSON.parse(localStorage.getItem('anix_collection') || '[]');
 
+    // Тема
+    if (localStorage.getItem('anix_theme') === 'light') {
+      document.body.classList.add('light-theme');
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i> Тема';
+    }
+    themeToggle.onclick = () => {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('anix_theme', isLight ? 'light' : 'dark');
+      themeToggle.innerHTML = isLight ? '<i class="fas fa-moon"></i> Тема' : '<i class="fas fa-sun"></i> Тема';
+    };
+
+    // Экспорт
     exportBtn.onclick = () => {
       const data = {
         collection: getCollection().map(a => ({...a, poster: a.poster && a.poster.startsWith('http') ? a.poster : ''})),
@@ -133,6 +169,7 @@
       a.click();
     };
 
+    // Импорт
     importBtn.onclick = () => importFileInput.click();
     importFileInput.onchange = e => {
       const file = e.target.files[0];
@@ -156,95 +193,12 @@
     goHomeBtn.onclick = () => scrollTo({top:0, behavior:'smooth'});
     profileAvatarTop.onclick = () => location.href = 'profile.html';
 
-    // Загрузка аватарки из профиля
+    // Аватарка
     const profile = JSON.parse(localStorage.getItem('anix_profile') || '{}');
     if (profile.avatar) {
       document.getElementById('topAvatarImg').src = profile.avatar;
       document.getElementById('topAvatarImg').style.display = 'block';
     }
-  </script>
-
-  <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
-  <script>
-  (function() {
-    const canvas = document.getElementById('ps3Canvas');
-    const ctx = canvas.getContext('2d');
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
-    // Создаём 6 нитей
-    const threads = [];
-    const colors = [
-      'rgba(180,130,255,0.25)',
-      'rgba(200,150,255,0.2)',
-      'rgba(150,100,255,0.22)',
-      'rgba(123,75,255,0.18)',
-      'rgba(180,130,255,0.2)',
-      'rgba(200,150,255,0.15)'
-    ];
-    
-    for (let i = 0; i < 6; i++) {
-      threads.push({
-        points: [],
-        color: colors[i],
-        speed: 0.3 + Math.random() * 0.5,
-        amplitude: 10 + Math.random() * 25,
-        offset: Math.random() * Math.PI * 2,
-        y: canvas.height * 0.6 + (i * canvas.height * 0.06)
-      });
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      const time = Date.now() * 0.001;
-      
-      threads.forEach(thread => {
-        // Обновляем Y-позицию (медленно двигаем вверх-вниз)
-        thread.y = canvas.height * 0.6 + 
-          (threads.indexOf(thread) * canvas.height * 0.01) + 
-          Math.sin(time * 0.2 + thread.offset) * 20;
-        
-        ctx.beginPath();
-        
-        for (let x = -50; x <= canvas.width + 50; x += 5) {
-          const progress = x / canvas.width;
-          const y = thread.y + 
-            Math.sin(x * 0.01 + time * thread.speed + thread.offset) * thread.amplitude +
-            Math.sin(x * 0.005 + time * 0.7 + thread.offset) * thread.amplitude * 0.5;
-          
-          if (x === -50) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
-        }
-        
-        // Свечение
-        ctx.shadowColor = 'rgba(180,130,255,0.5)';
-        ctx.shadowBlur = 10;
-        ctx.strokeStyle = thread.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // Второй проход для яркости
-        ctx.shadowBlur = 0;
-        ctx.strokeStyle = thread.color.replace('0.2', '0.35').replace('0.15', '0.25').replace('0.18', '0.3');
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      });
-      
-      requestAnimationFrame(draw);
-    }
-    
-    draw();
-  })();
   </script>
 </body>
 </html>
