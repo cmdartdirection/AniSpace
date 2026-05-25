@@ -768,7 +768,7 @@
       // Показываем аниме из коллекции
       const libraryAnime = collection
         .filter(a => a.studio && a.studio.includes(studioName) && a.avgRating)
-        .sort((a, b) => parseFloat(b.avgRating) - parseFloat(a.avgRating))
+        .sort((a, b) => parseFloat(b.avgRating || 0) - parseFloat(a.avgRating || 0))
         .slice(0, 5);
       
       if (libraryAnime.length > 0) {
