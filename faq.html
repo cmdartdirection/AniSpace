@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="theme-color" content="#f0edf5">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniSpace — FAQ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0;
+    }
+    :root {
+      --bg: #0e0e1a;
+      --text: #f0e6ff;
+      --text-secondary: #8b7aaa;
+      --card-bg: rgba(25,22,44,0.7);
+      --border: rgba(180,130,255,0.2);
+      --input-bg: rgba(10,8,20,0.7);
+      --shadow: 0 20px 40px rgba(0,0,0,0.6);
+      --footer-color: #5a507a;
+      --footer-border: rgba(120,100,180,0.3);
+    }
+
+    .light-theme {
+      --bg: #f0edf5;
+      --text: #2a1a4a;
+      --text-secondary: #6b5b8c;
+      --card-bg: rgba(235,230,245,0.9);
+      --border: rgba(123,75,255,0.25);
+      --input-bg: rgba(245,242,252,0.95);
+      --shadow: 0 4px 15px rgba(0,0,0,0.1);
+      --footer-color: #7a6a9a;
+      --footer-border: rgba(123,75,255,0.2);
+    }
+
+    .app { display: flex; flex-direction: column; flex: 1; width: 100%; }
+    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
+    .logo { background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s; box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2); }
+    .logo:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
+    .ava { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.6); cursor: pointer; overflow: hidden; background: rgba(123,75,255,0.2); transition: 0.25s; }
+    .ava:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
+    .ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .back-btn { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.4); cursor: pointer; background: rgba(123,75,255,0.15); color: #c9a9ff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: 0.25s; }
+    .back-btn:hover { border-color: #b47aff; color: white; background: rgba(123,75,255,0.3); }
+    .main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; width: 100%; max-width: 800px; margin: 0 auto; }
+    
+    .faq-card { 
+      position: relative; z-index: 1;
+      background: var(--card-bg); 
+      backdrop-filter: blur(20px); 
+      border-radius: 2rem; 
+      padding: 2rem; 
+      width: 100%; 
+      box-shadow: var(--shadow), 0 0 0 1px rgba(180,130,255,0.25);
+      border: 1px solid rgba(255,255,255,0.1); 
+    }
+    .faq-title { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; text-align: center; }
+    .faq-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2rem; text-align: center; }
+    
+    .faq-section { margin-bottom: 1.5rem; }
+    .faq-section-title { 
+      font-size: 0.8rem; 
+      font-weight: 700; 
+      color: #b47aff; 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+      margin-bottom: 0.8rem; 
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .faq-item { 
+      margin-bottom: 0.5rem; 
+      border-radius: 0.8rem; 
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: rgba(180,130,255,0.03);
+    }
+    .faq-q { 
+      padding: 0.8rem 1rem; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      font-weight: 600; 
+      font-size: 0.9rem; 
+      color: var(--text);
+      transition: 0.2s;
+    }
+    .faq-q:hover { background: rgba(123,75,255,0.08); }
+    .faq-q i { font-size: 0.7rem; color: var(--text-secondary); transition: transform 0.3s; }
+    .faq-a { 
+      padding: 0 1rem; 
+      max-height: 0; 
+      overflow: hidden; 
+      visibility: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.5s; 
+      font-size: 0.85rem; 
+      color: var(--text-secondary); 
+      line-height: 1.6; 
+    }
+    .faq-item.open .faq-a { 
+      max-height: 1000px; 
+      padding: 0.8rem 1rem; 
+      visibility: visible;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0s;
+    }
+    .faq-item.open .faq-q i { transform: rotate(180deg); }
+
+    /* Поле ввода проблемы */
+    .cmt-ta {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      padding: 0.5rem 3rem 0.5rem 0.8rem;
+      color: var(--text);
+      font-size: 0.85rem;
+      resize: none;
+      overflow: hidden;
+      min-height: 100px;
+      font-family: inherit;
+      outline: none;
+      transition: 0.2s;
+    }
+    .cmt-ta:focus { border-color: #b47aff; }
+
+    /* Кнопка отправки внутри поля */
+    .submit-btn-inside {
+      position: absolute;
+      bottom: 1.2rem;
+      right: 0.6rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #7b4bff, #b084ff);
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.25s;
+      box-shadow: 0 4px 12px rgba(123,75,255,0.5);
+      z-index: 2;
+    }
+    .submit-btn-inside:hover {
+      background: linear-gradient(135deg, #925fff, #c09aff);
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(123,75,255,0.7);
+    }
+    .submit-btn-inside:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    footer { text-align: left; padding: 1rem; color: var(--footer-color); font-size: 0.8rem; border-top: 1px solid var(--footer-border); margin-top: auto; }
+    
+    @media (max-width: 600px) {
+      .top-bar { padding: 0.75rem 1rem; }
+      .logo { font-size: 1rem; padding: 0.4rem 1rem; }
+      .ava { width: 32px; height: 32px; right: 1rem; }
+      .back-btn { width: 32px; height: 32px; left: 1rem; }
+      .main { padding: 1rem; }
+      .faq-card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="top-bar">
+      <div class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></div>
+      <button class="logo" id="goHomeBtn">AniSpace</button>
+      <div class="ava" id="profileAvatarTop"><img id="topAvatarImg" src="" alt="" style="display:block;"></div>
+    </div>
+    <main class="main">
+      <div class="faq-card">
+        <div class="faq-title">Часто задаваемые вопросы</div>
+        <div class="faq-subtitle">Всё о AniSpace</div>
+        
+        <div class="faq-section">
+          <div class="faq-section-title">📌 Общие вопросы</div>
+          <div class="faq-item">
+            <div class="faq-q">Что такое AniSpace? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">AniSpace — это персональный трекер аниме, который работает полностью локально в твоём браузере. Никаких серверов, регистраций и баз данных — все твои списки хранятся только у тебя на устройстве.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Мои данные куда-то отправляются? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Нет! Все данные хранятся в localStorage твоего браузера. Ничего не отправляется на сервер, никто не имеет доступа к твоей коллекции.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Что будет, если я очищу кэш браузера? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Все данные будут удалены! Рекомендуем периодически делать резервную копию через экспорт на главной странице.</div>
+          </div>
+        </div>
+        
+        <div class="faq-section">
+          <div class="faq-section-title">📚 Управление коллекцией</div>
+          <div class="faq-item">
+            <div class="faq-q">Как добавить аниме в коллекцию? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Перейди на страницу добавления. Введи название аниме и нажми «Поиск» — AniSpace найдёт аниме через Shikimori API и заполнит информацию автоматически.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Как работают папки в библиотеке? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Папки позволяют группировать аниме по любым критериям. Чтобы добавить аниме в папку, нажми правой кнопкой мыши по карточке в библиотеке.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Как удалить аниме из коллекции? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Открой страницу аниме и нажми кнопку с иконкой корзины. Аниме будет удалено из коллекции и из всех папок.</div>
+          </div>
+        </div>
+        
+        <div class="faq-section">
+          <div class="faq-section-title">👤 Профиль и витрины</div>
+          <div class="faq-item">
+            <div class="faq-q">Как изменить аватарку и никнейм? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">На странице профиля нажми «Редактировать профиль». Можно указать ссылку на аватарку, баннер и новый никнейм.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Как рассчитывается ранг на профиле? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Ранг зависит от количества аниме в коллекции: F (0), D (1+), C (25+), B (50+), A (150+), S (300+), SS (500+), SSS (750+), SSS+ (1000+).</div>
+          </div>
+        </div>
+        
+        <div class="faq-section">
+          <div class="faq-section-title">🔧 Технические вопросы</div>
+          <div class="faq-item">
+            <div class="faq-q">Как переключить тему? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">Кнопка смены темы находится на главной странице. Выбор сохраняется и применяется на всех страницах.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Как перенести данные на другое устройство? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-a">На главной странице есть кнопки Экспорт и Импорт. Экспортируй коллекцию в файл и загрузи на другом устройстве.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-card" style="margin-top: 1.5rem;">
+        <div class="faq-section-title" style="margin-bottom: 1rem;">🔧 Нашли проблему?</div>
+        <div style="position: relative;">
+          <textarea
+            id="problemMessage"
+            class="cmt-ta"
+            rows="3"
+            placeholder="Опишите проблему... Что случилось? На какой вы были странице?"
+            required
+          ></textarea>
+          <button id="sendProblemBtn" class="submit-btn-inside" type="button" title="Отправить">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <p id="formFeedbackMessage" style="font-size: 0.8rem; text-align: left; display: none; margin: 0;"></p>
+      </div>
+    </main>
+    <footer>© AniSpace by cmd</footer>
+  </div>
+
+  <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+
+  <script>
+    (function(){const c=document.getElementById('ps3Canvas'),ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight});const t=[];for(let i=0;i<6;i++)t.push({color:['rgba(180,130,255,.25)','rgba(200,150,255,.2)','rgba(150,100,255,.22)','rgba(123,75,255,.18)','rgba(180,130,255,.2)','rgba(200,150,255,.15)'][i],speed:.3+Math.random()*.5,amp:10+Math.random()*25,off:Math.random()*Math.PI*2,y:c.height*.6+i*c.height*.06});function d(){ctx.clearRect(0,0,c.width,c.height);const tm=Date.now()*.001;t.forEach(th=>{th.y=c.height*.6+t.indexOf(th)*c.height*.01+Math.sin(tm*.2+th.off)*20;ctx.beginPath();for(let x=-50;x<=c.width+50;x+=5){const y=th.y+Math.sin(x*.01+tm*th.speed+th.off)*th.amp+Math.sin(x*.005+tm*.7+th.off)*th.amp*.5;x===-50?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.shadowColor='rgba(180,130,255,.5)';ctx.shadowBlur=10;ctx.strokeStyle=th.color;ctx.lineWidth=2;ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle=th.color.replace('.2','.35').replace('.15','.25').replace('.18','.3');ctx.lineWidth=1;ctx.stroke()});requestAnimationFrame(d)}d()})();
+  </script>
+
+  <script>
+    if (localStorage.getItem('anix_theme') === 'light') {
+      document.body.classList.add('light-theme');
+    }
+
+    // FAQ аккордеон
+    document.querySelectorAll('.faq-q').forEach(q => {
+      q.addEventListener('click', () => q.parentElement.classList.toggle('open'));
+    });
+
+    // Навигация
+    document.getElementById('backBtn').onclick = () => history.back();
+    document.getElementById('goHomeBtn').onclick = () => location.href = 'index.html';
+    document.getElementById('profileAvatarTop').onclick = () => location.href = 'profile.html';
+    
+    const profile = JSON.parse(localStorage.getItem('anix_profile') || '{}');
+    if (profile.avatar) {
+      document.getElementById('topAvatarImg').src = profile.avatar;
+      document.getElementById('topAvatarImg').style.display = 'block';
+    }
+
+    // Форма "Нашли проблему?"
+    const problemMessage = document.getElementById('problemMessage');
+    const sendProblemBtn = document.getElementById('sendProblemBtn');
+    const formFeedbackMessage = document.getElementById('formFeedbackMessage');
+
+    if (sendProblemBtn) {
+      problemMessage.style.height = 'auto';
+      problemMessage.oninput = () => {
+        problemMessage.style.height = 'auto';
+        problemMessage.style.height = problemMessage.scrollHeight + 'px';
+      };
+
+      sendProblemBtn.onclick = async () => {
+        const message = problemMessage.value.trim();
+        if (!message) {
+          formFeedbackMessage.textContent = 'Пожалуйста, опишите проблему.';
+          formFeedbackMessage.style.color = '#ff6b6b';
+          formFeedbackMessage.style.display = 'block';
+          setTimeout(() => formFeedbackMessage.style.display = 'none', 3000);
+          return;
+        }
+
+        sendProblemBtn.disabled = true;
+        sendProblemBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        try {
+          const response = await fetch('hhttps://formspree.io/f/xaqkpoyy', {
+            method: 'POST',
+            body: JSON.stringify({ message }),
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+          });
+
+          if (response.ok) {
+            formFeedbackMessage.textContent = '✅ Спасибо! Сообщение отправлено.';
+            formFeedbackMessage.style.color = '#51cf66';
+            formFeedbackMessage.style.display = 'block';
+            problemMessage.value = '';
+            problemMessage.style.height = 'auto';
+          } else {
+            throw new Error('Ошибка сервера');
+          }
+        } catch (error) {
+          formFeedbackMessage.textContent = '❌ Не удалось отправить. Попробуйте позже.';
+          formFeedbackMessage.style.color = '#ff6b6b';
+          formFeedbackMessage.style.display = 'block';
+        } finally {
+          sendProblemBtn.disabled = false;
+          sendProblemBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+          setTimeout(() => formFeedbackMessage.style.display = 'none', 5000);
+        }
+      };
+
+      problemMessage.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          sendProblemBtn.click();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
