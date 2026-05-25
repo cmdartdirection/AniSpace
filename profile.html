@@ -345,6 +345,7 @@
         <div class="right">
           <div class="chart"><div class="chart-ttl">Распределение по спискам</div><div id="chartBars"></div></div>
           <div class="stats">
+            <div class="stat"><span class="stat-l">Просмотрено</span><span class="stat-v" id="totalWatched">0</span></div>
             <div class="stat"><span class="stat-l">Серий</span><span class="stat-v" id="totalEpisodes">0</span></div>
             <div class="stat"><span class="stat-l hrs" id="hoursLabel">Часов</span><span class="stat-v hrs" id="totalHours">0</span></div>
             <div class="stat"><span class="stat-l">Ср. оценка</span><span class="stat-v" id="avgScore">—</span></div>
@@ -735,12 +736,17 @@
       });
       const favoriteStudio = Object.entries(studioCounts).sort((a, b) => b[1] - a[1])[0];
       
+      const totalAnime = collection.length;
+      const watchedCountExt = collection.filter(a => a.list === 'watched').length;
+
       document.getElementById('extStatsContainer').innerHTML = `
+        <div class="ext-stat"><span class="stat-l">Аниме в библиотеке</span><span class="stat-v">${totalAnime}</span></div>
+        <div class="ext-stat"><span class="stat-l">Просмотрено аниме</span><span class="stat-v">${watchedCountExt}</span></div>
         <div class="ext-stat"><span class="stat-l">Просмотрено серий</span><span class="stat-v">${eps}</span></div>
-        <div class="ext-stat"><span class="stat-l">Потрачено часов</span><span class="stat-v">${hours}</span></div>
+        <div class="ext-stat"><span class="stat-l hrs" id="extHoursLabel">Потрачено часов</span><span class="stat-v hrs" id="extTotalHours">${hours}</span></div>
         <div class="ext-stat"><span class="stat-l">Ср. оценка пользователя</span><span class="stat-v">${avgScore}</span></div>
         <div class="ext-stat"><span class="stat-l">Ср. оценка Шикимори</span><span class="stat-v">${avgShikimoriRating}</span></div>
-        <div class="ext-stat"><span class="stat-l">10 балльных аниме</span><span class="stat-v">${topRatedCount}</span></div>
+        <div class="ext-stat"><span class="stat-l">10 баллов</span><span class="stat-v">${topRatedCount}</span></div>
         <div class="ext-stat">
           <span class="stat-l">Любимая студия</span>
           <span class="stat-v studio-tooltip" id="studioTooltip">
@@ -766,6 +772,24 @@
       });
       // Инициализируем тултип студии
       setTimeout(initStudioTooltip, 100);
+
+      // Обработчик переключения часов/дней
+      document.getElementById('extTotalHours').onclick = () => {
+        const el = document.getElementById('extTotalHours');
+        const label = document.getElementById('extHoursLabel');
+        const currentText = el.textContent;
+        const isHours = label.textContent.includes('Часов') || label.textContent.includes('часов');
+        
+        if (isHours) {
+          const days = (parseInt(currentText) / 24).toFixed(1);
+          el.textContent = days;
+          label.textContent = 'Потрачено дней';
+        } else {
+          const hours = Math.round(parseFloat(currentText) * 24);
+          el.textContent = hours;
+          label.textContent = 'Потрачено часов';
+        }
+      };
     }
     
     // Загрузка популярных аниме студии из библиотеки
@@ -867,6 +891,8 @@
       }
       document.getElementById('nicknameDisplay').textContent = profile.nickname || 'Аниме-фан';
       document.title = `AniSpace - ${profile.nickname || 'Профиль'}`;
+      const watchedCount = collection.filter(a => a.list === 'watched').length;
+      document.getElementById('totalWatched').textContent = watchedCount;
       const eps = collection.filter(a => a.list === 'watched').reduce((s,a) => s + (parseInt(a.episodes)||0), 0);
       document.getElementById('totalEpisodes').textContent = eps;
       document.getElementById('totalHours').textContent = Math.round(eps*24/60)||0;
