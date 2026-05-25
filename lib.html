@@ -283,12 +283,14 @@
       const container = document.createElement('div'); container.className = 'f-cont'; animeGrid.appendChild(container);
       const folders = getFolders();
       folders.forEach(folder => {
-        const items = allAnime.filter(a => folder.animeIds && folder.animeIds.includes(a.id));
+        const items = allAnime
+        .filter(a => folder.animeIds && folder.animeIds.includes(a.id))
+        .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
         const scores = items.filter(a => a.userRating).map(a => parseFloat(a.userRating));
         const avg = scores.length ? (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1) : '—';
         const section = document.createElement('div'); section.className = 'folder';
         section.innerHTML = `
-          <div class="f-hdr" data-folder-id="${folder.id}">
+           <div class="f-hdr" data-folder-id="${folder.id}">
             <span class="f-tog col"><i class="fas fa-chevron-down"></i></span>
             <span class="f-ttl">${folder.title}</span><span class="f-cnt">(${items.length})</span><span class="f-avg">⭐ ${avg}</span>
             <div class="f-acts">
