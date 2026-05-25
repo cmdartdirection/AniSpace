@@ -151,8 +151,167 @@
     .light-theme .m-btn.cancel { background: rgba(0,0,0,0.05); }
     .m-btn.save { background: linear-gradient(135deg, #7b4bff, #b084ff); color: white; }
     .m-btn.danger { background: rgba(255,80,80,0.3); color: #ff6b6b; }
+    
+    /* Расширенная статистика */
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+    .modal-close:hover {
+      background: rgba(255,107,107,0.2);
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+    }
+    
+    .extended-stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+    .ext-left { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ext-right { flex: 1; }
+    .ext-tabs { display: flex; gap: 0.3rem; margin-bottom: 0.5rem; }
+    .ext-tab { 
+      flex: 1; 
+      background: var(--btn-bg); 
+      border: 1px solid var(--btn-border); 
+      color: var(--btn-color); 
+      font-size: 0.75rem; 
+      padding: 0.4rem 0.8rem; 
+      border-radius: 2rem; 
+      cursor: pointer; 
+      transition: 0.2s; 
+      text-align: center; 
+      font-family: inherit;
+    }
+    .ext-tab.active { 
+      background: linear-gradient(135deg, #7b4bff, #b084ff); 
+      color: white; 
+      border-color: transparent; 
+    }
+    .ext-tab:hover:not(.active) { 
+      background: rgba(123,75,255,0.25); 
+      border-color: #7b4bff; 
+      color: white; 
+    }
+    .ext-chart { background: var(--chart-bg); backdrop-filter: blur(10px); border-radius: 1rem; padding: 0.8rem; border: 1px solid var(--border); text-align: center; }
+    .ext-stat { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid var(--stat-border); }
+    .ext-stat:last-child { border-bottom: none; }
+    
+    /* Тултип студии */
+    .studio-tooltip {
+      position: relative;
+      cursor: pointer;
+    }
+    .studio-tooltip .studio-name {
+      border-bottom: 1px dashed var(--text-secondary);
+      transition: 0.2s;
+    }
+    .studio-tooltip .studio-name:hover {
+      color: #b47aff;
+      border-bottom-color: #b47aff;
+    }
+    .studio-popup {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      margin-bottom: 0.5rem;
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
+      border-radius: 1rem;
+      padding: 0.8rem;
+      min-width: 250px;
+      box-shadow: var(--shadow);
+      z-index: 300;
+      display: none;
+      backdrop-filter: blur(20px);
+    }
+    .studio-popup.show {
+      display: block;
+    }
+    .studio-popup-title {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      text-align: left;
+    }
+    .studio-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--stat-border);
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      border-radius: 0.3rem;
+      padding-left: 0.4rem;
+      padding-right: 0.4rem;
+      margin: 0 -0.4rem;
+    }
+    .studio-item:last-child {
+      border-bottom: none;
+    }
+    .studio-item:hover {
+      background: rgba(123,75,255,0.15);
+    }
+    .studio-item-name {
+      flex: 1;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+    }
+    .studio-item:hover .studio-item-name {
+      color: var(--text);
+    }
+    .studio-item-name.in-collection {
+      color: var(--text);
+    }
+    .studio-item-rating {
+      color: #f0b300;
+      font-weight: 600;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .studio-item-check {
+      color: #51cf66;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+    .studio-popup-loading {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      padding: 0.5rem;
+    }
+
     footer { text-align: left; padding: 1rem; color: var(--footer-color); font-size: 0.8rem; border-top: 1px solid var(--footer-border); margin-top: auto; }
-    @media (max-width: 750px) { .content { flex-direction: column; padding: 3.5rem 1rem 1rem; } .right { width: 100%; } .avatar-row { left: 25px; bottom: -40px; } .avatar-w { width: 100px; height: 100px; } .nick { font-size: 1.2rem; } .banner { height: 220px; } }
+    @media (max-width: 750px) { 
+      .content { flex-direction: column; padding: 3.5rem 1rem 1rem; } 
+      .right { width: 100%; } 
+      .avatar-row { left: 25px; bottom: -40px; } 
+      .avatar-w { width: 100px; height: 100px; } 
+      .nick { font-size: 1.2rem; } 
+      .banner { height: 220px; } 
+      .extended-stats { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
@@ -183,6 +342,7 @@
             <div class="stat"><span class="stat-l">Ср. оценка</span><span class="stat-v" id="avgScore">—</span></div>
             <div class="stat"><span class="stat-l">10 баллов</span><span class="stat-v" id="topRated">0</span></div>
           </div>
+          <button class="edit-prof-btn" id="extendedStatsBtn"><i class="fas fa-chart-bar"></i> Расширенная статистика</button>
           <button class="edit-prof-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Редактировать профиль</button>
         </div>
       </div>
@@ -245,6 +405,33 @@
     </div>
   </div>
 
+  <!-- Модалка расширенной статистики -->
+  <div class="modal" id="extendedStatsModal">
+    <div class="modal-box" style="max-width:700px; position:relative;">
+      <button class="modal-close" onclick="document.getElementById('extendedStatsModal').style.display='none'">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-ttl">Расширенная статистика</div>
+      <div class="extended-stats">
+        <div class="ext-left">
+          <div class="ext-tabs">
+            <button class="ext-tab active" data-tab="genres">Жанры</button>
+            <button class="ext-tab" data-tab="tags">Теги</button>
+          </div>
+          <div class="ext-chart" id="genresTabContent">
+            <div class="chart-ttl">Соотношение жанров</div>
+            <div id="genresChart"></div>
+          </div>
+          <div class="ext-chart" id="tagsTabContent" style="display:none;">
+            <div class="chart-ttl">Специальные теги</div>
+            <div id="tagsChart"></div>
+          </div>
+        </div>
+        <div class="ext-right" id="extStatsContainer"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     if (localStorage.getItem('anix_theme') === 'light') {
       document.body.classList.add('light-theme');
@@ -260,6 +447,7 @@
     const getCollection = () => JSON.parse(localStorage.getItem('anix_collection') || '[]');
     const listNames = { watching:'Смотрю', watched:'Просмотрено', dropped:'Брошено', planned:'В планах', rewatching:'Пересмотрю' };
     const listColors = { watching:'#88D498', watched:'#809BCE', dropped:'#F28482', planned:'#957DAD', rewatching:'#F6BD60' };
+    const tags = { isekai:'Исекай', slice_of_life:'Повседневное', psychology:'Психология', sport:'Спорт', romance:'Романтика', action:'Экшен', comedy:'Комедия', drama:'Драма', fantasy:'Фэнтези', horror:'Ужасы', mecha:'Меха', music:'Музыка', mystery:'Детектив', sci_fi:'Фантастика', thriller:'Триллер', adventure:'Приключения', historical:'Историческое', military:'Военное', school:'Школа', supernatural:'Сверхъестественное', hentai:'Хентай' };
 
     // === Редактирование профиля ===
     document.getElementById('editProfileBtn').onclick = () => {
@@ -394,6 +582,32 @@
 
     function deleteShowcaseById(id) { if (confirm('Удалить?')) { saveShowcases(getShowcases().filter(s => s.id !== id)); renderShowcases(); } }
 
+    // Функция для отрисовки круговой диаграммы
+    function renderPieChart(containerId, dataObj, colors) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      const total = Object.values(dataObj).reduce((s, v) => s + v, 0);
+      if (total === 0) {
+        container.innerHTML = '<p style="color:var(--text-secondary);font-size:0.7rem;">Нет данных</p>';
+        return;
+      }
+      
+      const entries = Object.entries(dataObj).filter(([key]) => dataObj[key] > 0);
+      const size = 140, cx = size/2, cy = size/2, r = 55;
+      let angle = -Math.PI / 2, paths = '';
+      
+      entries.forEach(([key], index) => {
+        const slice = (dataObj[key] / total) * Math.PI * 2;
+        const x1 = cx + r * Math.cos(angle), y1 = cy + r * Math.sin(angle);
+        const x2 = cx + r * Math.cos(angle + slice), y2 = cy + r * Math.sin(angle + slice);
+        paths += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${slice>Math.PI?1:0} 1 ${x2} ${y2} Z" fill="${colors[index % colors.length]}" stroke="var(--bg)" stroke-width="1.5"/>`;
+        angle += slice;
+      });
+      
+      container.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${entries.map(([key], i) => `<div class="leg-item"><div class="leg-dot" style="background:${colors[i % colors.length]};"></div>${key}: ${dataObj[key]}</div>`).join('')}</div>`;
+    }
+
     function renderShowcases() {
       const left = document.getElementById('leftColumn');
       const showcases = getShowcases();
@@ -458,6 +672,165 @@
       chartBars.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${entries.map(([key, name]) => `<div class="leg-item"><div class="leg-dot" style="background:${listColors[key]};"></div>${name}: ${counts[key]}</div>`).join('')}</div><div class="total-b">Всего: ${total}</div>`;
     }
 
+    // === Расширенная статистика ===
+    function renderExtendedStats() {
+      const collection = getCollection();
+      
+      // Жанры
+      const genreCounts = {};
+      collection.forEach(a => {
+        if (a.genre) {
+          a.genre.split(',').forEach(g => {
+            const genre = g.trim();
+            if (genre) genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+          });
+        }
+      });
+      
+      // Теги
+      const tagCounts = {};
+      collection.forEach(a => {
+        if (a.tag && tags[a.tag]) {
+          const tagName = tags[a.tag];
+          tagCounts[tagName] = (tagCounts[tagName] || 0) + 1;
+        }
+      });
+      
+      // Цвета для диаграмм
+      const genreColors = ['#88D498', '#809BCE', '#F28482', '#957DAD', '#F6BD60', '#b47aff', '#51cf66', '#f0b300', '#ff6b6b', '#06c', '#ff8c00', '#93f', '#ff4500', '#0c0'];
+      const tagColors = ['#F6BD60', '#957DAD', '#88D498', '#809BCE', '#F28482', '#b47aff', '#51cf66', '#f0b300', '#ff6b6b'];
+      
+      renderPieChart('genresChart', genreCounts, genreColors);
+      renderPieChart('tagsChart', tagCounts, tagColors);
+      
+      // Статистика
+      const eps = collection.filter(a => a.list === 'watched').reduce((s, a) => s + (parseInt(a.episodes) || 0), 0);
+      const hours = Math.round(eps * 24 / 60) || 0;
+      const scores = collection.filter(a => a.userRating).map(a => parseFloat(a.userRating));
+      const avgScore = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '—';
+      const watchedAnime = collection.filter(a => a.list === 'watched');
+      const watchedRatings = watchedAnime.filter(a => a.avgRating).map(a => parseFloat(a.avgRating));
+      const avgShikimoriRating = watchedRatings.length ? (watchedRatings.reduce((a, b) => a + b, 0) / watchedRatings.length).toFixed(1) : '—';
+      const topRatedCount = collection.filter(a => parseFloat(a.userRating) === 10).length;
+      
+      // Любимая студия
+      const studioCounts = {};
+      watchedAnime.forEach(a => {
+        if (a.studio) {
+          a.studio.split(',').forEach(s => {
+            const studio = s.trim();
+            if (studio) studioCounts[studio] = (studioCounts[studio] || 0) + 1;
+          });
+        }
+      });
+      const favoriteStudio = Object.entries(studioCounts).sort((a, b) => b[1] - a[1])[0];
+      
+      document.getElementById('extStatsContainer').innerHTML = `
+        <div class="ext-stat"><span class="stat-l">Просмотрено серий</span><span class="stat-v">${eps}</span></div>
+        <div class="ext-stat"><span class="stat-l">Потрачено часов</span><span class="stat-v">${hours}</span></div>
+        <div class="ext-stat"><span class="stat-l">Средняя оценка (моя)</span><span class="stat-v">${avgScore}</span></div>
+        <div class="ext-stat"><span class="stat-l">Ср. оценка Шикимори</span><span class="stat-v">${avgShikimoriRating}</span></div>
+        <div class="ext-stat"><span class="stat-l">10 баллов</span><span class="stat-v">${topRatedCount}</span></div>
+        <div class="ext-stat">
+          <span class="stat-l">Любимая студия</span>
+          <span class="stat-v studio-tooltip" id="studioTooltip">
+            <span class="studio-name">${favoriteStudio ? favoriteStudio[0] : '—'}</span>
+            <div class="studio-popup" id="studioPopup">
+              <div class="studio-popup-title">Популярные аниме</div>
+              <div class="studio-popup-loading" id="studioPopupContent">Загрузка...</div>
+            </div>
+          </span>
+        </div>
+      `;
+      
+      // Обработчики вкладок
+      const tabs = document.querySelectorAll('.ext-tab');
+      tabs.forEach(tab => {
+        tab.onclick = () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const tabName = tab.dataset.tab;
+          document.getElementById('genresTabContent').style.display = tabName === 'genres' ? 'block' : 'none';
+          document.getElementById('tagsTabContent').style.display = tabName === 'tags' ? 'block' : 'none';
+        };
+      });
+      // Инициализируем тултип студии
+      setTimeout(initStudioTooltip, 100);
+    }
+    
+    // Загрузка популярных аниме студии из библиотеки
+    function loadStudioPopup(studioName) {
+      const popupContent = document.getElementById('studioPopupContent');
+      if (!popupContent) return;
+      
+      const collection = getCollection();
+      
+      // Показываем аниме из коллекции
+      const libraryAnime = collection
+        .filter(a => a.studio && a.studio.includes(studioName) && a.userRating)
+        .sort((a, b) => parseFloat(b.userRating) - parseFloat(a.userRating))
+        .slice(0, 5);
+      
+      if (libraryAnime.length > 0) {
+        popupContent.innerHTML = libraryAnime.map(a => `
+          <div class="studio-item" data-anime-id="${a.id}">
+            <span class="studio-item-name in-collection">${a.title || '—'}</span>
+            <span class="studio-item-rating">⭐ ${a.avgRating || '—'}</span>
+          </div>
+        `).join('');
+        
+        // Добавляем обработчики клика
+        popupContent.querySelectorAll('.studio-item').forEach(item => {
+          item.onclick = () => {
+            const id = item.dataset.animeId;
+            if (id) location.href = 'anime.html?id=' + id;
+          };
+        });
+      } else {
+        popupContent.innerHTML = '<div class="studio-popup-loading">Нет оценённых аниме этой студии</div>';
+      }
+    }
+
+    // Обработчики наведения на студию
+    let studioHoverTimer = null;
+
+    function initStudioTooltip() {
+      const tooltip = document.getElementById('studioTooltip');
+      const popup = document.getElementById('studioPopup');
+      if (!tooltip || !popup) return;
+      
+      tooltip.addEventListener('mouseenter', () => {
+        clearTimeout(studioHoverTimer);
+        studioHoverTimer = setTimeout(() => {
+          const studioName = tooltip.querySelector('.studio-name')?.textContent?.trim();
+          if (studioName && studioName !== '—') {
+            popup.classList.add('show');
+            loadStudioPopup(studioName);
+          }
+        }, 300);
+      });
+      
+      tooltip.addEventListener('mouseleave', () => {
+        clearTimeout(studioHoverTimer);
+        studioHoverTimer = setTimeout(() => {
+          popup.classList.remove('show');
+        }, 200);
+      });
+      
+      popup.addEventListener('mouseenter', () => {
+        clearTimeout(studioHoverTimer);
+      });
+      
+      popup.addEventListener('mouseleave', () => {
+        popup.classList.remove('show');
+      });
+    }
+
+    document.getElementById('extendedStatsBtn').onclick = () => {
+      renderExtendedStats();
+      document.getElementById('extendedStatsModal').style.display = 'flex';
+    };
+
     function loadProfile() {
       const profile = getProfile(), collection = getCollection();
       if (profile.avatar) {
@@ -502,6 +875,7 @@
         if (document.getElementById('editModal').style.display === 'flex') closeModal();
         if (document.getElementById('profileModal').style.display === 'flex') document.getElementById('profileModal').style.display = 'none';
         if (document.getElementById('imageModal').style.display === 'flex') document.getElementById('imageModal').style.display = 'none';
+        if (document.getElementById('extendedStatsModal').style.display === 'flex') document.getElementById('extendedStatsModal').style.display = 'none';
       }
     });
 
