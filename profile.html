@@ -301,6 +301,14 @@
       font-size: 0.7rem;
       padding: 0.5rem;
     }
+    .studio-popup-footer {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      margin-top: 0.5rem;
+      text-align: left;
+      padding-top: 0.4rem;
+    }
 
     footer { text-align: left; padding: 1rem; color: var(--footer-color); font-size: 0.8rem; border-top: 1px solid var(--footer-border); margin-top: auto; }
     @media (max-width: 750px) { 
@@ -605,7 +613,9 @@
         angle += slice;
       });
       
-      container.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${entries.map(([key], i) => `<div class="leg-item"><div class="leg-dot" style="background:${colors[i % colors.length]};"></div>${key}: ${dataObj[key]}</div>`).join('')}</div>`;
+      // Сортируем entries по количеству (от большего к меньшему)
+      const sortedEntries = entries.sort((a, b) => dataObj[b[0]] - dataObj[a[0]]);
+      container.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${sortedEntries.map(([key], i) => `<div class="leg-item"><div class="leg-dot" style="background:${colors[i % colors.length]};"></div>${key}: ${dataObj[key]}</div>`).join('')}</div>`;
     }
 
     function renderShowcases() {
@@ -728,15 +738,15 @@
       document.getElementById('extStatsContainer').innerHTML = `
         <div class="ext-stat"><span class="stat-l">Просмотрено серий</span><span class="stat-v">${eps}</span></div>
         <div class="ext-stat"><span class="stat-l">Потрачено часов</span><span class="stat-v">${hours}</span></div>
-        <div class="ext-stat"><span class="stat-l">Средняя оценка (моя)</span><span class="stat-v">${avgScore}</span></div>
+        <div class="ext-stat"><span class="stat-l">Ср. оценка пользователя</span><span class="stat-v">${avgScore}</span></div>
         <div class="ext-stat"><span class="stat-l">Ср. оценка Шикимори</span><span class="stat-v">${avgShikimoriRating}</span></div>
-        <div class="ext-stat"><span class="stat-l">10 баллов</span><span class="stat-v">${topRatedCount}</span></div>
+        <div class="ext-stat"><span class="stat-l">10 балльных аниме</span><span class="stat-v">${topRatedCount}</span></div>
         <div class="ext-stat">
           <span class="stat-l">Любимая студия</span>
           <span class="stat-v studio-tooltip" id="studioTooltip">
             <span class="studio-name">${favoriteStudio ? favoriteStudio[0] : '—'}</span>
             <div class="studio-popup" id="studioPopup">
-              <div class="studio-popup-title">Популярные аниме</div>
+              <div class="studio-popup-title">Аниме в библиотеке</div>
               <div class="studio-popup-loading" id="studioPopupContent">Загрузка...</div>
             </div>
           </span>
@@ -778,6 +788,17 @@
             <span class="studio-item-rating">⭐ ${a.avgRating || '—'}</span>
           </div>
         `).join('');
+        
+        // Количество аниме этой студии в просмотренном
+        const watchedCount = collection.filter(a => 
+          a.studio && a.studio.includes(studioName) && a.list === 'watched'
+        ).length;
+        
+        popupContent.innerHTML += `
+          <div class="studio-popup-footer">
+            ${watchedCount} аниме
+          </div>
+        `;
         
         // Добавляем обработчики клика
         popupContent.querySelectorAll('.studio-item').forEach(item => {
