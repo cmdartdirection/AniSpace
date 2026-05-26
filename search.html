@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta name="theme-color" content="#f0edf5">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniSpace — Поиск аниме</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0;
+    }
+    :root {
+      --bg: #0e0e1a;
+      --text: #f0e6ff;
+      --text-secondary: #8b7aaa;
+      --card-bg: rgba(25,22,44,0.7);
+      --input-bg: rgba(10,8,20,0.7);
+      --border: rgba(180,130,255,0.2);
+      --shadow: 0 20px 40px rgba(0,0,0,0.6);
+      --footer-color: #5a507a;
+      --footer-border: rgba(120,100,180,0.3);
+    }
+
+    .light-theme {
+      --bg: #f0edf5;
+      --text: #2a1a4a;
+      --text-secondary: #6b5b8c;
+      --card-bg: rgba(235,230,245,0.9);
+      --input-bg: rgba(245,242,252,0.95);
+      --border: rgba(123,75,255,0.25);
+      --shadow: 0 4px 15px rgba(0,0,0,0.1);
+      --footer-color: #7a6a9a;
+      --footer-border: rgba(123,75,255,0.2);
+    }
+
+    .app { display: flex; flex-direction: column; flex: 1; width: 100%; }
+    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
+    .logo { background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s; box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2); }
+    .logo:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
+    .ava { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.6); cursor: pointer; overflow: hidden; background: rgba(123,75,255,0.2); transition: 0.25s; }
+    .ava:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
+    .ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .back-btn { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(180,130,255,0.4); cursor: pointer; background: rgba(123,75,255,0.15); color: #c9a9ff; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: 0.25s; }
+    .back-btn:hover { border-color: #b47aff; color: white; background: rgba(123,75,255,0.3); }
+    .main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1.5rem; width: 100%; max-width: 900px; margin: 0 auto; gap: 1.5rem; }
+
+    /* Поисковая строка */
+    .search-section { width: 100%; }
+    .search-wrap {
+      display: flex; align-items: center; background: var(--input-bg);
+      border-radius: 3rem; border: 1px solid var(--border); padding: 0.4rem;
+      backdrop-filter: blur(10px);
+    }
+    .search-wrap:focus-within { border-color: #b47aff; box-shadow: 0 0 20px rgba(150,90,255,0.3); }
+    .search-inp {
+      flex: 1; background: transparent; border: none; padding: 0.8rem 1.2rem;
+      color: var(--text); font-size: 1rem; outline: none; border-radius: 3rem;
+    }
+    .search-inp::placeholder { color: var(--text-secondary); }
+    .search-btn {
+      background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white;
+      width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1.1rem;
+      margin-right: 0.3rem; transition: 0.2s; flex-shrink: 0;
+    }
+    .search-btn:hover { background: linear-gradient(135deg, #925fff, #c09aff); }
+    .search-results { margin-top: 0.5rem; max-height: 300px; overflow-y: auto; display: none; }
+    .search-results.show { display: block; }
+    .search-item {
+      display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 1rem;
+      cursor: pointer; border-radius: 0.8rem; transition: 0.2s; color: var(--text);
+    }
+    .search-item:hover { background: rgba(123,75,255,0.2); }
+    .search-item img { width: 40px; height: 55px; object-fit: cover; border-radius: 0.4rem; }
+    .search-item-info { flex: 1; min-width: 0; }
+    .search-item-title { font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .search-item-meta { font-size: 0.7rem; color: var(--text-secondary); }
+
+    /* Секции */
+    .section { width: 100%; }
+    .section-title {
+      font-size: 0.85rem; font-weight: 700; color: #b47aff;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .section-title i { font-size: 0.9rem; }
+    .cards-row {
+      display: flex; gap: 0.8rem; overflow-x: auto; padding-bottom: 0.5rem;
+      scroll-behavior: smooth;
+    }
+    .cards-row::-webkit-scrollbar { height: 4px; }
+    .cards-row::-webkit-scrollbar-thumb { background: rgba(180,130,255,0.3); border-radius: 2px; }
+
+    .anime-card {
+      flex-shrink: 0; width: 130px; cursor: pointer; transition: 0.2s;
+      border-radius: 0.8rem; overflow: hidden; position: relative;
+      aspect-ratio: 2/3; background: var(--card-bg);
+      border: 1px solid var(--border);
+    }
+    .anime-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); border-color: #b47aff; }
+    .anime-card img { width: 100%; height: 100%; object-fit: cover; }
+    .anime-card-overlay {
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      padding: 0.5rem; background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    }
+    .anime-card-title { font-size: 0.7rem; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .anime-card-year { font-size: 0.6rem; color: #b5a3d4; }
+    .anime-card-badge {
+      position: absolute; top: 0.4rem; left: 0.4rem; background: rgba(0,0,0,0.7);
+      color: #51cf66; font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 0.3rem;
+    }
+    .anime-card-rating {
+      position: absolute; top: 0.4rem; right: 0.4rem; background: rgba(0,0,0,0.7);
+      color: #f0b300; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 0.3rem;
+    }
+
+    .loading-row { display: flex; gap: 0.8rem; }
+    .loading-card {
+      flex-shrink: 0; width: 130px; aspect-ratio: 2/3; border-radius: 0.8rem;
+      background: var(--card-bg); animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.7; } }
+
+    .error-text { color: #ff6b6b; font-size: 0.8rem; text-align: center; padding: 1rem; }
+
+    footer { text-align: left; padding: 1rem; color: var(--footer-color); font-size: 0.8rem; border-top: 1px solid var(--footer-border); margin-top: auto; }
+
+    @media (max-width: 600px) {
+      .top-bar { padding: 0.75rem 1rem; }
+      .logo { font-size: 1rem; padding: 0.4rem 1rem; }
+      .ava { width: 32px; height: 32px; right: 1rem; }
+      .back-btn { width: 32px; height: 32px; left: 1rem; }
+      .main { padding: 1rem; }
+      .anime-card { width: 110px; }
+      .loading-card { width: 110px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="top-bar">
+      <div class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></div>
+      <button class="logo" id="goHomeBtn">AniSpace</button>
+      <div class="ava" id="profileAvatarTop"><img id="topAvatarImg" src="" alt="" style="display:block;"></div>
+    </div>
+    <main class="main">
+      <!-- Поиск -->
+      <section class="search-section">
+        <div class="search-wrap">
+          <input type="text" class="search-inp" id="searchInput" placeholder="Поиск аниме...">
+          <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="search-results" id="searchResults"></div>
+      </section>
+
+      <!-- Онгоинги -->
+      <section class="section">
+        <div class="section-title"><i class="fas fa-fire"></i> Новое</div>
+        <div class="cards-row" id="ongoingRow">
+          <div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div>
+        </div>
+      </section>
+
+      <!-- Рекомендации -->
+      <section class="section">
+        <div class="section-title"><i class="fas fa-star"></i> Рекомендации</div>
+        <div class="cards-row" id="recommendationsRow">
+          <div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div>
+        </div>
+      </section>
+    </main>
+    <footer>© AniSpace by cmd</footer>
+  </div>
+
+  <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+
+  <script>
+    (function(){const c=document.getElementById('ps3Canvas'),ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight});const t=[];for(let i=0;i<6;i++)t.push({color:['rgba(180,130,255,.25)','rgba(200,150,255,.2)','rgba(150,100,255,.22)','rgba(123,75,255,.18)','rgba(180,130,255,.2)','rgba(200,150,255,.15)'][i],speed:.3+Math.random()*.5,amp:10+Math.random()*25,off:Math.random()*Math.PI*2,y:c.height*.6+i*c.height*.06});function d(){ctx.clearRect(0,0,c.width,c.height);const tm=Date.now()*.001;t.forEach(th=>{th.y=c.height*.6+t.indexOf(th)*c.height*.01+Math.sin(tm*.2+th.off)*20;ctx.beginPath();for(let x=-50;x<=c.width+50;x+=5){const y=th.y+Math.sin(x*.01+tm*th.speed+th.off)*th.amp+Math.sin(x*.005+tm*.7+th.off)*th.amp*.5;x===-50?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.shadowColor='rgba(180,130,255,.5)';ctx.shadowBlur=10;ctx.strokeStyle=th.color;ctx.lineWidth=2;ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle=th.color.replace('.2','.35').replace('.15','.25').replace('.18','.3');ctx.lineWidth=1;ctx.stroke()});requestAnimationFrame(d)}d()})();
+  </script>
+
+  <script>
+    if (localStorage.getItem('anix_theme') === 'light') {
+      document.body.classList.add('light-theme');
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const searchResults = document.getElementById('searchResults');
+    const ongoingRow = document.getElementById('ongoingRow');
+    const recommendationsRow = document.getElementById('recommendationsRow');
+
+    // Загрузка аватарки
+    const profile = JSON.parse(localStorage.getItem('anix_profile') || '{}');
+    if (profile.avatar) {
+      document.getElementById('topAvatarImg').src = profile.avatar;
+      document.getElementById('topAvatarImg').style.display = 'block';
+    }
+
+    // Навигация
+    document.getElementById('backBtn').onclick = () => history.back();
+    document.getElementById('goHomeBtn').onclick = () => location.href = 'index.html';
+    document.getElementById('profileAvatarTop').onclick = () => location.href = 'profile.html';
+
+    // === Поиск аниме ===
+    async function searchAnime(query) {
+      try {
+        const res = await fetch(`https://shikimori.one/api/animes?search=${encodeURIComponent(query)}&limit=8&order=popularity`, {
+          headers: { 'User-Agent': 'AniSpace/1.0' }
+        });
+        if (!res.ok) throw new Error('Ошибка');
+        return await res.json();
+      } catch (e) {
+        console.error('Ошибка поиска:', e);
+        return [];
+      }
+    }
+
+    function displaySearchResults(animes) {
+      if (!animes.length) {
+        searchResults.innerHTML = '<div class="search-item" style="color:var(--text-secondary);">Ничего не найдено</div>';
+        searchResults.classList.add('show');
+        return;
+      }
+      searchResults.innerHTML = animes.map(a => `
+        <div class="search-item" data-id="${a.id}">
+          <img src="${a.image ? 'https://shikimori.one' + a.image.preview : ''}" alt="" onerror="this.style.display='none'">
+          <div class="search-item-info">
+            <div class="search-item-title">${a.russian || a.name || '—'}</div>
+            <div class="search-item-meta">${a.aired_on ? a.aired_on.split('-')[0] : '—'} · ${a.episodes || '?'} эп. · ⭐ ${a.score || '—'}</div>
+          </div>
+        </div>
+      `).join('');
+      searchResults.classList.add('show');
+      searchResults.querySelectorAll('.search-item').forEach(item => {
+        item.onclick = () => {
+          const id = item.dataset.id;
+          if (id) window.open(`https://shikimori.one/animes/${id}`, '_blank');
+        };
+      });
+    }
+
+    searchBtn.onclick = async () => {
+      const q = searchInput.value.trim();
+      if (!q) return;
+      searchResults.classList.remove('show');
+      searchResults.innerHTML = '<div class="search-item" style="color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Поиск...</div>';
+      searchResults.classList.add('show');
+      const animes = await searchAnime(q);
+      displaySearchResults(animes);
+    };
+
+    searchInput.onkeypress = e => {
+      if (e.key === 'Enter') searchBtn.click();
+    };
+
+    document.addEventListener('click', e => {
+      if (!searchResults.contains(e.target) && e.target !== searchInput && e.target !== searchBtn) {
+        searchResults.classList.remove('show');
+      }
+    });
+
+    // === Онгоинги ===
+    async function loadOngoing() {
+      try {
+        const res = await fetch('https://shikimori.one/api/animes?status=ongoing&order=popularity&limit=10', {
+          headers: { 'User-Agent': 'AniSpace/1.0' }
+        });
+        const data = await res.json();
+        ongoingRow.innerHTML = data.map(a => `
+          <div class="anime-card" onclick="window.open('https://shikimori.one/animes/${a.id}', '_blank')">
+            ${a.image ? `<img src="https://shikimori.one${a.image.preview}" alt="" onerror="this.style.display='none'">` : ''}
+            <div class="anime-card-badge">NEW</div>
+            <div class="anime-card-rating">⭐ ${a.score || '—'}</div>
+            <div class="anime-card-overlay">
+              <div class="anime-card-title">${a.russian || a.name || '—'}</div>
+              <div class="anime-card-year">${a.episodes || '?'} эп.</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        ongoingRow.innerHTML = '<div class="error-text">Не удалось загрузить</div>';
+      }
+    }
+
+    // === Рекомендации ===
+    function getTopGenres() {
+      const collection = JSON.parse(localStorage.getItem('anix_collection') || '[]');
+      const genreCounts = {};
+      collection.forEach(a => {
+        if (a.genre) {
+          a.genre.split(',').forEach(g => {
+            const genre = g.trim();
+            if (genre) genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+          });
+        }
+      });
+      return Object.entries(genreCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([genre]) => genre);
+    }
+
+    async function loadRecommendations() {
+      try {
+        const topGenres = getTopGenres();
+        if (!topGenres.length) {
+          recommendationsRow.innerHTML = '<div class="error-text">Добавьте аниме в коллекцию, чтобы увидеть рекомендации</div>';
+          return;
+        }
+        const genre = topGenres[0];
+        const res = await fetch(`https://shikimori.one/api/animes?genre=${encodeURIComponent(genre)}&order=popularity&limit=10&status=released`, {
+          headers: { 'User-Agent': 'AniSpace/1.0' }
+        });
+        const data = await res.json();
+        recommendationsRow.innerHTML = data.map(a => `
+          <div class="anime-card" onclick="window.open('https://shikimori.one/animes/${a.id}', '_blank')">
+            ${a.image ? `<img src="https://shikimori.one${a.image.preview}" alt="" onerror="this.style.display='none'">` : ''}
+            <div class="anime-card-rating">⭐ ${a.score || '—'}</div>
+            <div class="anime-card-overlay">
+              <div class="anime-card-title">${a.russian || a.name || '—'}</div>
+              <div class="anime-card-year">${a.aired_on ? a.aired_on.split('-')[0] : '—'}</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        recommendationsRow.innerHTML = '<div class="error-text">Не удалось загрузить</div>';
+      }
+    }
+
+    // Загрузка при открытии
+    loadOngoing();
+    loadRecommendations();
+  </script>
+</body>
+</html>

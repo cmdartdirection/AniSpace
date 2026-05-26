@@ -903,7 +903,7 @@
     }
 
     function updateRank(c) {
-      const n = c.length; let r='F', cl='r-f';
+      const n = c.filter(a => a.list === 'watched').length; let r='F', cl='r-f';
       if(n>=1000){r='SSS+';cl='r-sss-plus';}else if(n>=750){r='SSS';cl='r-sss';}else if(n>=500){r='SS';cl='r-ss';}else if(n>=300){r='S';cl='r-s';}else if(n>=150){r='A';cl='r-a';}else if(n>=50){r='B';cl='r-b';}else if(n>=25){r='C';cl='r-c';}else if(n>=1){r='D';cl='r-d';}
       document.getElementById('rankBadge').textContent = r;
       document.getElementById('rankBadge').className = 'rank '+cl;
