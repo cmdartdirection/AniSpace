@@ -223,7 +223,89 @@
       max-width: 250px;
     }
     
-    footer { text-align: left; padding: 1rem; color: #5a507a; font-size: 0.8rem; border-top: 1px solid rgba(120,100,180,0.3); margin-top: auto; }
+    .updates-float {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      z-index: 10;
+      max-width: 220px;
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .updates-header {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+    .updates-badge {
+      background: linear-gradient(135deg, #7b4bff, #b084ff);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 1.5rem;
+      white-space: nowrap;
+    }
+    .updates-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text, #f0e6ff);
+    }
+    .updates-arrow {
+      font-size: 0.6rem;
+      color: var(--text-secondary, #8b7aaa);
+      transition: transform 0.3s ease;
+    }
+    .updates-float.open .updates-arrow {
+      transform: rotate(180deg);
+    }
+    .updates-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      text-align: left;
+    }
+    .updates-float.open .updates-body {
+      max-height: 300px;
+    }
+    .updates-section-title {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #b47aff;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin: 0.5rem 0 0.15rem;
+    }
+    .updates-item {
+      font-size: 0.65rem;
+      padding: 0.1rem 0;
+      color: var(--text-secondary, #8b7aaa);
+      line-height: 1.4;
+    }
+    .updates-item.positive { color: #88D498; }
+    .updates-item.fix { color: #F6BD60; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+      padding: 1rem;
+      color: var(--footer-color, #5a507a);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--footer-border, rgba(120,100,180,0.3));
+      margin-top: auto;
+    }
+
+    .footer-right {
+      color: var(--footer-color, #5a507a);
+      font-size: 0.75rem;
+      transition: color 0.2s;
+    }
+
 
     @media (max-width: 600px) {
       .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
@@ -293,6 +375,24 @@
       </div>
     </main>
 
+    <div class="updates-float" id="updatesWidget">
+      <div class="updates-header" id="updatesToggle">
+        <span class="updates-badge">UPD 19</span>
+        <i class="fas fa-chevron-down updates-arrow"></i>
+      </div>
+      <div class="updates-body" id="updatesBody">
+        <div class="updates-section">
+          <div class="updates-section-title">Нововведения</div>
+          <div class="updates-item positive">+ Новости о нововведениях</div>
+          <div class="updates-item positive">+ Новая страница добавления аниме</div>
+        </div>
+        <div class="updates-section">
+          <div class="updates-section-title">Исправлено</div>
+          <div class="updates-item fix">- Ранги (18.1)</div>
+        </div>
+      </div>
+    </div>
+
     <div class="bottom-row">
       <button class="file-btn" id="themeToggle" title="Сменить тему">
         <i class="fas fa-moon"></i>
@@ -304,7 +404,10 @@
       <button class="file-btn" id="importBtn"><i class="fas fa-upload"></i> Импорт</button>
     </div>
 
-    <footer>© AniSpace by cmd</footer>
+    <footer>
+      <span>© AniSpace by cmd</span>
+      <span class="footer-right">19.0</span>
+    </footer>
   </div>
 
   <input type="file" id="importFileInput" accept=".json" style="display:none;">
@@ -452,6 +555,15 @@
       document.getElementById('onboardingAccept').onclick = () => {
         localStorage.setItem('anix_welcome_shown', 'true');
         document.getElementById('onboardingOverlay').classList.remove('show');
+      };
+    }
+    // Раскрытие новостей
+    const updatesToggle = document.getElementById('updatesToggle');
+    const updatesWidget = document.getElementById('updatesWidget');
+
+    if (updatesToggle) {
+      updatesToggle.onclick = () => {
+        updatesWidget.classList.toggle('open');
       };
     }
   </script>
