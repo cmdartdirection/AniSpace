@@ -354,10 +354,17 @@
       saveFolders(folders); renderFolders(); editModal.style.display = 'none';
     };
 
-    function render() {
-      loadCol(); popFilters();
-      if (folderMode) { tabsRow.style.display = 'none'; renderFolders(); }
-      else { tabsRow.style.display = 'flex'; renderNormal(); }
+    async function render() {
+      loadCol(); 
+      popFilters();
+      if (folderMode) { 
+        tabsRow.style.display = 'none'; 
+        renderFolders(); 
+      } else { 
+        tabsRow.style.display = 'flex'; 
+        renderNormal(); 
+      }
+      await fixBrokenPosters(); // ← добавили await
     }
 
     modeToggle.onclick = () => { folderMode = !folderMode; modeToggle.innerHTML = folderMode ? '<i class="fas fa-th-large"></i>' : '<i class="fas fa-folder"></i>'; render(); };
@@ -404,6 +411,62 @@
       document.getElementById('topAvatarImg').style.display = 'block';
     }
     render();
+    
+    // Исправляет битые постеры через AniList API
+    async function fixBrokenPosters() {
+      const collection = JSON.parse(localStorage.getItem('anix_collection') || '[]');
+      let changed = false;
+      
+      for (let a of collection) {
+        // Пропускаем только те, у которых нет постера или он с shikimori
+        if (!a.poster || !a.poster.includes('shikimori.one')) continue;
+        
+        // Запрашиваем AniList по названию
+        try {
+          const graphqlQuery = {
+            query: `
+              query ($search: String) {
+                Page(page: 1, perPage: 1) {
+                  media(search: $search, type: ANIME) {
+                    id
+                    coverImage {
+                      large
+                    }
+                  }
+                }
+              }
+            `,
+            variables: { search: a.title }
+          };
+          
+          const res = await fetch('https://graphql.anilist.co', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify(graphqlQuery)
+          });
+          
+          const data = await res.json();
+          if (data.data?.Page?.media?.length > 0) {
+            const posterUrl = data.data.Page.media[0].coverImage?.large;
+            if (posterUrl) {
+              a.poster = posterUrl;
+              changed = true;
+            }
+          }
+        } catch(e) {}
+      }
+      
+      if (changed) {
+        localStorage.setItem('anix_collection', JSON.stringify(collection));
+        // Перезагружаем коллекцию и перерисовываем
+        loadCol();
+        if (folderMode) renderFolders();
+        else renderNormal();
+      }
+    }
   </script>
 </body>
 </html>
