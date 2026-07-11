@@ -1,572 +1,418 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta name="theme-color" content="#0e0e1a">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#f0edf5">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>AniSpace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniSpace — Библиотека</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    :root {
-      --bg: #0e0e1a;
-      --text: #f0e6ff;
-      --text-secondary: #8b7aaa;
-      --border: rgba(180,130,255,0.25);
-      --modal-bg: rgba(25,22,44,0.98);
-    }
-
-    .light-theme {
-      --bg: #f0edf5;
-      --text: #2a1a4a;
-      --text-secondary: #6b5b8c;
-      --border: rgba(123,75,255,0.25);
-      --modal-bg: rgba(255,255,255,0.98);
-    }
-
     body {
       font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0;
+      background: #f0edf5;
+      min-height: 100vh; display: flex; flex-direction: column; color: #2a1a4a; margin: 0;
+    }
+
+    .app { display: flex; flex-direction: column; flex: 1; width: 100%; }
+
+    .header { 
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 1rem 1.5rem; background: rgba(240,237,245,0.9); 
+      backdrop-filter: blur(10px); border-bottom: 1px solid rgba(123,75,255,0.15);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-title {
+      font-weight: 600; font-size: 1rem; color: #2a1a4a;
+      margin-right: auto;
+    }
+    .header-actions { display: flex; gap: 0.3rem; }
+
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(123,75,255,0.2); background: transparent;
+      color: #6b5b8c; cursor: pointer; font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s; position: relative;
+    }
+    .icon-btn:hover { background: rgba(123,75,255,0.1); border-color: #7b4bff; color: #7b4bff; }
+    .icon-btn::after {
+      content: attr(data-tooltip);
+      position: absolute; top: 110%; left: 50%;
+      transform: translateX(-50%);
+      background: #2a1a4a; color: #f0edf5;
+      font-size: 0.7rem; padding: 0.3rem 0.6rem; border-radius: 0.4rem;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease; transition-delay: 0s; z-index: 300;
+    }
+    .icon-btn:hover::after { opacity: 1; transition-delay: 0.6s; }
+
+    .main { flex: 1; display: flex; flex-direction: column; padding: 0.5rem 1.5rem 2rem; width: 100%; max-width: 1200px; margin: 0 auto; }
+
+    .controls-bar {
+      display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+      margin-bottom: 1rem;
       position: relative;
-      overflow-x: hidden;
     }
+    .tab { 
+      background: rgba(123,75,255,0.06); border: 1px solid rgba(123,75,255,0.15); 
+      color: #6b5b8c; font-size: 0.8rem; padding: 0.4rem 0.9rem; border-radius: 2rem; 
+      cursor: pointer; transition: 0.2s; font-family: inherit; white-space: nowrap;
+    }
+    .tab.active { background: rgba(123,75,255,0.3); border-color: #7b4bff; color: #2a1a4a; font-weight: 600; }
+    .tab.bm { padding: 0.4rem 0.5rem; }
+    .tab.bm.active { background: linear-gradient(135deg, #f5d57a, #fce9a9); border-color: #e8c547; color: #5a4a2a; }
+    .tab:hover:not(.active) { background: rgba(123,75,255,0.15); }
 
-    .app-wrapper { 
-      display: flex; flex-direction: column; flex: 1; width: 100%; min-height: 100vh; 
-      position: relative; z-index: 1; 
-    }
-    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; }
-    .logo-center {
-      background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold;
-      font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s;
-      box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2);
-    }
-    .logo-center:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
-    .profile-avatar-top {
-      position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px;
-      border-radius: 50%; border: 2px solid rgba(180,130,255,0.6); cursor: pointer; overflow: hidden;
-      background: rgba(123,75,255,0.2); transition: 0.25s;
-    }
-    .profile-avatar-top:hover { border-color: #b47aff; box-shadow: 0 0 15px rgba(150,100,255,0.5); }
-    .profile-avatar-top img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .main-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; width: 100%; z-index: 1; }
-    .center-placeholder { text-align: center; }
-    .center-placeholder h2 { font-weight: 400; color: #cbb8f0; margin-bottom: 0.5rem; }
-    .btn-row { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
-    .btn {
-      font-weight: 600; font-size: 1.1rem; padding: 0.9rem 2.5rem; border-radius: 3rem; cursor: pointer;
-      transition: 0.3s; display: flex; align-items: center; gap: 0.6rem;
-    }
-    .btn-outline { background: transparent; border: 2px solid rgba(180,130,255,0.5); color: #c9a9ff; }
-    .btn-outline:hover { border-color: #b47aff; color: white; box-shadow: 0 0 25px rgba(150,100,255,0.4); transform: translateY(-2px); }
-    .btn-filled { background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; box-shadow: 0 4px 12px rgba(123,75,255,0.5); }
-    .btn-filled:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
-    .btn i { font-size: 1.3rem; }
-    .bottom-row { display: flex; gap: 0.5rem; justify-content: center; padding: 0.5rem 0; }
-    .file-btn {
-      background: rgba(180,130,255,0.1); border: 1px solid rgba(180,130,255,0.3); color: #b5a3d4;
-      font-size: 0.75rem; padding: 0.4rem 1rem; border-radius: 2rem; cursor: pointer; transition: 0.2s;
-      display: flex; align-items: center; gap: 0.3rem; font-family: inherit;
-    }
-    .file-btn:hover { background: rgba(180,130,255,0.25); color: white; border-color: #b47aff; }
-        
-    /* Онбординг */
-    .onboarding-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(6px);
-      z-index: 300;
-      align-items: center;
-      justify-content: center;
-    }
-    .onboarding-overlay.show {
-      display: flex;
-    }
-    .onboarding-box {
-      background: var(--modal-bg);
-      border: 2px solid #b47aff;
-      border-radius: 2rem;
-      padding: 2rem;
-      max-width: 420px;
-      width: 90%;
-      box-shadow: 0 0 40px rgba(123,75,255,0.3), 0 0 80px rgba(123,75,255,0.15), 0 20px 40px rgba(0,0,0,0.4);
-      text-align: center;
-      position: relative;
-      animation: onboardingGlow 2s ease-in-out infinite alternate;
-    }
-    @keyframes onboardingGlow {
-      from { box-shadow: 0 0 30px rgba(123,75,255,0.25), 0 0 60px rgba(123,75,255,0.1), 0 20px 40px rgba(0,0,0,0.4); }
-      to { box-shadow: 0 0 50px rgba(123,75,255,0.4), 0 0 100px rgba(123,75,255,0.2), 0 20px 40px rgba(0,0,0,0.4); }
-    }
-    .onboarding-slide {
-      display: none;
-      animation: fadeSlideIn 0.35s ease;
-    }
-    .onboarding-slide.active {
-      display: block;
-    }
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .onboarding-icon {
-      font-size: 3rem;
-      margin-bottom: 0.8rem;
-    }
-    .onboarding-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.6rem;
-    }
-    .onboarding-text {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-    .onboarding-warning {
-      background: rgba(255,80,80,0.08);
-      border: 1px solid rgba(255,80,80,0.25);
-      border-radius: 0.8rem;
-      padding: 0.8rem;
-      margin-top: 0.8rem;
-      font-size: 0.8rem;
-      color: #ff6b6b;
-      font-weight: 600;
-      line-height: 1.6;
-      text-align: left;
-    }
-    .onboarding-progress {
-      margin: 1.2rem 0 0.8rem;
-    }
-    .onboarding-progress-bar {
-      width: 100%;
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .onboarding-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #7b4bff, #b47aff);
-      border-radius: 2px;
-      transition: width 0.4s ease;
-    }
-    .onboarding-progress-text {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      text-align: center;
-      margin-top: 0.4rem;
-    }
-    .onboarding-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-    .onboarding-arrow {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: rgba(180,130,255,0.1);
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-      flex-shrink: 0;
-    }
-    .onboarding-arrow:hover {
-      background: rgba(123,75,255,0.25);
-      border-color: #b47aff;
-      color: white;
-    }
-    .onboarding-arrow.hidden {
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .onboarding-accept {
-      flex: 1;
-      padding: 0.7rem;
-      border-radius: 1.5rem;
-      border: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: 0.2s;
-      background: linear-gradient(135deg, #51cf66, #88D498);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    .onboarding-accept:hover {
-      background: linear-gradient(135deg, #66e07a, #9de6a8);
-    }
-    .onboarding-nav.accept-only {
-      justify-content: center;
-    }
-    .onboarding-nav.accept-only .onboarding-accept {
-      max-width: 250px;
-    }
-    
-    .updates-float {
-      position: absolute;
-      top: 1.5rem;
-      left: 1.5rem;
-      z-index: 10;
-      max-width: 220px;
-      opacity: 0.5;
-      transition: opacity 0.3s ease;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    .updates-header {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-    }
-    .updates-badge {
-      background: linear-gradient(135deg, #7b4bff, #b084ff);
-      color: white;
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.2rem 0.5rem;
-      border-radius: 1.5rem;
-      white-space: nowrap;
-    }
-    .updates-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text, #f0e6ff);
-    }
-    .updates-arrow {
-      font-size: 0.6rem;
-      color: var(--text-secondary, #8b7aaa);
-      transition: transform 0.3s ease;
-    }
-    .updates-float.open .updates-arrow {
-      transform: rotate(180deg);
-    }
-    .updates-body {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-      text-align: left;
-    }
-    .updates-float.open .updates-body {
-      max-height: 300px;
-    }
-    .updates-section-title {
-      font-size: 0.6rem;
-      font-weight: 700;
-      color: #b47aff;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin: 0.5rem 0 0.15rem;
-    }
-    .updates-item {
-      font-size: 0.65rem;
-      padding: 0.1rem 0;
-      color: var(--text-secondary, #8b7aaa);
-      line-height: 1.4;
-    }
-    .updates-item.positive { color: #88D498; }
-    .updates-item.fix { color: #F6BD60; }
+    .controls-spacer { flex: 1; }
 
-    footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-align: left;
-      padding: 1rem;
-      color: var(--footer-color, #5a507a);
-      font-size: 0.8rem;
-      border-top: 1px solid var(--footer-border, rgba(120,100,180,0.3));
-      margin-top: auto;
+    .search-inp { 
+      background: rgba(245,242,252,0.95); border: 1px solid rgba(123,75,255,0.25); 
+      color: #2a1a4a; font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 1.5rem; 
+      outline: none; font-family: inherit; flex: 1; min-width: 120px;
     }
+    .search-inp::placeholder { color: #6b5b8c; }
+    .search-inp:focus { border-color: #7b4bff; }
+    .hidden { display: none; }
 
-    .footer-right {
-      color: var(--footer-color, #5a507a);
-      font-size: 0.75rem;
-      transition: color 0.2s;
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.8rem; }
+    .card { 
+      position: relative; aspect-ratio: 2/3; border-radius: 0.6rem; overflow: hidden; 
+      cursor: pointer; transition: 0.2s; border: 1px solid rgba(123,75,255,0.15); 
+      background: rgba(235,230,245,0.9);
     }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); border-color: rgba(123,75,255,0.4); }
+    .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-over { 
+      position: absolute; bottom: 0; left: 0; width: 100%; padding: 0.5rem; 
+      background: linear-gradient(transparent, rgba(0,0,0,0.85)); opacity: 0; transition: 0.2s;
+    }
+    .card:hover .card-over { opacity: 1; }
+    .card-ttl { font-weight: 600; font-size: 0.7rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-yr { font-size: 0.6rem; color: #b5a3d4; }
+    .card-rate { 
+      position: absolute; top: 0.4rem; right: 0.4rem; background: rgba(0,0,0,0.7); 
+      color: #f0b300; font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 0.3rem; font-weight: 600;
+    }
+    .card-list { 
+      position: absolute; bottom: 0.4rem; left: 0.4rem; font-size: 0.55rem; 
+      padding: 0.1rem 0.35rem; border-radius: 0.3rem; font-weight: 600; color: white;
+    }
+    .card-emp { 
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; 
+      color: #8b7aaa;
+    }
+    .empty { text-align: center; color: #6b5b8c; padding: 3rem; font-size: 0.95rem; grid-column: 1 / -1; }
 
+    /* Дропдауны */
+    .dropdown-menu {
+      position: absolute; top: calc(100% + 0.5rem);
+      background: #f0edf5; border: 1px solid rgba(123,75,255,0.2);
+      border-radius: 1rem; padding: 0.8rem; display: none;
+      flex-direction: column; gap: 0.5rem; min-width: 220px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1); z-index: 200;
+    }
+    .dropdown-menu.show { display: flex; }
+    #filterDropdown { 
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    #sortDropdown { 
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .dropdown-section { display: flex; flex-direction: column; gap: 0.2rem; }
+    .dropdown-label { font-size: 0.7rem; font-weight: 600; color: #6b5b8c; text-transform: uppercase; }
+    .dropdown-select {
+      padding: 0.4rem 0.6rem; border-radius: 0.6rem;
+      border: 1px solid rgba(123,75,255,0.25); background: white;
+      color: #2a1a4a; font-size: 0.8rem; font-family: inherit; outline: none;
+    }
+    .dropdown-select:focus { border-color: #7b4bff; }
+    .dropdown-actions { display: flex; gap: 0.3rem; }
+    .dropdown-btn {
+      flex: 1; padding: 0.4rem; border-radius: 1.5rem; border: none;
+      background: linear-gradient(135deg, #7b4bff, #b084ff); color: white;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .dropdown-btn:hover { background: linear-gradient(135deg, #925fff, #c09aff); }
+    .dropdown-btn-reset {
+      background: transparent; border: 1px solid rgba(123,75,255,0.2); color: #6b5b8c;
+    }
+    .dropdown-btn-reset:hover { background: rgba(123,75,255,0.1); color: #2a1a4a; }
+
+    .sort-option {
+      padding: 0.5rem 0.8rem; border-radius: 0.6rem; border: none;
+      background: transparent; color: #2a1a4a; font-size: 0.8rem; cursor: pointer;
+      text-align: left; font-family: inherit; transition: 0.1s;
+    }
+    .sort-option:hover { background: rgba(123,75,255,0.1); }
+    .sort-option.active { background: rgba(123,75,255,0.2); font-weight: 600; }
 
     @media (max-width: 600px) {
-      .btn { font-size: 0.9rem; padding: 0.7rem 1.5rem; }
-      .btn-row { flex-direction: column; gap: 0.5rem; }
+      .header { padding: 0.75rem 1rem; }
+      .main { padding: 1rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; }
+      .card-over { opacity: 1; padding: 0.3rem; }
+      .card-ttl { font-size: 0.6rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Онбординг -->
-  <div class="onboarding-overlay" id="onboardingOverlay">
-    <div class="onboarding-box">
-      <div class="onboarding-slide active" data-step="0">
-        <div class="onboarding-icon">👋</div>
-        <div class="onboarding-title">Добро пожаловать в AniSpace!</div>
-        <div class="onboarding-text">Твоя аниме-библиотека, которая работает полностью локально — без серверов, регистраций и баз данных.</div>
+  <div class="app">
+    <header class="header">
+      <span class="header-title">Библиотека</span>
+      <div class="header-actions">
+        <button class="icon-btn" data-tooltip="Добавить" id="addAnimeBtn">
+          <i class="fas fa-plus-circle"></i>
+        </button>
+        <button class="icon-btn" data-tooltip="Статистика" id="statsBtn">
+          <i class="fas fa-chart-bar"></i>
+        </button>
+        <button class="icon-btn" data-tooltip="Данные" id="dataBtn">
+          <i class="fas fa-database"></i>
+        </button>
+        <button class="icon-btn" data-tooltip="Топ" id="topBtn">
+          <i class="fas fa-crown"></i>
+        </button>
       </div>
-      <div class="onboarding-slide" data-step="1">
-        <div class="onboarding-icon">🔒</div>
-        <div class="onboarding-title">Полная приватность</div>
-        <div class="onboarding-text">Вся твоя коллекция, оценки и настройки хранятся <b>только на твоём устройстве</b> в памяти браузера. Никто, кроме тебя, не имеет к ним доступа.</div>
-      </div>
-      <div class="onboarding-slide" data-step="2">
-        <div class="onboarding-icon">⚠️</div>
-        <div class="onboarding-title">Внимание! Риск потери данных</div>
-        <div class="onboarding-text">Все данные будут <b>безвозвратно удалены</b> в следующих случаях:</div>
-        <div class="onboarding-warning">
-          1. Очистка кэша браузера<br>
-          2. Переустановка браузера<br>
-          3. Закрытие в режиме инкогнито<br>
-          4. Удаление истории посещений
-        </div>
-      </div>
-      <div class="onboarding-slide" data-step="3">
-        <div class="onboarding-icon">📝</div>
-        <div class="onboarding-title">Отказ от ответственности</div>
-        <div class="onboarding-text" style="text-align:left; font-size:0.8rem;">
-          <p style="margin-top:0.4rem;">AniSpace <b>не несёт ответственности</b> за контент, предоставляемый через <b>Shikimori API и сторонние плееры</b>. Весь контент принадлежит их законным правообладателям.<b> Используя сайт, вы принимаете эти условия</b>.</p>
-        </div>
-      </div>
-      <div class="onboarding-progress">
-        <div class="onboarding-progress-bar">
-          <div class="onboarding-progress-fill" id="onboardingProgressFill" style="width: 25%;"></div>
-        </div>
-        <div class="onboarding-progress-text" id="onboardingProgressText">1 / 4</div>
-      </div>
-      <div class="onboarding-nav" id="onboardingNav">
-        <button class="onboarding-arrow hidden" id="onboardingPrev"><i class="fas fa-chevron-left"></i></button>
-        <button class="onboarding-accept" id="onboardingAccept" style="display:none;">Принимаю</button>
-        <button class="onboarding-arrow" id="onboardingNext"><i class="fas fa-chevron-right"></i></button>
-      </div>
-    </div>
-  </div>
+    </header>
 
-  <div class="app-wrapper">
-    <div class="top-bar">
-      <button class="logo-center" id="goHomeBtn">AniSpace</button>
-      <div class="profile-avatar-top" id="profileAvatarTop">
-        <img id="topAvatarImg" src="" alt="" style="display:block;">
-      </div>
-    </div>
+    <main class="main">
+      <div class="controls-bar">
+        <button class="tab bm" data-tab="bookmarked">
+          <i class="fas fa-bookmark"></i>
+        </button>
+        <button class="tab" data-tab="watching">Смотрю</button>
+        <button class="tab" data-tab="watched">Просмотрено</button>
+        <button class="tab" data-tab="dropped">Брошено</button>
+        <button class="tab" data-tab="planned">В планах</button>
+        <button class="tab" data-tab="rewatching">Пересмотрю</button>
 
-    <main class="main-content">
-      <div class="center-placeholder"><h2>✨ Добро пожаловать в AniSpace</h2></div>
-      <div class="btn-row">
-        <button class="btn btn-filled" id="libBtn"><i class="fas fa-books"></i>Библиотека</button>
-        <button class="btn btn-outline" id="addAnimeBtn"><i class="fas fa-plus-circle"></i>Добавить</button>
+        <div class="controls-spacer"></div>
+
+        <!-- Фильтры -->
+        <span style="position:relative;">
+          <div class="dropdown-menu" id="filterDropdown">
+            <div class="dropdown-section">
+              <label class="dropdown-label">Жанр</label>
+              <select class="dropdown-select" id="filterGenreSelect">
+                <option value="">Все жанры</option>
+              </select>
+            </div>
+            <div class="dropdown-section">
+              <label class="dropdown-label">Тег</label>
+              <select class="dropdown-select" id="filterTagSelect">
+                <option value="">Все теги</option>
+              </select>
+            </div>
+          </div>
+          <button class="icon-btn" data-tooltip="Фильтры" id="filterBtn">
+            <i class="fas fa-sliders"></i>
+          </button>
+        </span>
+
+        <!-- Сортировка -->
+        <span style="position:relative;">
+          <div class="dropdown-menu" id="sortDropdown">
+            <button class="sort-option active" data-sort="addedAt">По дате добавления</button>
+            <button class="sort-option" data-sort="title">По названию</button>
+            <button class="sort-option" data-sort="releaseDate">По дате выхода</button>
+            <button class="sort-option" data-sort="userRating">По личному рейтингу</button>
+            <button class="sort-option" data-sort="avgRating">По рейтингу Shikimori</button>
+          </div>
+          <button class="icon-btn" data-tooltip="Сортировка" id="sortBtn">
+            <i class="fas fa-arrow-down-wide-short"></i>
+          </button>
+        </span>
+
+        <input type="text" class="search-inp" id="libSearchInput" placeholder="Поиск по названию...">
       </div>
+
+      <!-- Скрытые селекты -->
+      <select class="hidden" id="genreFilter"><option value="">Все жанры</option></select>
+      <select class="hidden" id="tagFilter"><option value="">Все теги</option></select>
+      <select class="hidden" id="sortSelect">
+        <option value="addedAt" selected>По дате добавления</option>
+        <option value="title">По названию</option>
+        <option value="releaseDate">По дате выхода</option>
+        <option value="userRating">По личному рейтингу</option>
+        <option value="avgRating">По рейтингу Shikimori</option>
+      </select>
+
+      <div class="grid" id="animeGrid"></div>
     </main>
-
-    <div class="updates-float" id="updatesWidget">
-      <div class="updates-header" id="updatesToggle">
-        <span class="updates-badge">UPD 19</span>
-        <i class="fas fa-chevron-down updates-arrow"></i>
-      </div>
-      <div class="updates-body" id="updatesBody">
-        <div class="updates-section">
-          <div class="updates-section-title">Нововведения</div>
-          <div class="updates-item positive">+ Новости о нововведениях</div>
-          <div class="updates-item positive">+ Новая страница добавления аниме</div>
-        </div>
-        <div class="updates-section">
-          <div class="updates-section-title">Исправлено</div>
-          <div class="updates-item fix">- Ранги (18.1)</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="bottom-row">
-      <button class="file-btn" id="themeToggle" title="Сменить тему">
-        <i class="fas fa-moon"></i>
-      </button>
-      <button class="file-btn" id="faqBtn" onclick="location.href='faq.html'">
-        <i class="fas fa-question-circle"></i> FAQ
-      </button>
-      <button class="file-btn" id="exportBtn"><i class="fas fa-download"></i> Экспорт</button>
-      <button class="file-btn" id="importBtn"><i class="fas fa-upload"></i> Импорт</button>
-    </div>
-
-    <footer>
-      <span>© AniSpace by cmd</span>
-      <span class="footer-right">19.0</span>
-    </footer>
   </div>
 
-  <input type="file" id="importFileInput" accept=".json" style="display:none;">
-  <canvas id="ps3Canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+<script>
+    let currentTab = 'all', allAnime = [];
 
-  <script>
-    (function() {
-      const canvas = document.getElementById('ps3Canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-      const threads = [];
-      const colors = ['rgba(180,130,255,0.25)','rgba(200,150,255,0.2)','rgba(150,100,255,0.22)','rgba(123,75,255,0.18)','rgba(180,130,255,0.2)','rgba(200,150,255,0.15)'];
-      for (let i=0;i<6;i++) threads.push({color:colors[i],speed:0.3+Math.random()*0.5,amplitude:10+Math.random()*25,offset:Math.random()*Math.PI*2,y:canvas.height*0.6+(i*canvas.height*0.06)});
-      function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        const t=Date.now()*0.001;
-        threads.forEach(th=>{
-          th.y=canvas.height*0.6+(threads.indexOf(th)*canvas.height*0.01)+Math.sin(t*0.2+th.offset)*20;
-          ctx.beginPath();
-          for(let x=-50;x<=canvas.width+50;x+=5){const y=th.y+Math.sin(x*0.01+t*th.speed+th.offset)*th.amplitude+Math.sin(x*0.005+t*0.7+th.offset)*th.amplitude*0.5;x===-50?ctx.moveTo(x,y):ctx.lineTo(x,y);}
-          ctx.shadowColor='rgba(180,130,255,0.5)';ctx.shadowBlur=10;ctx.strokeStyle=th.color;ctx.lineWidth=2;ctx.stroke();
-          ctx.shadowBlur=0;ctx.strokeStyle=th.color.replace('0.2','0.35').replace('0.15','0.25').replace('0.18','0.3');ctx.lineWidth=1;ctx.stroke();
-        });
-        requestAnimationFrame(draw);
+    const listColors = { watching:'#88D498', watched:'#809BCE', dropped:'#F28482', planned:'#957DAD', rewatching:'#F6BD60' };
+    const listNames = { watching:'Смотрю', watched:'Просмотрено', dropped:'Брошено', planned:'В планах', rewatching:'Пересмотрю' };
+    const tagNames = { isekai:'Исекай', slice_of_life:'Повседневное', psychology:'Психология', sport:'Спорт', romance:'Романтика', action:'Экшен', comedy:'Комедия', drama:'Драма', fantasy:'Фэнтези', horror:'Ужасы', mecha:'Меха', music:'Музыка', mystery:'Детектив', sci_fi:'Фантастика', thriller:'Триллер', adventure:'Приключения', historical:'Историческое', military:'Военное', school:'Школа', supernatural:'Сверхъестественное', hentai:'Хентай' };
+
+    const loadCol = () => allAnime = JSON.parse(localStorage.getItem('anix_collection') || '[]');
+    const sortSelect = document.getElementById('sortSelect');
+    const genreFilter = document.getElementById('genreFilter');
+    const tagFilter = document.getElementById('tagFilter');
+
+    function getFiltered() {
+      let f = [...allAnime];
+      if (currentTab !== 'all') {
+        if (currentTab === 'bookmarked') f = f.filter(a => a.bookmarked === true);
+        else f = f.filter(a => (a.list || 'watching') === currentTab);
       }
-      draw();
-    })();
-  </script>
-
-  <script>
-    const themeToggle = document.getElementById('themeToggle');
-
-    function updateThemeIcon() {
-      const isLight = document.body.classList.contains('light-theme');
-      themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      if (genreFilter.value) f = f.filter(a => a.genre && a.genre.includes(genreFilter.value));
+      if (tagFilter.value) f = f.filter(a => a.tag === tagFilter.value);
+      
+      f.sort((a, b) => ({
+        title:(a.title||'').localeCompare(b.title||''), 
+        addedAt:(b.addedAt||'').localeCompare(a.addedAt||''), 
+        releaseDate: (() => {
+          const parse = d => { if (!d) return 0; const p = d.split('.'); return +p[2]*10000 + +p[1]*100 + +p[0]; };
+          return parse(b.releaseDate) - parse(a.releaseDate);
+        })(),
+        userRating:parseFloat(b.userRating||0)-parseFloat(a.userRating||0), 
+        avgRating:parseFloat(b.avgRating||0)-parseFloat(a.avgRating||0)
+      })[sortSelect.value]||0);
+      
+      return f;
     }
 
-    if (localStorage.getItem('anix_theme') === 'light') {
-      document.body.classList.add('light-theme');
+    function popFilters() {
+      const genres = new Set(); 
+      allAnime.forEach(a => { if (a.genre) a.genre.split(',').forEach(g => genres.add(g.trim())); });
+      genreFilter.innerHTML = '<option value="">Все жанры</option>' + [...genres].sort().map(g => `<option value="${g}">${g}</option>`).join('');
+      const tags = new Set(); 
+      allAnime.forEach(a => { if (a.tag) tags.add(a.tag); });
+      tagFilter.innerHTML = '<option value="">Все теги</option>' + [...tags].sort().map(t => `<option value="${t}">${tagNames[t] || t}</option>`).join('');
     }
-    updateThemeIcon();
 
-    themeToggle.onclick = () => {
-      document.body.classList.toggle('light-theme');
-      const isLight = document.body.classList.contains('light-theme');
-      localStorage.setItem('anix_theme', isLight ? 'light' : 'dark');
-      updateThemeIcon();
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: 'anix_theme',
-        newValue: isLight ? 'light' : 'dark',
-        oldValue: isLight ? 'dark' : 'light'
-      }));
-    };
+    function createCard(anime) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const year = anime.releaseDate ? anime.releaseDate.split('.')[2] || '' : '';
+      const blur = anime.tag === 'hentai' ? 'filter: blur(6px);' : '';
+      const rating = anime.avgRating ? parseFloat(anime.avgRating).toFixed(1) : (anime.rating ? parseFloat(anime.rating).toFixed(1) : '—');
+      card.innerHTML = `
+        ${anime.poster ? `<img src="${anime.poster}" alt="" style="${blur}">` : '<div class="card-emp"><i class="fas fa-image"></i></div>'}
+        <div class="card-list" style="background:${listColors[anime.list]||'#88D498'};">${listNames[anime.list]||'—'}</div>
+        <div class="card-over"><div class="card-ttl">${anime.title||'—'}</div><div class="card-yr">${year||'—'}</div></div>`;
+      card.onclick = () => location.href = `anime.html?id=${anime.id}`;
+      return card;
+    }
 
-    document.getElementById('exportBtn').onclick = () => {
-      const getCollection = () => JSON.parse(localStorage.getItem('anix_collection') || '[]');
-      const data = {
-        collection: getCollection().map(a => ({...a, poster: a.poster && a.poster.startsWith('http') ? a.poster : ''})),
-        profile: (p => { delete p.avatar; delete p.banner; return p; })(JSON.parse(localStorage.getItem('anix_profile') || '{}')),
-        showcases: JSON.parse(localStorage.getItem('anix_showcases') || '[]'),
-        folders: JSON.parse(localStorage.getItem('anix_folders') || '[]'),
-        exportedAt: new Date().toISOString()
-      };
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
-      a.download = 'anix_collection.json';
-      a.click();
-    };
+    function renderGrid(list) {
+      const grid = document.getElementById('animeGrid');
+      grid.innerHTML = '';
+      if (!list.length) { 
+        grid.innerHTML = '<div class="empty"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>Ничего не найдено</div>'; 
+        return; 
+      }
+      list.forEach(a => grid.appendChild(createCard(a)));
+    }
 
-    const importFileInput = document.getElementById('importFileInput');
-    document.getElementById('importBtn').onclick = () => importFileInput.click();
-    importFileInput.onchange = e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        try {
-          const d = JSON.parse(ev.target.result);
-          if (d.collection) localStorage.setItem('anix_collection', JSON.stringify(d.collection));
-          if (d.profile) localStorage.setItem('anix_profile', JSON.stringify(d.profile));
-          if (d.showcases) localStorage.setItem('anix_showcases', JSON.stringify(d.showcases));
-          if (d.folders) localStorage.setItem('anix_folders', JSON.stringify(d.folders));
-          alert('Загружено!'); location.reload();
-        } catch(er) { alert('Ошибка: '+er.message); }
-      };
-      reader.readAsText(file);
-    };
+    function render() {
+      loadCol(); 
+      popFilters();
+      renderGrid(getFiltered());
+    }
 
+    // Навигация
     document.getElementById('addAnimeBtn').onclick = () => location.href = 'animeadd.html';
-    document.getElementById('libBtn').onclick = () => location.href = 'lib.html';
-    document.getElementById('goHomeBtn').onclick = () => scrollTo({top:0, behavior:'smooth'});
-    document.getElementById('profileAvatarTop').onclick = () => location.href = 'profile.html';
+    document.getElementById('statsBtn').onclick = () => location.href = 'profile.html';
+    document.getElementById('dataBtn').onclick = () => location.href = 'eximport.html';
+    document.getElementById('topBtn').onclick = () => alert('Топ аниме — в разработке');
 
-    const profile = JSON.parse(localStorage.getItem('anix_profile') || '{}');
-    if (profile.avatar) {
-      document.getElementById('topAvatarImg').src = profile.avatar;
-      document.getElementById('topAvatarImg').style.display = 'block';
-    }
-
-    // Онбординг
-    let currentOnboardingStep = 0;
-    const totalSteps = 4;
-
-    function showOnboardingStep(step) {
-      document.querySelectorAll('.onboarding-slide').forEach(s => s.classList.remove('active'));
-      document.querySelector(`.onboarding-slide[data-step="${step}"]`).classList.add('active');
+    // Вкладки
+    document.querySelector('.controls-bar').addEventListener('click', function(e) {
+      const tab = e.target.closest('.tab');
+      if (!tab) return;
       
-      const prevArrow = document.getElementById('onboardingPrev');
-      const nextArrow = document.getElementById('onboardingNext');
-      const acceptBtn = document.getElementById('onboardingAccept');
-      
-      prevArrow.classList.toggle('hidden', step === 0);
-      nextArrow.classList.toggle('hidden', step === totalSteps - 1);
-      acceptBtn.style.display = step === totalSteps - 1 ? 'flex' : 'none';
-      nextArrow.style.display = step === totalSteps - 1 ? 'none' : 'flex';
-      
-      currentOnboardingStep = step;
-
-      const progressFill = document.getElementById('onboardingProgressFill');
-      const progressText = document.getElementById('onboardingProgressText');
-      if (progressFill && progressText) {
-        const percent = ((step + 1) / totalSteps) * 100;
-        progressFill.style.width = percent + '%';
-        progressText.textContent = (step + 1) + ' / ' + totalSteps;
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      if (tab.dataset.tab === currentTab) {
+        currentTab = 'all';
+      } else {
+        tab.classList.add('active');
+        currentTab = tab.dataset.tab;
       }
-    }
+      renderGrid(getFiltered());
+    });
 
-    if (!localStorage.getItem('anix_welcome_shown')) {
-      document.getElementById('onboardingOverlay').classList.add('show');
-      
-      document.getElementById('onboardingNext').onclick = () => {
-        if (currentOnboardingStep < totalSteps - 1) {
-          showOnboardingStep(currentOnboardingStep + 1);
-        }
-      };
-      
-      document.getElementById('onboardingPrev').onclick = () => {
-        if (currentOnboardingStep > 0) {
-          showOnboardingStep(currentOnboardingStep - 1);
-        }
-      };
-      
-      document.getElementById('onboardingAccept').onclick = () => {
-        localStorage.setItem('anix_welcome_shown', 'true');
-        document.getElementById('onboardingOverlay').classList.remove('show');
-      };
-    }
-    // Раскрытие новостей
-    const updatesToggle = document.getElementById('updatesToggle');
-    const updatesWidget = document.getElementById('updatesWidget');
+    // === Дропдаун фильтров ===
+    const filterDropdown = document.getElementById('filterDropdown');
+    const filterGenreSelect = document.getElementById('filterGenreSelect');
+    const filterTagSelect = document.getElementById('filterTagSelect');
 
-    if (updatesToggle) {
-      updatesToggle.onclick = () => {
-        updatesWidget.classList.toggle('open');
+    document.getElementById('filterBtn').onclick = function(e) {
+      e.stopPropagation();
+      document.getElementById('sortDropdown').classList.remove('show');
+      const genres = [...new Set(allAnime.flatMap(a => (a.genre||'').split(',').map(g => g.trim()).filter(Boolean)))].sort();
+      const tags = [...new Set(allAnime.map(a => a.tag).filter(Boolean))].sort();
+      filterGenreSelect.innerHTML = '<option value="">Все жанры</option>' + genres.map(g => `<option value="${g}" ${genreFilter.value === g ? 'selected' : ''}>${g}</option>`).join('');
+      filterTagSelect.innerHTML = '<option value="">Все теги</option>' + tags.map(t => `<option value="${t}" ${tagFilter.value === t ? 'selected' : ''}>${tagNames[t] || t}</option>`).join('');
+      filterDropdown.classList.toggle('show');
+    };
+
+    // Авто-применение при выборе
+    filterGenreSelect.onchange = function() {
+      genreFilter.value = this.value;
+      tagFilter.value = '';
+      filterTagSelect.value = '';
+      genreFilter.dispatchEvent(new Event('change'));
+    };
+
+    filterTagSelect.onchange = function() {
+      tagFilter.value = this.value;
+      genreFilter.value = '';
+      filterGenreSelect.value = '';
+      genreFilter.dispatchEvent(new Event('change'));
+    };
+
+    // === Дропдаун сортировки ===
+    const sortDropdown = document.getElementById('sortDropdown');
+
+    document.getElementById('sortBtn').onclick = function(e) {
+      e.stopPropagation();
+      filterDropdown.classList.remove('show');
+      document.querySelectorAll('.sort-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.sort === sortSelect.value);
+      });
+      sortDropdown.classList.toggle('show');
+    };
+
+    document.querySelectorAll('.sort-option').forEach(opt => {
+      opt.onclick = function() {
+        sortSelect.value = this.dataset.sort;
+        sortSelect.dispatchEvent(new Event('change'));
+        sortDropdown.classList.remove('show');
       };
-    }
-    
-  </script>
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#filterBtn') && !e.target.closest('#filterDropdown')) {
+        filterDropdown.classList.remove('show');
+      }
+      if (!e.target.closest('#sortBtn') && !e.target.closest('#sortDropdown')) {
+        sortDropdown.classList.remove('show');
+      }
+    });
+
+    genreFilter.onchange = () => renderGrid(getFiltered());
+    tagFilter.onchange = () => renderGrid(getFiltered());
+    sortSelect.onchange = () => renderGrid(getFiltered());
+
+    // Поиск
+    document.getElementById('libSearchInput').addEventListener('input', function() {
+      const q = this.value.trim().toLowerCase();
+      document.querySelectorAll('.card').forEach(card => {
+        const title = card.querySelector('.card-ttl')?.textContent?.toLowerCase() || '';
+        card.style.display = !q || title.includes(q) ? '' : 'none';
+      });
+    });
+
+    render();
+</script>
 </body>
 </html>

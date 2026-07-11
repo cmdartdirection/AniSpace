@@ -5,930 +5,180 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AniSpace — Профиль</title>
+  <title>AniSpace — Статистика</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      min-height: 100vh; display: flex; flex-direction: column; color: var(--text); margin: 0;
+      background: #f0edf5;
+      min-height: 100vh; display: flex; flex-direction: column; color: #2a1a4a; margin: 0;
     }
-    :root {
-      --bg: #0e0e1a;
-      --text: #f0e6ff;
-      --text-secondary: #8b7aaa;
-      --card-bg: rgba(25,22,44,0.6);
-      --card-header-bg: rgba(30,25,50,0.8);
-      --border: rgba(180,130,255,0.2);
-      --input-bg: rgba(10,8,20,0.7);
-      --modal-bg: rgba(25,22,44,0.98);
-      --shadow: 0 20px 40px black;
-      --banner-gradient: linear-gradient(135deg, #1a1030 0%, #3a2060 50%, #5a3090 100%);
-      --banner-fade: #0e0e1a;
-      --top-bar-bg: rgba(14,14,26,0.9);
-      --avatar-border: rgba(180,130,255,0.6);
-      --avatar-shadow: 0 0 12px rgba(150,100,255,0.3);
-      --nick-color: #e4d7ff;
-      --chart-bg: rgba(25,22,44,0.7);
-      --stat-border: rgba(180,150,220,0.1);
-      --stat-v-color: #cbb8f0;
-      --add-show-bg: rgba(180,130,255,0.1);
-      --add-show-border: rgba(180,130,255,0.3);
-      --edit-prof-bg: rgba(255,255,255,0.05);
-      --footer-color: #5a507a;
-      --footer-border: rgba(120,100,180,0.3);
-      --modal-border: rgba(180,130,255,0.5);
-    }
-
-    .light-theme {
-      --bg: #f0edf5;
-      --text: #2a1a4a;
-      --text-secondary: #6b5b8c;
-      --card-bg: rgba(235,230,245,0.8);
-      --card-header-bg: rgba(245,242,252,0.9);
-      --border: rgba(123,75,255,0.2);
-      --input-bg: rgba(245,242,252,0.95);
-      --modal-bg: rgba(245,242,252,0.95);
-      --shadow: 0 4px 15px rgba(0,0,0,0.1);
-      --banner-gradient: linear-gradient(135deg, #e0d6f5 0%, #c4b0e0 50%, #a890d0 100%);
-      --banner-fade: #f0edf5;
-      --top-bar-bg: rgba(240,237,245,0.9);
-      --avatar-border: rgba(123,75,255,0.5);
-      --avatar-shadow: 0 0 12px rgba(100,50,200,0.2);
-      --nick-color: #3a2a5a;
-      --chart-bg: rgba(235,230,245,0.9);
-      --stat-border: rgba(123,75,255,0.1);
-      --stat-v-color: #4a3a6a;
-      --add-show-bg: rgba(123,75,255,0.05);
-      --add-show-border: rgba(123,75,255,0.25);
-      --edit-prof-bg: rgba(0,0,0,0.02);
-      --footer-color: #7a6a9a;
-      --footer-border: rgba(123,75,255,0.2);
-      --modal-border: rgba(123,75,255,0.4);
-    }
-
     .app { display: flex; flex-direction: column; flex: 1; width: 100%; }
-    .top-bar { padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; z-index: 100; border-bottom: none; }
-    .logo { background: linear-gradient(135deg, #7b4bff, #b084ff); border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0.5rem 1.4rem; border-radius: 2.5rem; cursor: pointer; transition: 0.25s; box-shadow: 0 4px 12px rgba(123,75,255,0.5); border: 1px solid rgba(255,255,255,0.2); }
-    .logo:hover { background: linear-gradient(135deg, #925fff, #c09aff); transform: translateY(-1px); }
-    .ava { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--avatar-border); cursor: pointer; overflow: hidden; background: rgba(123,75,255,0.2); transition: 0.25s; box-shadow: var(--avatar-shadow); }
-    .ava:hover { border-color: #b47aff; box-shadow: 0 0 18px rgba(150,100,255,0.5); }
-    .ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .main { flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 2rem; padding-top: 2px; }
-    .banner { position: relative; width: 100%; height: 320px; background: var(--banner-gradient); overflow: visible; margin-top: 0; }
-    .banner::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(transparent, var(--banner-fade)); z-index: 2; pointer-events: none; }
-    .banner img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 0; }
-    .banner-ph { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--banner-gradient); z-index: 0; }
-    .avatar-row { position: absolute; bottom: -50px; left: 60px; z-index: 20; display: flex; align-items: flex-end; gap: 1rem; }
-    .avatar-w { position: relative; width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--avatar-border); box-shadow: 0 0 30px rgba(123,75,255,0.4), 0 8px 25px rgba(0,0,0,0.2); overflow: hidden; background: rgba(30,20,50,0.95); flex-shrink: 0; }
-    .avatar-w img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .nick-block { margin-bottom: 18px; display: flex; align-items: center; gap: 0.6rem; }
-    .nick { font-size: 1.4rem; font-weight: 700; color: var(--nick-color); }
-    .rank { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 0.4rem; font-weight: 700; font-size: 0.85rem; }
-    .r-sss-plus { background: linear-gradient(135deg, #f00, #f44); color: white; animation: glow-red 1.5s infinite alternate; }
-    .r-sss { background: linear-gradient(135deg, #ff4500, #ff6347); color: white; animation: glow-orange 1.5s infinite alternate; }
-    .r-ss { background: linear-gradient(135deg, #ff8c00, #ffa500); color: white; }
-    .r-s { background: linear-gradient(135deg, gold, #ffed4a); color: #1a1a2e; }
-    .r-a { background: linear-gradient(135deg, #0c0, #0f0); color: white; }
-    .r-b { background: linear-gradient(135deg, #06c, #08f); color: white; }
-    .r-c { background: linear-gradient(135deg, #93f, #a5f); color: white; }
-    .r-d { background: linear-gradient(135deg, #666, #888); color: white; }
-    .r-f { background: linear-gradient(135deg, #444, #555); color: #999; }
-    @keyframes glow-red { 0% { box-shadow: 0 0 8px rgba(255,0,0,0.4); } 100% { box-shadow: 0 0 20px rgba(255,0,0,0.7); } }
-    @keyframes glow-orange { 0% { box-shadow: 0 0 8px rgba(255,69,0,0.4); } 100% { box-shadow: 0 0 20px rgba(255,69,0,0.7); } }
-    .content { display: flex; gap: 2rem; padding: 4rem 2rem 1rem; max-width: 1000px; margin: 0 auto; width: 100%; z-index: 5; }
-    .left { flex: 1; min-width: 0; }
-    .show { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 0.8rem; border: 1px solid var(--border); overflow: hidden; margin-bottom: 0.8rem; }
-    .show-h { background: var(--card-header-bg); padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-    .show-ttl { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-    .show-acts { display: flex; gap: 0.3rem; }
-    .show-act { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 0.3rem; transition: 0.2s; }
-    .show-act:hover { color: #7b4bff; background: rgba(123,75,255,0.1); }
-    .show-body { padding: 0.8rem; }
-    .top-row { display: flex; gap: 0.5rem; }
-    .top-card { flex: 1; border-radius: 0.5rem; overflow: hidden; cursor: pointer; position: relative; aspect-ratio: 2/3; }
-    .top-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
-    .top-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
-    .top-over { position: absolute; bottom: 0; left: 0; width: 100%; padding: 0.4rem; background: linear-gradient(transparent, rgba(0,0,0,0.85)); }
-    .top-name { font-weight: 600; font-size: 0.65rem; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .top-rate { font-size: 0.6rem; color: #f0b300; }
-    .top-empty { width: 100%; height: 100%; background: rgba(25,22,44,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; color: #5a4b7a; font-size: 0.7rem; position: absolute; top: 0; left: 0; }
-    .desc-show { padding: 0.5rem; color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6; }
-    .desc-show img { max-width: 100%; border-radius: 0.5rem; margin: 0.5rem 0; }
-    .right { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.8rem; }
-    .chart { background: var(--chart-bg); backdrop-filter: blur(10px); border-radius: 1rem; padding: 0.8rem; border: 1px solid var(--border); text-align: center; }
-    .chart-ttl { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+    
+    .header { 
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 1rem; background: rgba(240,237,245,0.9); 
+      backdrop-filter: blur(10px); border-bottom: 1px solid rgba(123,75,255,0.15);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-title { font-weight: 600; font-size: 1rem; color: #2a1a4a; }
+    .header-count { font-size: 0.8rem; color: #6b5b8c; margin-left: auto; }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(123,75,255,0.2); background: transparent;
+      color: #6b5b8c; cursor: pointer; font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s;
+    }
+    .icon-btn:hover { background: rgba(123,75,255,0.1); border-color: #7b4bff; color: #7b4bff; }
+
+    .main { flex: 1; padding: 1.5rem; width: 100%; max-width: 1000px; margin: 0 auto; }
+
+    .charts-section { margin-bottom: 1.5rem; }
+    .charts-row { display: flex; gap: 1.5rem; }
+    .chart-block { flex: 1; text-align: center; }
+    .chart-title { font-size: 0.75rem; font-weight: 600; color: #6b5b8c; text-transform: uppercase; margin-bottom: 0.5rem; }
     .pie-w { display: flex; justify-content: center; }
     .pie-leg { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; justify-content: center; }
-    .leg-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.6rem; color: var(--text-secondary); padding: 0.1rem 0.4rem; border-radius: 0.3rem; }
+    .leg-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.65rem; color: #6b5b8c; }
     .leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .total-b { font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.3rem; }
-    .stats { background: var(--chart-bg); backdrop-filter: blur(10px); border-radius: 1rem; padding: 1rem 1.2rem; border: 1px solid var(--border); }
-    .stat { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid var(--stat-border); }
-    .stat:last-child { border-bottom: none; }
-    .stat-l { font-size: 0.8rem; color: var(--text-secondary); }
-    .stat-v { font-weight: 700; font-size: 1rem; color: var(--stat-v-color); }
-    .hrs { cursor: pointer; }
-    .hrs:hover { color: var(--text); }
-    .add-show { display: block; width: 100%; margin-top: 0.8rem; background: var(--add-show-bg); border: 1px dashed var(--add-show-border); color: var(--text-secondary); padding: 0.6rem; border-radius: 0.6rem; cursor: pointer; font-size: 0.8rem; text-align: center; transition: 0.2s; }
-    .add-show:hover { background: rgba(123,75,255,0.15); color: var(--text); border-color: #7b4bff; }
-    .edit-prof-btn { width: 100%; background: var(--edit-prof-bg); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem; padding: 0.6rem; border-radius: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
-    .edit-prof-btn:hover { background: rgba(123,75,255,0.1); border-color: #7b4bff; color: var(--text); }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
-    .modal-box { background: var(--modal-bg); border: 1px solid var(--modal-border); border-radius: 1.2rem; padding: 1.5rem; max-width: 500px; width: 90%; box-shadow: var(--shadow); max-height: 80vh; overflow-y: auto; }
-    .modal-ttl { font-weight: 600; color: var(--text); margin-bottom: 1rem; }
-    .modal-inp, .modal-ta, .modal-sel { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.5rem 0.8rem; color: var(--text); font-size: 0.85rem; margin-bottom: 0.8rem; font-family: inherit; outline: none; }
-    .modal-ta { min-height: 100px; resize: none; overflow: hidden; }
-    .modal-inp:focus, .modal-ta:focus { border-color: #7b4bff; }
-    .modal-btns { display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; }
-    .modal-btns-r { display: flex; gap: 0.5rem; }
-    .fmt-btns { display: flex; gap: 0.2rem; }
-    .fmt-btn { background: rgba(123,75,255,0.15); border: 1px solid rgba(123,75,255,0.3); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 0.4rem; cursor: pointer; font-size: 0.7rem; transition: 0.2s; }
-    .fmt-btn:hover { background: rgba(123,75,255,0.3); color: white; }
-    .m-btn { padding: 0.45rem 1.2rem; border-radius: 1.5rem; font-size: 0.8rem; cursor: pointer; transition: 0.2s; border: none; font-family: inherit; }
-    .m-btn.cancel { background: rgba(0,0,0,0.1); color: var(--text-secondary); }
-    .light-theme .m-btn.cancel { background: rgba(0,0,0,0.05); }
-    .m-btn.save { background: linear-gradient(135deg, #7b4bff, #b084ff); color: white; }
-    .m-btn.danger { background: rgba(255,80,80,0.3); color: #ff6b6b; }
-    
-    /* Расширенная статистика */
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--btn-bg);
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-      font-family: inherit;
-    }
-    .modal-close:hover {
-      background: rgba(255,107,107,0.2);
-      border-color: #ff6b6b;
-      color: #ff6b6b;
-    }
-    
-    .extended-stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
-    .ext-left { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-    .ext-right { flex: 1; }
-    .ext-tabs { display: flex; gap: 0.3rem; margin-bottom: 0.5rem; }
-    .ext-tab { 
-      flex: 1; 
-      background: var(--btn-bg); 
-      border: 1px solid var(--btn-border); 
-      color: var(--btn-color); 
-      font-size: 0.75rem; 
-      padding: 0.4rem 0.8rem; 
-      border-radius: 2rem; 
-      cursor: pointer; 
-      transition: 0.2s; 
-      text-align: center; 
-      font-family: inherit;
-    }
-    .ext-tab.active { 
-      background: linear-gradient(135deg, #7b4bff, #b084ff); 
-      color: white; 
-      border-color: transparent; 
-    }
-    .ext-tab:hover:not(.active) { 
-      background: rgba(123,75,255,0.25); 
-      border-color: #7b4bff; 
-      color: white; 
-    }
-    .ext-chart { background: var(--chart-bg); backdrop-filter: blur(10px); border-radius: 1rem; padding: 0.8rem; border: 1px solid var(--border); text-align: center; }
-    .ext-stat { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 1px solid var(--stat-border); }
-    .ext-stat:last-child { border-bottom: none; }
-    
-    /* Тултип студии */
-    .studio-tooltip {
-      position: relative;
-      cursor: pointer;
-    }
-    .studio-tooltip .studio-name {
-      border-bottom: 1px dashed var(--text-secondary);
-      transition: 0.2s;
-    }
-    .studio-tooltip .studio-name:hover {
-      color: #b47aff;
-      border-bottom-color: #b47aff;
-    }
-    .studio-popup {
-      position: absolute;
-      bottom: 100%;
-      right: 0;
-      margin-bottom: 0.5rem;
-      background: var(--modal-bg);
-      border: 1px solid var(--modal-border);
-      border-radius: 1rem;
-      padding: 0.8rem;
-      min-width: 250px;
-      box-shadow: var(--shadow);
-      z-index: 300;
-      display: none;
-      backdrop-filter: blur(20px);
-    }
-    .studio-popup.show {
-      display: block;
-    }
-    .studio-popup-title {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-      text-align: left;
-    }
-    .studio-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.35rem 0;
-      border-bottom: 1px solid var(--stat-border);
-      gap: 0.5rem;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: 0.2s;
-      border-radius: 0.3rem;
-      padding-left: 0.4rem;
-      padding-right: 0.4rem;
-      margin: 0 -0.4rem;
-    }
-    .studio-item:last-child {
-      border-bottom: none;
-    }
-    .studio-item:hover {
-      background: rgba(123,75,255,0.15);
-    }
-    .studio-item-name {
-      flex: 1;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
-    }
-    .studio-item:hover .studio-item-name {
-      color: var(--text);
-    }
-    .studio-item-name.in-collection {
-      color: var(--text);
-    }
-    .studio-item-rating {
-      color: #f0b300;
-      font-weight: 600;
-      font-size: 0.75rem;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .studio-item-check {
-      color: #51cf66;
-      font-size: 0.7rem;
-      flex-shrink: 0;
-    }
-    .studio-popup-loading {
-      text-align: center;
-      color: var(--text-secondary);
-      font-size: 0.7rem;
-      padding: 0.5rem;
-    }
-    .studio-popup-footer {
-      font-size: 0.65rem;
-      color: var(--text-secondary);
-      opacity: 0.6;
-      margin-top: 0.5rem;
-      text-align: left;
-      padding-top: 0.4rem;
-    }
 
-    footer { text-align: left; padding: 1rem; color: var(--footer-color); font-size: 0.8rem; border-top: 1px solid var(--footer-border); margin-top: auto; }
-    @media (max-width: 750px) { 
-      .content { flex-direction: column; padding: 3.5rem 1rem 1rem; } 
-      .right { width: 100%; } 
-      .avatar-row { left: 25px; bottom: -40px; } 
-      .avatar-w { width: 100px; height: 100px; } 
-      .nick { font-size: 1.2rem; } 
-      .banner { height: 220px; } 
-      .extended-stats { flex-direction: column; }
+    .card {
+      background: rgba(245,242,252,0.95); border-radius: 0.8rem;
+      padding: 1rem 1.2rem; border: 1px solid rgba(123,75,255,0.12);
+    }
+    .stat-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.5rem 0;
+    }
+    .stat-label { font-size: 0.8rem; color: #6b5b8c; }
+    .stat-value { font-size: 0.85rem; font-weight: 600; color: #2a1a4a; }
+    .stat-value.clickable { cursor: pointer; }
+    .divider { border: none; border-top: 1px solid rgba(123,75,255,0.1); margin: 0.4rem 0; }
+
+    @media (max-width: 700px) {
+      .charts-row { flex-direction: column; }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="top-bar">
-      <button class="logo" id="goHomeBtn">AniSpace</button>
-      <div class="ava" id="profileAvatarTop"><img id="topAvatarImg" src="" alt="" style="display:none;"></div>
-    </div>
+    <header class="header">
+      <button class="icon-btn" onclick="location.href='index.html'" title="Назад"><i class="fas fa-arrow-left"></i></button>
+      <span class="header-title">Статистика</span>
+      <span class="header-count" id="headerAnimeCount">0 аниме</span>
+    </header>
     <main class="main">
-      <div class="banner">
-        <div class="banner-ph" id="bannerPlaceholder"></div>
-        <img id="bannerImage" src="" alt="Баннер">
-        <div class="avatar-row">
-          <div class="avatar-w" id="avatarWrapper"><img id="avatarImage" src="" alt="Аватар"></div>
-          <div class="nick-block">
-            <span class="nick" id="nicknameDisplay">Аниме-фан</span>
-            <span class="rank r-f" id="rankBadge">F</span>
-          </div>
+      <div class="charts-section">
+        <div class="charts-row">
+          <div class="chart-block"><div class="chart-title">Списки</div><div id="listChart"></div></div>
+          <div class="chart-block"><div class="chart-title">Жанры</div><div id="genreChart"></div></div>
+          <div class="chart-block"><div class="chart-title">Теги</div><div id="tagChart"></div></div>
         </div>
       </div>
-      <div class="content">
-        <div class="left" id="leftColumn"></div>
-        <div class="right">
-          <div class="chart"><div class="chart-ttl">Распределение по спискам</div><div id="chartBars"></div></div>
-          <div class="stats">
-            <div class="stat"><span class="stat-l">Просмотрено</span><span class="stat-v" id="totalWatched">0</span></div>
-            <div class="stat"><span class="stat-l">Серий</span><span class="stat-v" id="totalEpisodes">0</span></div>
-            <div class="stat"><span class="stat-l hrs" id="hoursLabel">Часов</span><span class="stat-v hrs" id="totalHours">0</span></div>
-            <div class="stat"><span class="stat-l">Ср. оценка</span><span class="stat-v" id="avgScore">—</span></div>
-            <div class="stat"><span class="stat-l">10 баллов</span><span class="stat-v" id="topRated">0</span></div>
-          </div>
-          <button class="edit-prof-btn" id="extendedStatsBtn"><i class="fas fa-chart-bar"></i> Расширенная статистика</button>
-          <button class="edit-prof-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Редактировать профиль</button>
-        </div>
+      <div class="card">
+        <div class="stat-row"><span class="stat-label">Просмотрено аниме</span><span class="stat-value" id="totalWatched">0</span></div>
+        <div class="stat-row"><span class="stat-label">Просмотрено серий</span><span class="stat-value" id="totalEpisodes">0</span></div>
+        <div class="stat-row"><span class="stat-label clickable" id="hoursLabel">Потрачено часов</span><span class="stat-value clickable" id="totalHours">0</span></div>
+        <div class="stat-row"><span class="stat-label">Написано рецензий</span><span class="stat-value" id="totalComments">0</span></div>
+        <hr class="divider">
+        <div class="stat-row"><span class="stat-label">Ср. оценка Shikimori</span><span class="stat-value" id="avgShikimori">—</span></div>
+        <div class="stat-row"><span class="stat-label">Ср. оценка (моя)</span><span class="stat-value" id="avgScore">—</span></div>
+        <div class="stat-row"><span class="stat-label">10 баллов</span><span class="stat-value" id="topRated">0</span></div>
+        <div class="stat-row"><span class="stat-label">7-9 баллов</span><span class="stat-value" id="rated7to9">0</span></div>
+        <div class="stat-row"><span class="stat-label">5-6 баллов</span><span class="stat-value" id="rated5to6">0</span></div>
+        <div class="stat-row"><span class="stat-label"><4 баллов</span><span class="stat-value" id="ratedLess4">0</span></div>
+        <hr class="divider">
+        <div class="stat-row"><span class="stat-label">Самое пересматриваемое</span><span class="stat-value" id="mostRewatched">—</span></div>
+        <div class="stat-row"><span class="stat-label">Любимая студия</span><span class="stat-value" id="favStudio">—</span></div>
       </div>
     </main>
-    <footer>© AniSpace by cmd</footer>
-  </div>
-
-  <!-- Модалка витрин -->
-  <div class="modal" id="editModal">
-    <div class="modal-box">
-      <div class="modal-ttl" id="modalTitle">Добавить витрину</div>
-      <select class="modal-sel" id="modalType"><option value="top">3 аниме</option><option value="desc">Описание</option></select>
-      <input type="text" class="modal-inp" id="modalShowcaseTitle" placeholder="Название витрины">
-      <div id="modalTopEdit" style="display:none;">
-        <label style="font-size:0.75rem;color:var(--text-secondary);">Позиция 1</label><select class="modal-sel" id="topPos1"><option value="">—</option></select>
-        <label style="font-size:0.75rem;color:var(--text-secondary);">Позиция 2</label><select class="modal-sel" id="topPos2"><option value="">—</option></select>
-        <label style="font-size:0.75rem;color:var(--text-secondary);">Позиция 3</label><select class="modal-sel" id="topPos3"><option value="">—</option></select>
-      </div>
-      <div id="modalDescBlock" style="display:none;"><textarea class="modal-ta" id="modalDesc" placeholder="Описание..."></textarea></div>
-      <div class="modal-btns">
-        <div class="fmt-btns" id="formatBtns" style="display:none;">
-          <button class="fmt-btn" onclick="insertFormat('<b>','</b>')"><b>B</b></button>
-          <button class="fmt-btn" onclick="insertFormat('<i>','</i>')"><i>I</i></button>
-          <button class="fmt-btn" onclick="insertFormat('<u>','</u>')"><u>U</u></button>
-          <button class="fmt-btn" onclick="insertFormat('<br>','')">↩</button>
-          <button class="fmt-btn" onclick="insertImage()">🖼</button>
-        </div>
-        <div class="modal-btns-r">
-          <button class="m-btn danger" id="modalDeleteBtn" style="display:none;">Удалить</button>
-          <button class="m-btn cancel" onclick="closeModal()">Отмена</button>
-          <button class="m-btn save" onclick="saveShowcase()">Сохранить</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модалка вставки изображения -->
-  <div class="modal" id="imageModal">
-    <div class="modal-box">
-      <div class="modal-ttl">Вставьте URL изображения</div>
-      <input type="text" class="modal-inp" id="imageUrlInput" placeholder="https://...">
-      <div class="modal-btns" style="justify-content:flex-end;">
-        <button class="m-btn cancel" onclick="document.getElementById('imageModal').style.display='none'">Отмена</button>
-        <button class="m-btn save" id="insertImageBtn">Вставить</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модалка редактирования профиля -->
-  <div class="modal" id="profileModal">
-    <div class="modal-box">
-      <div class="modal-ttl">Редактировать профиль</div>
-      <input type="text" class="modal-inp" id="editNickname" placeholder="Никнейм">
-      <input type="text" class="modal-inp" id="editAvatarUrl" placeholder="Ссылка на аватарку (URL)">
-      <input type="text" class="modal-inp" id="editBannerUrl" placeholder="Ссылка на баннер (URL)">
-      <div class="modal-btns" style="justify-content:flex-end;">
-        <button class="m-btn cancel" onclick="document.getElementById('profileModal').style.display='none'">Отмена</button>
-        <button class="m-btn save" id="saveProfileBtn">Сохранить</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Модалка расширенной статистики -->
-  <div class="modal" id="extendedStatsModal">
-    <div class="modal-box" style="max-width:700px; position:relative;">
-      <button class="modal-close" onclick="document.getElementById('extendedStatsModal').style.display='none'">
-        <i class="fas fa-times"></i>
-      </button>
-      <div class="modal-ttl">Расширенная статистика</div>
-      <div class="extended-stats">
-        <div class="ext-left">
-          <div class="ext-tabs">
-            <button class="ext-tab active" data-tab="genres">Жанры</button>
-            <button class="ext-tab" data-tab="tags">Теги</button>
-          </div>
-          <div class="ext-chart" id="genresTabContent">
-            <div class="chart-ttl">Соотношение жанров</div>
-            <div id="genresChart"></div>
-          </div>
-          <div class="ext-chart" id="tagsTabContent" style="display:none;">
-            <div class="chart-ttl">Специальные теги</div>
-            <div id="tagsChart"></div>
-          </div>
-        </div>
-        <div class="ext-right" id="extStatsContainer"></div>
-      </div>
-    </div>
   </div>
 
   <script>
-    if (localStorage.getItem('anix_theme') === 'light') {
-      document.body.classList.add('light-theme');
-    }
-  </script>
-
-  <script>
-    let currentEditingShowcase = null, showHours = true, rankedGlobal = [];
-    const getShowcases = () => JSON.parse(localStorage.getItem('anix_showcases') || '[]');
-    const saveShowcases = s => localStorage.setItem('anix_showcases', JSON.stringify(s));
-    const saveProfile = p => localStorage.setItem('anix_profile', JSON.stringify(p));
-    const getProfile = () => JSON.parse(localStorage.getItem('anix_profile') || '{}');
     const getCollection = () => JSON.parse(localStorage.getItem('anix_collection') || '[]');
     const listNames = { watching:'Смотрю', watched:'Просмотрено', dropped:'Брошено', planned:'В планах', rewatching:'Пересмотрю' };
     const listColors = { watching:'#88D498', watched:'#809BCE', dropped:'#F28482', planned:'#957DAD', rewatching:'#F6BD60' };
-    const tags = { isekai:'Исекай', slice_of_life:'Повседневное', psychology:'Психология', sport:'Спорт', romance:'Романтика', action:'Экшен', comedy:'Комедия', drama:'Драма', fantasy:'Фэнтези', horror:'Ужасы', mecha:'Меха', music:'Музыка', mystery:'Детектив', sci_fi:'Фантастика', thriller:'Триллер', adventure:'Приключения', historical:'Историческое', military:'Военное', school:'Школа', supernatural:'Сверхъестественное', hentai:'Хентай' };
+    const tagNames = { isekai:'Исекай', slice_of_life:'Повседневное', psychology:'Психология', sport:'Спорт', romance:'Романтика', action:'Экшен', comedy:'Комедия', drama:'Драма', fantasy:'Фэнтези', horror:'Ужасы', mecha:'Меха', music:'Музыка', mystery:'Детектив', sci_fi:'Фантастика', thriller:'Триллер', adventure:'Приключения', historical:'Историческое', military:'Военное', school:'Школа', supernatural:'Сверхъестественное', hentai:'Хентай' };
 
-    // === Редактирование профиля ===
-    document.getElementById('editProfileBtn').onclick = () => {
-      const p = getProfile();
-      document.getElementById('editNickname').value = p.nickname || '';
-      document.getElementById('editAvatarUrl').value = p.avatar || '';
-      document.getElementById('editBannerUrl').value = p.banner || '';
-      document.getElementById('profileModal').style.display = 'flex';
-    };
-
-    document.getElementById('saveProfileBtn').onclick = () => {
-      const p = getProfile();
-      p.nickname = document.getElementById('editNickname').value.trim() || 'Аниме-фан';
-      p.avatar = document.getElementById('editAvatarUrl').value.trim();
-      p.banner = document.getElementById('editBannerUrl').value.trim();
-      saveProfile(p);
-      document.getElementById('nicknameDisplay').textContent = p.nickname;
-      if (p.avatar) {
-        document.getElementById('avatarImage').src = p.avatar;
-        document.getElementById('avatarImage').style.display = 'block';
-        document.getElementById('topAvatarImg').src = p.avatar;
-        document.getElementById('topAvatarImg').style.display = 'block';
-      }
-      if (p.banner) {
-        document.getElementById('bannerImage').src = p.banner;
-        document.getElementById('bannerImage').style.display = 'block';
-        document.getElementById('bannerPlaceholder').style.display = 'none';
-      }
-      document.getElementById('profileModal').style.display = 'none';
-    };
-
-    // === Витрины ===
-    document.getElementById('modalDesc').oninput = function() { this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'; };
-
-    function insertFormat(open, close) {
-      const ta = document.getElementById('modalDesc'), s = ta.selectionStart, e = ta.selectionEnd;
-      ta.value = ta.value.substring(0,s) + open + ta.value.substring(s,e) + close + ta.value.substring(e);
-      ta.focus(); ta.selectionStart = s + open.length; ta.selectionEnd = e + open.length;
-      ta.dispatchEvent(new Event('input'));
-    }
-
-    function insertImage() {
-      document.getElementById('imageModal').style.display = 'flex';
-      document.getElementById('imageUrlInput').value = '';
-      document.getElementById('imageUrlInput').focus();
-    }
-
-    document.getElementById('insertImageBtn').onclick = () => {
-      const url = document.getElementById('imageUrlInput').value.trim();
-      if (url) {
-        const ta = document.getElementById('modalDesc'), s = ta.selectionStart;
-        ta.value = ta.value.substring(0,s) + `<img src="${url}" alt="">` + ta.value.substring(s);
-        ta.focus(); ta.dispatchEvent(new Event('input'));
-      }
-      document.getElementById('imageModal').style.display = 'none';
-    };
-
-    document.getElementById('modalType').onchange = function() {
-      const isDesc = this.value === 'desc';
-      document.getElementById('modalDescBlock').style.display = isDesc ? 'block' : 'none';
-      document.getElementById('formatBtns').style.display = isDesc ? 'flex' : 'none';
-      if (isDesc) { const ta = document.getElementById('modalDesc'); ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
-    };
-
-    function openAddShowcase() {
-      currentEditingShowcase = 'showcase_' + Date.now();
-      document.getElementById('modalTitle').textContent = 'Добавить витрину';
-      document.getElementById('modalType').value = 'top'; document.getElementById('modalType').disabled = false;
-      document.getElementById('modalShowcaseTitle').value = '';
-      document.getElementById('modalDesc').value = '';
-      document.getElementById('modalDescBlock').style.display = 'none';
-      document.getElementById('formatBtns').style.display = 'none';
-      document.getElementById('modalDeleteBtn').style.display = 'none';
-      document.getElementById('editModal').style.display = 'flex';
-      document.getElementById('modalTopEdit').style.display = 'none';
-    }
-
-    function editShowcase(id) {
-      currentEditingShowcase = id;
-      const sc = getShowcases().find(s => s.id === id) || {};
-      document.getElementById('modalTitle').textContent = 'Редактировать витрину';
-      document.getElementById('modalType').value = sc.type || 'top'; document.getElementById('modalType').disabled = false;
-      document.getElementById('modalShowcaseTitle').value = sc.title || '';
-      document.getElementById('modalDesc').value = sc.desc || '';
-      const isDesc = (sc.type || 'top') === 'desc';
-      document.getElementById('modalDescBlock').style.display = isDesc ? 'block' : 'none';
-      document.getElementById('formatBtns').style.display = isDesc ? 'flex' : 'none';
-      document.getElementById('modalDeleteBtn').style.display = 'inline-block';
-      document.getElementById('editModal').style.display = 'flex';
-      if ((sc.type || 'top') === 'top') {
-        document.getElementById('modalTopEdit').style.display = 'block';
-        const collection = getCollection();
-        const opts = collection.map(a => `<option value="${a.id}">${a.title} (⭐${a.userRating||'—'})</option>`).join('');
-        ['topPos1','topPos2','topPos3'].forEach(id => document.getElementById(id).innerHTML = '<option value="">—</option>' + opts);
-        if (sc.animeIds) {
-          if (sc.animeIds[0]) document.getElementById('topPos1').value = sc.animeIds[0];
-          if (sc.animeIds[1]) document.getElementById('topPos2').value = sc.animeIds[1];
-          if (sc.animeIds[2]) document.getElementById('topPos3').value = sc.animeIds[2];
-        }
-      } else { document.getElementById('modalTopEdit').style.display = 'none'; }
-      if (isDesc) { const ta = document.getElementById('modalDesc'); ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
-    }
-
-    function closeModal() { document.getElementById('editModal').style.display = 'none'; currentEditingShowcase = null; }
-
-    function saveShowcase() {
-      const type = document.getElementById('modalType').value;
-      const title = document.getElementById('modalShowcaseTitle').value.trim() || 'Без названия';
-      const desc = document.getElementById('modalDesc').value.trim();
-      let showcases = getShowcases();
-      const idx = showcases.findIndex(s => s.id === currentEditingShowcase);
-      const data = { id: currentEditingShowcase, type, title };
-      if (type === 'desc') data.desc = desc;
-      else if (type === 'top') data.animeIds = [document.getElementById('topPos1')?.value, document.getElementById('topPos2')?.value, document.getElementById('topPos3')?.value].filter(Boolean);
-      if (idx !== -1) showcases[idx] = { ...showcases[idx], ...data };
-      else showcases.push(data);
-      saveShowcases(showcases);
-      renderShowcases();
-      closeModal();
-    }
-
-    function deleteShowcase() { if (confirm('Удалить?')) { saveShowcases(getShowcases().filter(s => s.id !== currentEditingShowcase)); renderShowcases(); closeModal(); } }
-    document.getElementById('modalDeleteBtn').onclick = deleteShowcase;
-
-    function moveShowcase(id, dir) {
-      const showcases = getShowcases(); const i = showcases.findIndex(s => s.id === id);
-      if (i === -1) return;
-      if (dir === 'up' && i > 0) [showcases[i], showcases[i-1]] = [showcases[i-1], showcases[i]];
-      else if (dir === 'down' && i < showcases.length-1) [showcases[i], showcases[i+1]] = [showcases[i+1], showcases[i]];
-      saveShowcases(showcases); renderShowcases();
-    }
-
-    function deleteShowcaseById(id) { if (confirm('Удалить?')) { saveShowcases(getShowcases().filter(s => s.id !== id)); renderShowcases(); } }
-
-    // Функция для отрисовки круговой диаграммы
-    function renderPieChart(containerId, dataObj, colors) {
+    function renderPieChart(containerId, dataObj, colors, maxItems = 5) {
       const container = document.getElementById(containerId);
       if (!container) return;
-      
-      const total = Object.values(dataObj).reduce((s, v) => s + v, 0);
-      if (total === 0) {
-        container.innerHTML = '<p style="color:var(--text-secondary);font-size:0.7rem;">Нет данных</p>';
-        return;
-      }
-      
-      const entries = Object.entries(dataObj).filter(([key]) => dataObj[key] > 0);
-      const size = 140, cx = size/2, cy = size/2, r = 55;
-      let angle = -Math.PI / 2, paths = '';
-      
-      entries.forEach(([key], index) => {
-        const slice = (dataObj[key] / total) * Math.PI * 2;
-        const x1 = cx + r * Math.cos(angle), y1 = cy + r * Math.sin(angle);
-        const x2 = cx + r * Math.cos(angle + slice), y2 = cy + r * Math.sin(angle + slice);
-        paths += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${slice>Math.PI?1:0} 1 ${x2} ${y2} Z" fill="${colors[index % colors.length]}" stroke="var(--bg)" stroke-width="1.5"/>`;
+      const sorted = Object.entries(dataObj).filter(([k]) => dataObj[k] > 0).sort((a, b) => b[1] - a[1]);
+      const display = sorted.slice(0, maxItems);
+      const other = sorted.slice(maxItems).reduce((s, [k, v]) => s + v, 0);
+      if (other > 0) display.push(['Другое', other]);
+      const total = display.reduce((s, [k, v]) => s + v, 0);
+      if (total === 0) { container.innerHTML = '<p style="color:#6b5b8c;font-size:0.7rem;">Нет данных</p>'; return; }
+      const size = 160, cx = size/2, cy = size/2, r = 65;
+      let angle = -Math.PI/2, paths = '';
+      display.forEach(([key], i) => {
+        const slice = (display[i][1]/total)*Math.PI*2;
+        const x1 = cx+r*Math.cos(angle), y1 = cy+r*Math.sin(angle);
+        const x2 = cx+r*Math.cos(angle+slice), y2 = cy+r*Math.sin(angle+slice);
+        paths += `<path d="M${cx} ${cy} L${x1} ${y1} A${r} ${r} 0 ${slice>Math.PI?1:0} 1 ${x2} ${y2}Z" fill="${colors[i%colors.length]}" stroke="#f0edf5" stroke-width="1.5"/>`;
         angle += slice;
       });
-      
-      // Сортируем entries по количеству (от большего к меньшему)
-      const sortedEntries = entries.sort((a, b) => dataObj[b[0]] - dataObj[a[0]]);
-      container.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${sortedEntries.map(([key], i) => `<div class="leg-item"><div class="leg-dot" style="background:${colors[i % colors.length]};"></div>${key}: ${dataObj[key]}</div>`).join('')}</div>`;
+      container.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${display.map(([key], i) => `<div class="leg-item"><div class="leg-dot" style="background:${colors[i%colors.length]};"></div>${key}: ${display[i][1]}</div>`).join('')}</div>`;
     }
 
-    function renderShowcases() {
-      const left = document.getElementById('leftColumn');
-      const showcases = getShowcases();
-      const collection = getCollection();
-      rankedGlobal = collection.filter(a => a.userRating).sort((a,b) => parseFloat(b.userRating)-parseFloat(a.userRating)).slice(0,3);
-      let html = '';
-      showcases.forEach(sc => {
-        html += `<div class="show"><div class="show-h"><span class="show-ttl">${sc.title}</span><div class="show-acts">
-          <button class="show-act" data-action="up" data-id="${sc.id}"><i class="fas fa-arrow-up"></i></button>
-          <button class="show-act" data-action="down" data-id="${sc.id}"><i class="fas fa-arrow-down"></i></button>
-          <button class="show-act" data-action="edit" data-id="${sc.id}"><i class="fas fa-pen"></i></button>
-        </div></div><div class="show-body">`;
-        if (sc.type === 'desc') {
-          html += `<div class="desc-show">${sc.desc || 'Нет описания'}</div>`;
-        } else {
-          html += `<div class="top-row">`;
-          const topIds = sc.animeIds || [];
-          let topAnime = topIds.map(id => collection.find(a => a.id == id)).filter(Boolean);
-          if (topAnime.length < 3) { const usedIds = topAnime.map(a => a.id); const extra = rankedGlobal.filter(a => !usedIds.includes(a.id)); topAnime = [...topAnime, ...extra].slice(0, 3); }
-          while (topAnime.length < 3) topAnime.push(null);
-          ['','',''].forEach((medal, i) => {
-            const anime = topAnime[i];
-            html += `<div class="top-card ${medal}">${anime ? (anime.poster ? `<img src="${anime.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">` : '') + `<div class="top-empty" style="display:${anime.poster?'none':'flex'};"><i class="fas fa-image" style="font-size:1.5rem;"></i></div>` : '<div class="top-empty"><i class="fas fa-image" style="font-size:1.5rem;"></i></div>'}<div class="top-over" data-anime-id="${anime?.id||''}" style="cursor:pointer;"><div class="top-name">${anime?.title||'—'}</div><div class="top-rate">⭐ ${anime?.userRating||'—'}</div></div></div>`;
-          });
-          html += `</div>`;
-        }
-        html += `</div></div>`;
-      });
-      html += `<button class="add-show" id="addShowcaseBtn"><i class="fas fa-plus"></i> Добавить витрину</button>`;
-      left.innerHTML = html;
-      document.getElementById('addShowcaseBtn').addEventListener('click', openAddShowcase);
-      left.querySelectorAll('.show-act').forEach(btn => btn.onclick = function(e) {
-        e.stopPropagation();
-        const id = this.dataset.id;
-        if (this.dataset.action === 'edit') editShowcase(id);
-        else if (this.dataset.action === 'up') moveShowcase(id, 'up');
-        else if (this.dataset.action === 'down') moveShowcase(id, 'down');
-        else if (this.dataset.action === 'delete') deleteShowcaseById(id);
-      });
-      left.querySelectorAll('.top-card').forEach(card => card.onclick = function() {
-        const overlay = this.querySelector('.top-over');
-        if (overlay && overlay.dataset.animeId) location.href = 'anime.html?id=' + overlay.dataset.animeId;
-      });
-    }
-
-    function renderChart() {
-      const collection = getCollection();
-      const counts = {}; let total = 0;
-      collection.forEach(a => { const list = a.list || 'watching'; counts[list] = (counts[list]||0)+1; total++; });
-      const chartBars = document.getElementById('chartBars');
-      if (total === 0) { chartBars.innerHTML = '<p style="color:var(--text-secondary);font-size:0.7rem;">Нет данных</p><div class="total-b">Всего: 0</div>'; return; }
-      const entries = Object.entries(listNames).filter(([key]) => counts[key] > 0);
-      const size = 140, cx = size/2, cy = size/2, r = 55;
-      let angle = -Math.PI / 2, paths = '';
-      entries.forEach(([key]) => {
-        const slice = (counts[key] / total) * Math.PI * 2;
-        const x1 = cx + r * Math.cos(angle), y1 = cy + r * Math.sin(angle);
-        const x2 = cx + r * Math.cos(angle + slice), y2 = cy + r * Math.sin(angle + slice);
-        paths += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${slice>Math.PI?1:0} 1 ${x2} ${y2} Z" fill="${listColors[key]}" stroke="var(--bg)" stroke-width="1.5"/>`;
-        angle += slice;
-      });
-      chartBars.innerHTML = `<div class="pie-w"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${paths}</svg></div><div class="pie-leg">${entries.map(([key, name]) => `<div class="leg-item"><div class="leg-dot" style="background:${listColors[key]};"></div>${name}: ${counts[key]}</div>`).join('')}</div><div class="total-b">Всего: ${total}</div>`;
-    }
-
-    // === Расширенная статистика ===
-    function renderExtendedStats() {
-      const collection = getCollection();
+    function loadStats() {
+      const col = getCollection();
+      const watched = col.filter(a => a.list === 'watched');
       
-      // Жанры
-      const genreCounts = {};
-      collection.forEach(a => {
-        if (a.genre) {
-          a.genre.split(',').forEach(g => {
-            const genre = g.trim();
-            if (genre) genreCounts[genre] = (genreCounts[genre] || 0) + 1;
-          });
-        }
-      });
-      
-      // Теги
-      const tagCounts = {};
-      collection.forEach(a => {
-        if (a.tag && tags[a.tag]) {
-          const tagName = tags[a.tag];
-          tagCounts[tagName] = (tagCounts[tagName] || 0) + 1;
-        }
-      });
-      
-      // Цвета для диаграмм
-      const genreColors = ['#88D498', '#809BCE', '#F28482', '#957DAD', '#F6BD60', '#b47aff', '#51cf66', '#f0b300', '#ff6b6b', '#06c', '#ff8c00', '#93f', '#ff4500', '#0c0'];
-      const tagColors = ['#F6BD60', '#957DAD', '#88D498', '#809BCE', '#F28482', '#b47aff', '#51cf66', '#f0b300', '#ff6b6b'];
-      
-      renderPieChart('genresChart', genreCounts, genreColors);
-      renderPieChart('tagsChart', tagCounts, tagColors);
-      
-      // Статистика
-      const eps = collection.filter(a => a.list === 'watched').reduce((s, a) => s + (parseInt(a.episodes) || 0), 0);
-      const hours = Math.round(eps * 24 / 60) || 0;
-      const scores = collection.filter(a => a.userRating).map(a => parseFloat(a.userRating));
-      const avgScore = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '—';
-      const watchedAnime = collection.filter(a => a.list === 'watched');
-      const watchedRatings = watchedAnime.filter(a => a.avgRating).map(a => parseFloat(a.avgRating));
-      const avgShikimoriRating = watchedRatings.length ? (watchedRatings.reduce((a, b) => a + b, 0) / watchedRatings.length).toFixed(1) : '—';
-      const topRatedCount = collection.filter(a => parseFloat(a.userRating) === 10).length;
-      
-      // Любимая студия
-      const studioCounts = {};
-      watchedAnime.forEach(a => {
-        if (a.studio) {
-          a.studio.split(',').forEach(s => {
-            const studio = s.trim();
-            if (studio) studioCounts[studio] = (studioCounts[studio] || 0) + 1;
-          });
-        }
-      });
-      const favoriteStudio = Object.entries(studioCounts).sort((a, b) => b[1] - a[1])[0];
-      
-      const totalAnime = collection.length;
-      const watchedCountExt = collection.filter(a => a.list === 'watched').length;
-
-      document.getElementById('extStatsContainer').innerHTML = `
-        <div class="ext-stat"><span class="stat-l">Аниме в библиотеке</span><span class="stat-v">${totalAnime}</span></div>
-        <div class="ext-stat"><span class="stat-l">Просмотрено аниме</span><span class="stat-v">${watchedCountExt}</span></div>
-        <div class="ext-stat"><span class="stat-l">Просмотрено серий</span><span class="stat-v">${eps}</span></div>
-        <div class="ext-stat"><span class="stat-l hrs" id="extHoursLabel">Потрачено часов</span><span class="stat-v hrs" id="extTotalHours">${hours}</span></div>
-        <div class="ext-stat"><span class="stat-l">Ср. оценка пользователя</span><span class="stat-v">${avgScore}</span></div>
-        <div class="ext-stat"><span class="stat-l">Ср. оценка Шикимори</span><span class="stat-v">${avgShikimoriRating}</span></div>
-        <div class="ext-stat"><span class="stat-l">10 баллов</span><span class="stat-v">${topRatedCount}</span></div>
-        <div class="ext-stat">
-          <span class="stat-l">Любимая студия</span>
-          <span class="stat-v studio-tooltip" id="studioTooltip">
-            <span class="studio-name">${favoriteStudio ? favoriteStudio[0] : '—'}</span>
-            <div class="studio-popup" id="studioPopup">
-              <div class="studio-popup-title">Аниме от студии в библиотеке</div>
-              <div class="studio-popup-loading" id="studioPopupContent">Загрузка...</div>
-            </div>
-          </span>
-        </div>
-      `;
-      
-      // Обработчики вкладок
-      const tabs = document.querySelectorAll('.ext-tab');
-      tabs.forEach(tab => {
-        tab.onclick = () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-          const tabName = tab.dataset.tab;
-          document.getElementById('genresTabContent').style.display = tabName === 'genres' ? 'block' : 'none';
-          document.getElementById('tagsTabContent').style.display = tabName === 'tags' ? 'block' : 'none';
-        };
-      });
-      // Инициализируем тултип студии
-      setTimeout(initStudioTooltip, 100);
-
-      // Обработчик переключения часов/дней
-      document.getElementById('extTotalHours').onclick = () => {
-        const el = document.getElementById('extTotalHours');
-        const label = document.getElementById('extHoursLabel');
-        const currentText = el.textContent;
-        const isHours = label.textContent.includes('Часов') || label.textContent.includes('часов');
-        
-        if (isHours) {
-          const days = (parseInt(currentText) / 24).toFixed(1);
-          el.textContent = days;
-          label.textContent = 'Потрачено дней';
-        } else {
-          const hours = Math.round(parseFloat(currentText) * 24);
-          el.textContent = hours;
-          label.textContent = 'Потрачено часов';
-        }
-      };
-    }
-    
-    // Загрузка популярных аниме студии из библиотеки
-    function loadStudioPopup(studioName) {
-      const popupContent = document.getElementById('studioPopupContent');
-      if (!popupContent) return;
-      
-      const collection = getCollection();
-      
-      // Показываем аниме из коллекции
-      const libraryAnime = collection
-        .filter(a => a.studio && a.studio.includes(studioName) && a.avgRating)
-        .sort((a, b) => parseFloat(b.avgRating || 0) - parseFloat(a.avgRating || 0))
-        .slice(0, 5);
-      
-      if (libraryAnime.length > 0) {
-        popupContent.innerHTML = libraryAnime.map(a => `
-          <div class="studio-item" data-anime-id="${a.id}">
-            <span class="studio-item-name in-collection">${a.title || '—'}</span>
-            <span class="studio-item-rating">⭐ ${a.avgRating || '—'}</span>
-          </div>
-        `).join('');
-        
-        // Количество аниме этой студии в просмотренном
-        const watchedCount = collection.filter(a => 
-          a.studio && a.studio.includes(studioName) && a.list === 'watched'
-        ).length;
-        
-        popupContent.innerHTML += `
-          <div class="studio-popup-footer">
-            ${watchedCount} аниме
-          </div>
-        `;
-        
-        // Добавляем обработчики клика
-        popupContent.querySelectorAll('.studio-item').forEach(item => {
-          item.onclick = () => {
-            const id = item.dataset.animeId;
-            if (id) location.href = 'anime.html?id=' + id;
-          };
-        });
-      } else {
-        popupContent.innerHTML = '<div class="studio-popup-loading">Нет оценённых аниме этой студии</div>';
-      }
-    }
-
-    // Обработчики наведения на студию
-    let studioHoverTimer = null;
-
-    function initStudioTooltip() {
-      const tooltip = document.getElementById('studioTooltip');
-      const popup = document.getElementById('studioPopup');
-      if (!tooltip || !popup) return;
-      
-      tooltip.addEventListener('mouseenter', () => {
-        clearTimeout(studioHoverTimer);
-        studioHoverTimer = setTimeout(() => {
-          const studioName = tooltip.querySelector('.studio-name')?.textContent?.trim();
-          if (studioName && studioName !== '—') {
-            popup.classList.add('show');
-            loadStudioPopup(studioName);
-          }
-        }, 300);
-      });
-      
-      tooltip.addEventListener('mouseleave', () => {
-        clearTimeout(studioHoverTimer);
-        studioHoverTimer = setTimeout(() => {
-          popup.classList.remove('show');
-        }, 200);
-      });
-      
-      popup.addEventListener('mouseenter', () => {
-        clearTimeout(studioHoverTimer);
-      });
-      
-      popup.addEventListener('mouseleave', () => {
-        popup.classList.remove('show');
-      });
-    }
-
-    document.getElementById('extendedStatsBtn').onclick = () => {
-      renderExtendedStats();
-      document.getElementById('extendedStatsModal').style.display = 'flex';
-    };
-
-    function loadProfile() {
-      const profile = getProfile(), collection = getCollection();
-      if (profile.avatar) {
-        document.getElementById('avatarImage').src = profile.avatar;
-        document.getElementById('avatarImage').style.display = 'block';
-        document.getElementById('topAvatarImg').src = profile.avatar;
-        document.getElementById('topAvatarImg').style.display = 'block';
-      }
-      if (profile.banner) {
-        document.getElementById('bannerImage').src = profile.banner;
-        document.getElementById('bannerImage').style.display = 'block';
-        document.getElementById('bannerPlaceholder').style.display = 'none';
-      }
-      document.getElementById('nicknameDisplay').textContent = profile.nickname || 'Аниме-фан';
-      document.title = `AniSpace - ${profile.nickname || 'Профиль'}`;
-      const watchedCount = collection.filter(a => a.list === 'watched').length;
-      document.getElementById('totalWatched').textContent = watchedCount;
-      const eps = collection.filter(a => a.list === 'watched').reduce((s,a) => s + (parseInt(a.episodes)||0), 0);
+      document.getElementById('headerAnimeCount').textContent = col.length + ' аниме';
+      document.getElementById('totalWatched').textContent = watched.length;
+      const eps = watched.reduce((s, a) => s + (parseInt(a.episodes) || 0), 0);
       document.getElementById('totalEpisodes').textContent = eps;
-      document.getElementById('totalHours').textContent = Math.round(eps*24/60)||0;
-      const scores = collection.filter(a=>a.userRating).map(a=>parseFloat(a.userRating));
-      document.getElementById('avgScore').textContent = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
-      document.getElementById('topRated').textContent = collection.filter(a=>parseFloat(a.userRating)===10).length;
-      updateRank(collection); renderShowcases(); renderChart();
-    }
+      document.getElementById('totalHours').textContent = Math.round(eps * 24 / 60) || 0;
+      document.getElementById('totalComments').textContent = col.filter(a => a.comment && a.comment.trim()).length;
+      
+      const shikimoriScores = watched.filter(a => a.avgRating).map(a => parseFloat(a.avgRating));
+      document.getElementById('avgShikimori').textContent = shikimoriScores.length ? (shikimoriScores.reduce((a, b) => a + b, 0) / shikimoriScores.length).toFixed(1) : '—';
+      
+      const scores = col.filter(a => a.userRating).map(a => parseFloat(a.userRating));
+      document.getElementById('avgScore').textContent = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '—';
+      
+      const userRatings = col.filter(a => a.userRating).map(a => parseFloat(a.userRating));
+      document.getElementById('topRated').textContent = userRatings.filter(r => r === 10).length;
+      document.getElementById('rated7to9').textContent = userRatings.filter(r => r >= 7 && r <= 9).length;
+      document.getElementById('rated5to6').textContent = userRatings.filter(r => r >= 5 && r <= 6).length;
+      document.getElementById('ratedLess4').textContent = userRatings.filter(r => r < 5).length;      
+      const rewatched = col.filter(a => a.rewatchCount > 0).sort((a, b) => (b.rewatchCount || 0) - (a.rewatchCount || 0));
+      document.getElementById('mostRewatched').textContent = rewatched.length ? rewatched[0].title + ` (${rewatched[0].rewatchCount} раз)` : '—';
+      
+      const studioCounts = {};
+      watched.forEach(a => { if (a.studio) a.studio.split(',').forEach(s => { const ss = s.trim(); if (ss) studioCounts[ss] = (studioCounts[ss] || 0) + 1; }); });
+      const favStudio = Object.entries(studioCounts).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('favStudio').textContent = favStudio ? favStudio[0] : '—';
 
-    function updateRank(c) {
-      const n = c.filter(a => a.list === 'watched').length; let r='F', cl='r-f';
-      if(n>=1000){r='SSS+';cl='r-sss-plus';}else if(n>=750){r='SSS';cl='r-sss';}else if(n>=500){r='SS';cl='r-ss';}else if(n>=300){r='S';cl='r-s';}else if(n>=150){r='A';cl='r-a';}else if(n>=50){r='B';cl='r-b';}else if(n>=25){r='C';cl='r-c';}else if(n>=1){r='D';cl='r-d';}
-      document.getElementById('rankBadge').textContent = r;
-      document.getElementById('rankBadge').className = 'rank '+cl;
+      const listCounts = {};
+      col.forEach(a => { const l = a.list || 'watching'; listCounts[listNames[l]] = (listCounts[listNames[l]] || 0) + 1; });
+      renderPieChart('listChart', listCounts, Object.values(listColors));
+      const genreCounts = {};
+      col.forEach(a => { if (a.genre) a.genre.split(',').forEach(g => { const gg = g.trim(); if (gg) genreCounts[gg] = (genreCounts[gg] || 0) + 1; }); });
+      renderPieChart('genreChart', genreCounts, ['#88D498','#809BCE','#F28482','#957DAD','#F6BD60','#b47aff','#51cf66','#f0b300','#ff6b6b','#06c']);
+      const tagCounts = {};
+      col.forEach(a => { if (a.tag && tagNames[a.tag]) { const t = tagNames[a.tag]; tagCounts[t] = (tagCounts[t] || 0) + 1; } });
+      renderPieChart('tagChart', tagCounts, ['#F6BD60','#957DAD','#88D498','#809BCE','#F28482','#b47aff','#51cf66','#f0b300','#ff6b6b']);
     }
 
     document.getElementById('totalHours').onclick = () => {
-      showHours = !showHours;
-      const eps = parseInt(document.getElementById('totalEpisodes').textContent)||0;
-      const h = Math.round(eps*24/60)||0;
-      document.getElementById('totalHours').textContent = showHours ? h : (h/24).toFixed(1);
-      document.getElementById('hoursLabel').textContent = showHours ? 'Часов' : 'Дней';
+      const el = document.getElementById('totalHours');
+      const label = document.getElementById('hoursLabel');
+      const eps = parseInt(document.getElementById('totalEpisodes').textContent) || 0;
+      const h = Math.round(eps * 24 / 60) || 0;
+      if (label.textContent.includes('Потрачено часов')) {
+        el.textContent = (h / 24).toFixed(1);
+        label.textContent = 'Потрачено дней';
+      } else {
+        el.textContent = h;
+        label.textContent = 'Потрачено часов';
+      }
     };
 
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        if (document.getElementById('editModal').style.display === 'flex') closeModal();
-        if (document.getElementById('profileModal').style.display === 'flex') document.getElementById('profileModal').style.display = 'none';
-        if (document.getElementById('imageModal').style.display === 'flex') document.getElementById('imageModal').style.display = 'none';
-        if (document.getElementById('extendedStatsModal').style.display === 'flex') document.getElementById('extendedStatsModal').style.display = 'none';
-      }
-    });
-
-    document.getElementById('profileAvatarTop').onclick = () => scrollTo({top:0,behavior:'smooth'});
-    document.getElementById('goHomeBtn').onclick = () => location.href = 'index.html';
-    loadProfile();
+    loadStats();
   </script>
 </body>
 </html>
