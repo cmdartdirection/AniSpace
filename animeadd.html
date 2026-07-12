@@ -91,7 +91,7 @@
     .add-btn:hover { background: #40c057; }
     .add-btn.saved { background: #7b4bff; }
 
-    .section-wrap { }
+    .section-wrap { margin-bottom: 1.5rem; }
     .section-title { 
       font-size: 0.75rem; font-weight: 600; color: #6b5b8c; 
       text-transform: uppercase; margin-bottom: 0.5rem; 
@@ -187,10 +187,12 @@
       </div>
       <div class="content-area" id="contentArea">
         <div class="section-wrap">
-          <div class="section-title"><i class="fas fa-fire"></i> Популярные сейчас</div>
-          <div class="popular-row" id="popularRow">
-            <div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div>
-          </div>
+          <div class="section-title"><i class="fas fa-calendar"></i> Популярное в этом сезоне</div>
+          <div class="popular-row" id="seasonalRow"></div>
+        </div>
+        <div class="section-wrap">
+          <div class="section-title"><i class="fas fa-film"></i> Популярные фильмы</div>
+          <div class="popular-row" id="moviesRow"></div>
         </div>
       </div>
     </main>
@@ -199,40 +201,7 @@
 
   <script>
     const contentArea = document.getElementById('contentArea');
-
     const CORS_PROXY = 'https://corsproxy.io/?';
-
-    async function loadPopular() {
-      const row = document.getElementById('popularRow');
-      if (!row) return;
-      
-      try {
-        const res = await fetch('https://api.jikan.moe/v4/top/anime?filter=airing&limit=8');
-        const data = await res.json();
-        
-        row.innerHTML = '';
-        
-        for (const item of data.data) {
-          const a = item;
-          const poster = a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '';
-          const engTitle = a.title_english || a.title;
-          
-          // Получаем русское название
-          const rusTitle = await getRussianTitle(engTitle);
-          
-          const card = document.createElement('div');
-          card.className = 'popular-card';
-          card.innerHTML = `
-            ${poster ? `<img src="${poster}" onerror="this.style.display='none'">` : ''}
-            <div class="popular-card-title">${rusTitle || engTitle}</div>`;
-          card.onclick = () => addAnime(a);
-          row.appendChild(card);
-        }
-      } catch(e) { 
-        console.error(e);
-        row.innerHTML = '<div style="font-size:0.7rem;color:#6b5b8c;">Не удалось загрузить</div>'; 
-      }
-    }
 
     // Функция для получения русского названия через Shikimori
     async function getRussianTitle(engTitle) {
@@ -247,6 +216,77 @@
         }
       } catch(e) {}
       return engTitle;
+    }
+
+    // Загрузка секции с карусельной анимацией (по одной карточке)
+    async function loadSectionCarousel(url, rowId, delay = 200, retries = 3) {
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      
+      for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          
+          const data = await res.json();
+          const allItems = data.data;
+          
+          row.innerHTML = '';
+          
+          const addedIds = new Set();
+
+          for (let i = 0; i < allItems.length; i++) {
+            const item = allItems[i];
+            
+            // Пропускаем дубликаты
+            const uniqueKey = item.title_english || item.title;
+            if (addedIds.has(uniqueKey)) continue;
+            addedIds.add(uniqueKey);
+            
+            const poster = item.images?.jpg?.large_image_url || item.images?.jpg?.image_url || '';
+            const engTitle = item.title_english || item.title;
+            
+            const card = document.createElement('div');
+            card.className = 'popular-card';
+            card.innerHTML = `
+              ${poster ? `<img src="${poster}" onerror="this.style.display='none'">` : ''}
+              <div class="popular-card-title">${engTitle}</div>`;
+            card.onclick = () => addAnime(item);
+            row.appendChild(card);
+            
+            getRussianTitle(engTitle).then(rusTitle => {
+              if (rusTitle) {
+                card.querySelector('.popular-card-title').textContent = rusTitle;
+              }
+            }).catch(() => {});
+            
+            await new Promise(r => setTimeout(r, delay));
+          }
+          
+          return; // Успешно — выходим
+          
+        } catch(e) {
+          console.error(`Попытка ${attempt + 1} для ${rowId}:`, e);
+          
+          if (attempt < retries - 1) {
+            // Ждём перед следующей попыткой
+            await new Promise(r => setTimeout(r, 1500));
+          } else {
+            // Последняя попытка провалилась
+            if (row && !row.children.length) {
+              row.innerHTML = '<div style="font-size:0.7rem;color:#6b5b8c;">Не удалось загрузить</div>';
+            }
+          }
+        }
+      }
+    }
+
+    // Запускаем все три секции одновременно
+    async function loadAllSections() {
+      Promise.all([
+        loadSectionCarousel('https://api.jikan.moe/v4/seasons/now?limit=25', 'seasonalRow', 200),
+        loadSectionCarousel('https://api.jikan.moe/v4/top/anime?type=movie&limit=15', 'moviesRow', 200)
+      ]);
     }
 
     function bindSearch() {
@@ -269,27 +309,21 @@
           let searchQuery = q;
           let list = [];
           
-          // Проверяем, русский ли текст (содержит кириллицу)
           const isRussian = /[а-яА-Я]/.test(q);
           
           if (isRussian) {
-            // Шаг 1: Ищем английское название через Shikimori
             try {
               const shikiUrl = CORS_PROXY + encodeURIComponent(`https://shikimori.one/api/animes?search=${encodeURIComponent(q)}&limit=1`);
               const shikiRes = await fetch(shikiUrl);
               if (shikiRes.ok) {
                 const shikiData = await shikiRes.json();
                 if (shikiData && shikiData.length > 0) {
-                  // Берем английское/оригинальное название
                   searchQuery = shikiData[0].name || shikiData[0].english || q;
                 }
               }
-            } catch(e) {
-              console.log('Shikimori не ответил, ищем напрямую');
-            }
+            } catch(e) {}
           }
           
-          // Шаг 2: Ищем через Jikan с английским названием
           const malSearchUrl = `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(searchQuery)}&limit=10`;
           const res = await fetch(malSearchUrl);
           
@@ -298,7 +332,6 @@
           const data = await res.json();
           list = data.data || [];
           
-          // Внутри performSearch(), где мапим результаты
           const listWithRussianTitles = await Promise.all(list.map(async (a) => {
             const rusTitle = await getRussianTitle(a.title_english || a.title);
             return { ...a, _rusTitle: rusTitle };
@@ -361,10 +394,7 @@
       }
 
       searchBtn.onclick = performSearch;
-      
-      searchInput.onkeypress = e => { 
-        if (e.key === 'Enter') performSearch(); 
-      };
+      searchInput.onkeypress = e => { if (e.key === 'Enter') performSearch(); };
       
       let searchTimeout;
       searchInput.oninput = () => {
@@ -396,10 +426,8 @@
       
       const collection = JSON.parse(localStorage.getItem('anix_collection') || '[]');
       
-      // Базовое название (английское из MAL)
       const engTitle = anime.title_english || anime.title;
       
-      // Получаем русские данные через Shikimori
       let ruData = null;
       try {
         const shikiUrl = CORS_PROXY + encodeURIComponent(`https://shikimori.one/api/animes?search=${encodeURIComponent(engTitle)}&limit=1`);
@@ -407,7 +435,6 @@
         if (shikiRes.ok) {
           const shikiList = await shikiRes.json();
           if (shikiList && shikiList.length > 0) {
-            // Получаем полные данные
             const detailUrl = CORS_PROXY + encodeURIComponent(`https://shikimori.one/api/animes/${shikiList[0].id}`);
             const detailRes = await fetch(detailUrl);
             if (detailRes.ok) {
@@ -417,15 +444,11 @@
             }
           }
         }
-      } catch(e) {
-        console.log('Не удалось получить русские данные');
-      }
+      } catch(e) {}
       
-      // Формируем данные
       const title = ruData?.russian || ruData?.name || engTitle;
       const originalName = ruData?.name || anime.title;
       
-      // Проверка на дубликат
       const exists = collection.find(a => a.title === title);
       if (exists) {
         exists.list = list;
@@ -435,32 +458,24 @@
         return;
       }
       
-      // Жанры на русском
       const genres = ruData?.genres 
         ? ruData.genres.map(g => g.russian || g.name).filter(Boolean).join(', ')
         : (anime.genres || []).map(g => g.name).filter(Boolean).join(', ');
       
-      // Студии
       const studios = ruData?.studios 
         ? ruData.studios.map(s => s.name).join(', ')
         : (anime.studios || []).map(s => s.name).join(', ');
       
-      // Дата
       const date = ruData?.aired_on 
         ? ruData.aired_on.split('-').reverse().join('.')
         : (anime.aired?.from ? new Date(anime.aired.from).toISOString().split('T')[0].split('-').reverse().join('.') : '');
       
-      // Статус на русском
       const statusMap = { 
-        released: 'Вышел', 
-        ongoing: 'Онгоинг', 
-        anons: 'Анонсирован',
-        'Currently Airing': 'Онгоинг',
-        'Finished Airing': 'Вышел'
+        released: 'Вышел', ongoing: 'Онгоинг', anons: 'Анонсирован',
+        'Currently Airing': 'Онгоинг', 'Finished Airing': 'Вышел'
       };
       const status = statusMap[ruData?.status] || statusMap[anime.status] || 'Вышел';
       
-      // Описание на русском
       const description = ruData?.description_html || ruData?.description || anime.synopsis || '—';
       const cleanDescription = description
         .replace(/<[^>]*>/g, '')
@@ -468,7 +483,6 @@
         .replace(/\s+/g, ' ')
         .trim();
       
-      // Постер
       const poster = anime.images?.jpg?.large_image_url || 
                     anime.images?.jpg?.image_url || 
                     (ruData?.image ? 'https://shikimori.one' + ruData.image.original : '');
@@ -512,7 +526,7 @@
     }
 
     bindSearch();
-    loadPopular();
+    loadAllSections();
   </script>
 </body>
 </html>
